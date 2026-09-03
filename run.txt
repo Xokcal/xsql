@@ -1,0 +1,6 @@
+// C运行终端语句
+
+gcc.exe main.c file/file.c xstr/String.c xsqlg/grm.c list/list.c -o main.exe
+
+
+.\main.exe
