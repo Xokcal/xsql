@@ -21,7 +21,7 @@ XSQL 是一个使用纯 C 语言实现的简化 SQL 数据库引擎，主要用�
 
 ## 示例语法
 
-```c
+```text
 CREATE TABLE student(
     id STRING COMMENT 'id',
     age STRING COMMENT 'age',
@@ -39,6 +39,6 @@ INSERT student(id , school , name) : ('14' , 'MorHaton2' , 'GeemMorl2');
 
 INSERT student(id , age ,  address ,  student_id , name , school) :
 ('15' , '24' ,  'island' , '5' , 'GeemMorl3' , 'SeYeplochilsUnivserty');
-
+```
 ## 运行
 gcc main.c file/file.c xstr/String.c xsqlg/grm.c list/list.c -o main.exe
