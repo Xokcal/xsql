@@ -21,7 +21,7 @@ XSQL 是一个使用纯 C 语言实现的简化 SQL 数据库引擎，主要用�
 
 ## 示例语法
 
-```text
+```sql
 CREATE TABLE student(
     id STRING COMMENT 'id',
     age STRING COMMENT 'age',
