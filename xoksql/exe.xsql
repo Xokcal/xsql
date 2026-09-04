@@ -16,6 +16,7 @@ CREATE TABLE a(
     address STRING COMMENT 'address'
 )COMMENT 'a';
 
+
 INSERT student(id , school , name) : ('12' , 'SeYeplochilsUnivserty' , 'HadelioManton');
 
 INSERT student(id , school , name) : ('13' , 'MorHaton' , 'GeemMorl');

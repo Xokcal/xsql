@@ -39,6 +39,21 @@ static int IS_PRIMARY_KEY(char *str){
     return 0;
 }
 
+// ["id" , "name" , "age"]
+FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count){
+    FIELD_INDEXS *fieldIndex = (FIELD_INDEXS*) malloc(sizeof(FIELD_INDEXS));
+    fieldIndex->field_indexs = (int *) malloc(field_effective_count * sizeof(int ));
+    int count = 0;
+    for (int i = 0; i < TARGET->table->length; ++i) {
+        for (int j = 0; j < field_effective_count; ++j) {
+            if (compare(TARGET->table->FIELD[i] , fields[j]->str))
+                fieldIndex->field_indexs[count++] = i;
+        }
+    }
+    fieldIndex->count = count;
+    return fieldIndex;
+}
+
 TOKENSB *tokens_parse(String *origin){
     String **tokens = (String**)malloc(1000 * sizeof(String*));
     String *temp = create_string("");
@@ -378,30 +393,40 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     int whereCondition_logic_count = 0;
     for (int i = curr; i < tokensb->count; ++i) {
         if(compare(tokensb->tokens[i] , " ")&&!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
-        &&!is_over_key_from&&!compare(tokensb->tokens[i] , ",")){
+        &&!is_over_key_from&&!compare(tokensb->tokens[i] , ",")&&!is_over_key_where){
             if (selectCondition->count == select_condition_count){
                 free_selectCondition(selectCondition);
                 selectCondition = extend_selectCondition(selectCondition);
             }
             copy_string(tokensb->tokens[i] , selectCondition->content[select_condition_count++]);
             continue;
-        } else if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "FROM")){
+        } else if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "FROM")
+        &&!is_over_key_where){
             reflect_field_index = SELECT_exe_SELECT_CONDITION_end_handle
                     (TARGET_TABLE , selectCondition , select_condition_count);
             is_over_key_from = 1;
             continue;
-        } else if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")){ // table name
+        } else if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")
+        &&!is_over_key_where){ // table name
             combine_tail(table_name , tokensb->tokens[i]->str);
             TARGET_TABLE = get_TABLE_LIST_NODE(head , table_name->str);
             continue;
         } else if (is_over_key_from == 1&& IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
-        && compare(tokensb->tokens[i] , "WHERE")){
+        && compare(tokensb->tokens[i] , "WHERE")&&!is_over_key_where){
             is_over_key_where = 1;
             whereCondition = parse_WHERE_CONDITION(head , tokensb
             , i,&whereCondition_field_count,&whereCondition_data_count , &whereCondition_logic_count);
             continue;
-        } else if(is_over_key_from&& compare(tokensb->tokens[i] , ";")){ // not WHERE , is ";"
-            SELECT_exe_DATA_QUERY(selectCondition , whereCondition);
+        } else if(is_over_key_where&&is_over_key_from&& compare(tokensb->tokens[i] , ";")){ // not WHERE , is ";"
+            SELECT_exe_DATA_QUERY(TARGET_TABLE , reflect_field_index , whereCondition , &whereCondition_field_count
+                                  , &whereCondition_data_count , &whereCondition_logic_count);
+            for (int j = i; j < tokensb->count; ++j) {
+                if (IS_CONTAIN_KEYS(tokensb->tokens[j]->str)&&compare(tokensb->tokens[j] , ";")){
+                    for (int k = j; k < tokensb->count; ++k) {
+                        if (IS_PRIMARY_KEY(tokensb->tokens[k]->str))return k - 1;
+                    }
+                }
+            }
         }
         else {
             continue;
@@ -410,6 +435,85 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
 }
 
 // SELECT id , school FROM student WHERE id = '15' AND age = '24' AND name = 'GeemMorl3';
+
+/*
+ * reflect : [0 , 3]   ->   [id(1) , age(0) , name(0) , school(1) , studen_id(0) , address(0)]
+ * whereCon : ["id" , "age" , "name"]
+ *            ["15" , "24" , "GeemMorl3"]
+ *            ["AND" , "AND"]
+ * */
+void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,int *reflect_field_index, WHERE_CONDITION *whereCondition
+                           , int *whereCondition_field_count,int *whereCondition_data_count,int *whereCondition_logic_count){
+    FIELD_INDEXS *pFieldIndexs = get_field_indexs_by_field(
+            TARGET_TABLE , whereCondition->field_name , *whereCondition_field_count);
+    int dataline_count = 0;
+    for (int i = 0; i < pFieldIndexs->count; ++i) {
+        if(i == pFieldIndexs->count - 1){
+            printf("%s\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
+            continue;}
+        printf("%s         " , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
+    }
+    DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(TARGET_TABLE);
+    DATALINE_NODE *temp = TARGET_TABLE->table->dataline_head;
+    // ["id" , "name" , "age"] -->  [0 , 2 , 1]
+    while (temp != NULL){
+        for (int i = 0; i < *whereCondition_field_count; ++i) { // ^ 3
+            if (compare(temp->dataline->DATA[pFieldIndexs->field_indexs[i]]
+                        , whereCondition->data[i]->str)){ // 匹配字段
+            } else break;
+            if (i == *whereCondition_field_count - 1
+            && compare(temp->dataline->DATA[pFieldIndexs->field_indexs[i]]
+                       , whereCondition->data[i]->str)){
+                if (datalineArray->count == dataline_count) // 扩容
+                datalineArray = extend_DATALINE_ARRAY(TARGET_TABLE , datalineArray);
+                datalineArray->datalines[dataline_count++] = temp->dataline;
+            }
+        }
+        temp = temp->next;
+    }
+    //打印数据...
+    for (int i = 0; i < datalineArray->count; ++i) {
+        for (int j = 0; j < pFieldIndexs->count; ++j) {
+            if (j == pFieldIndexs->count - 1){
+                printf("%s\n" , datalineArray->datalines[i]->DATA[pFieldIndexs->field_indexs[j]]->str);
+                break;
+            }
+            printf("%s        " , datalineArray->datalines[i]->DATA[pFieldIndexs->field_indexs[j]]->str);
+        }
+    }
+}
+
+DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){
+    DATALINE_ARRAY *pDatalineArray = (DATALINE_ARRAY*) malloc(sizeof(DATALINE_ARRAY));
+    pDatalineArray->datalines = (DATALINE **) malloc(10 * sizeof(DATALINE*));
+    for (int i = 0; i < 10; ++i) {
+        pDatalineArray->datalines[i] = (DATALINE*) malloc(sizeof(DATALINE));
+        pDatalineArray->datalines[i]->DATA = (String**) malloc(TARGET_TABLE->table->length * sizeof(String*));
+        for (int j = 0; j < TARGET_TABLE->table->length; ++j)
+            pDatalineArray->datalines[i]->DATA[j] = create_string("");
+    }
+    pDatalineArray->count = 10;
+    return pDatalineArray;
+}
+
+DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old){
+    int new_count = old->count * 2;
+    DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(TARGET);
+    datalineArray->datalines = (DATALINE **) malloc(new_count * sizeof(DATALINE*));
+    for (int i = 0; i < new_count; ++i) {
+        datalineArray->datalines[i] = (DATALINE *) malloc(sizeof(DATALINE));
+        datalineArray->datalines[i]->DATA = (String **) malloc(TARGET->table->length * sizeof(String *));
+        for (int j = 0; j < TARGET->table->length; ++j)
+            datalineArray->datalines[i]->DATA[j] = create_string("");
+    }
+    for (int i = 0; i < old->count; ++i) {
+        for (int j = 0; j < TARGET->table->length; ++j) {
+            copy_string(old->datalines[i]->DATA[j], datalineArray->datalines[i]->DATA[j]);
+        }
+    }
+    datalineArray->count = new_count;
+    return datalineArray;
+}
 
 WHERE_CONDITION *parse_WHERE_CONDITION(
         TABLE_LIST_NODE *head,TOKENSB *tokensb
@@ -461,8 +565,8 @@ int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node,S
     int reflect_count = 0;
     for (int i = 0; i < effective_selectCondition_count; ++i) {
         for (int j = 0; j < target_table_node->table->length; ++j) {
-            compare(selectCondition->content[i] , target_table_node->table->FIELD[j]->str);
-            reflect_field_index[reflect_count++] = j;
+            if(compare(selectCondition->content[i] , target_table_node->table->FIELD[j]->str))
+                reflect_field_index[reflect_count++] = j;
         }
     }
     return reflect_field_index;
@@ -517,14 +621,11 @@ void free_whereCondition(WHERE_CONDITION *whereCondition){
     free(whereCondition);
 }
 
-void SELECT_exe_DATA_QUERY(SELECT_CONDITION *selectCondition , WHERE_CONDITION *whereCondition){
-
-}
-
 static KEYS keys_to_KEYSTYPE(String *key){
     if(compare(key , "CREATE"))return CREATE_K;
     else if(compare(key , "INSERT"))return INSERT_K;
     else if(compare(key , "SELECT"))return SELECT_K;
+    else return NULL_K;
 }
 
 void XSQL_RUN(TOKENSB *tokensb){
@@ -545,7 +646,7 @@ void XSQL_RUN(TOKENSB *tokensb){
                 //printf("[INSERT EXE SUCCESS!!!]\n\n\n");
                 break;
             case SELECT_K:
-                //SELECT_exe(head , tokensb , i);
+                SELECT_exe(head , tokensb , i);
                 break;
             default:
                 break;
