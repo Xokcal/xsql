@@ -50,7 +50,7 @@ typedef struct DATALINE_ARRAY{
 static char* sql_keys[20] = {"SELECT" , "CREATE" , "TABLE" , "{" , "}"
                             , "(" , ")" , "COMMENT" , "\'" , "FROM"
                             , "," , "WHERE" , ";" , " " , "*" , "INSERT"
-                            ,"STRING" , ":" , "\n" , "ADD"};
+                            ,"STRING" , ":" , "\n" , "AND"};
 
 static char* primary_keys[5] = {"INSERT" , "SELECT" , "UPDATE" , "CREATE" , "DELETE"};
 
@@ -74,7 +74,7 @@ WHERE_CONDITION *parse_WHERE_CONDITION(TABLE_LIST_NODE *head,TOKENSB *tokensb
 
 
 DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE);
-void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE, int * reflect_field_index, WHERE_CONDITION *whereCondition
+void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE, int * reflect_field_index , int select_condition_count, WHERE_CONDITION *whereCondition
         , int *whereCondition_field_count,int *whereCondition_data_count,int *whereCondition_logic_count);
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count);
 DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old);
