@@ -7,6 +7,15 @@ CREATE TABLE student(
     address STRING COMMENT 'address'
 )COMMENT 'student';
 
+CREATE TABLE a(
+    id STRING COMMENT 'id',
+    age STRING COMMENT 'age',
+    name STRING COMMENT 'name',
+    school STRING COMMENT 'school',
+    student_id STRING COMMENT 'student_id',
+    address STRING COMMENT 'address'
+)COMMENT 'a';
+
 INSERT student(id , school , name) : ('12' , 'SeYeplochilsUnivserty' , 'HadelioManton');
 
 INSERT student(id , school , name) : ('13' , 'MorHaton' , 'GeemMorl');

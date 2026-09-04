@@ -129,12 +129,26 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                        , current_time_format()->str
                                        , xsql->str);
                                 clock_t end = clock();
-                                printf("[%s] create table \'%s\' execute in %.2f ms is ok ! \n"
+                                printf("[%s] (create) table \'%s\' execute in %.2f ms is ok ! \n"
                                        , current_time_format()->str
                                        , table_name->str
                                        , run_time_diff(start , end));
                                 string_free(table_name);
+                                //printf("[CREATE END RETURN I] %d" , k);
                                 return k - 1;
+                            } else if (k == tokensb->count - 1){
+                                //printf("[K]%s\n" , tokensb->tokens[k]->str);
+                                printf("[%s] xsql server> %s \n"
+                                        , current_time_format()->str
+                                        , xsql->str);
+                                clock_t end = clock();
+                                printf("[%s] (create) table \'%s\' execute in %.2f ms is ok ! \n"
+                                        , current_time_format()->str
+                                        , table_name->str
+                                        , run_time_diff(start , end));
+                                string_free(table_name);
+                                //printf("[CREATE END RETURN I] %d" , k);
+                                return k;
                             }
                         }
                         return j - 1;
@@ -275,14 +289,25 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                             //printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
                                             /*printf("[%s] xsql server> %s\n"
                                                    , current_time_format()->str , xsql_row->str);*/
-                                            printf("[%s] insert to \'%s\' 1 row execute in %.2f ms is ok ! \n"
+                                            printf("[%s] (insert) to \'%s\' 1 row execute in %.2f ms is ok ! \n"
                                                    , current_time_format()->str
                                                    , table_name->str
                                                    , run_time_diff(start , end));
+                                            printf("[INSERT END RETURN M] %d AND %s\n" , m , tokensb->tokens[m]->str);
                                             return m - 1;
+                                        } else if (m == tokensb->count - 1){
+                                            clock_t end = clock();
+                                            //printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
+                                            /*printf("[%s] xsql server> %s\n"
+                                                   , current_time_format()->str , xsql_row->str);*/
+                                            printf("[%s] (insert) to \'%s\' 1 row execute in %.2f ms is ok ! \n"
+                                                    , current_time_format()->str
+                                                    , table_name->str
+                                                    , run_time_diff(start , end));
+                                            printf("[INSERT END RETURN M] %d AND %s\n" , m , tokensb->tokens[m]->str);
+                                            return m;
                                         }
                                     }
-                                    return l - 1;
                                 }
                             }
                         }
@@ -328,6 +353,7 @@ SELECT_CONDITION *extend_selectCondition(SELECT_CONDITION *old){
         copy_string(old->content[i] , selectCondition->content[i]);
     for (int i = old->count; i < new_count; ++i)
         selectCondition->content[i] = create_string("");
+    free_selectCondition(old);
     return selectCondition;
 }
 
@@ -339,20 +365,160 @@ void free_selectCondition(SELECT_CONDITION *selectCondition){
 
 int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     //printf("[ENTRE SELECT!!]\n");
-    int is_over_from = 0;
+    int is_over_key_from = 0;
+    int is_over_key_where = 0;
     int select_condition_count = 0;
     TABLE_LIST_NODE *TARGET_TABLE;
-    SELECT_CONDITION *selectCondition = (SELECT_CONDITION*)malloc(sizeof(SELECT_CONDITION));
+    String *table_name = create_string("");
+    SELECT_CONDITION *selectCondition = create_selectCondition();
+    WHERE_CONDITION *whereCondition;
+    int *reflect_field_index;
+    int whereCondition_field_count = 0;
+    int whereCondition_data_count = 0;
+    int whereCondition_logic_count = 0;
     for (int i = curr; i < tokensb->count; ++i) {
-        if(compare(tokensb->tokens[i] , " ")&&!IS_CONTAIN_KEYS(tokensb->tokens[i])&&!is_over_from){
+        if(compare(tokensb->tokens[i] , " ")&&!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
+        &&!is_over_key_from&&!compare(tokensb->tokens[i] , ",")){
             if (selectCondition->count == select_condition_count){
                 free_selectCondition(selectCondition);
                 selectCondition = extend_selectCondition(selectCondition);
             }
             copy_string(tokensb->tokens[i] , selectCondition->content[select_condition_count++]);
-
+            continue;
+        } else if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "FROM")){
+            reflect_field_index = SELECT_exe_SELECT_CONDITION_end_handle
+                    (TARGET_TABLE , selectCondition , select_condition_count);
+            is_over_key_from = 1;
+            continue;
+        } else if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")){ // table name
+            combine_tail(table_name , tokensb->tokens[i]->str);
+            TARGET_TABLE = get_TABLE_LIST_NODE(head , table_name->str);
+            continue;
+        } else if (is_over_key_from == 1&& IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
+        && compare(tokensb->tokens[i] , "WHERE")){
+            is_over_key_where = 1;
+            whereCondition = parse_WHERE_CONDITION(head , tokensb
+            , i,&whereCondition_field_count,&whereCondition_data_count , &whereCondition_logic_count);
+            continue;
+        } else if(is_over_key_from&& compare(tokensb->tokens[i] , ";")){ // not WHERE , is ";"
+            SELECT_exe_DATA_QUERY(selectCondition , whereCondition);
+        }
+        else {
+            continue;
         }
     }
+}
+
+// SELECT id , school FROM student WHERE id = '15' AND age = '24' AND name = 'GeemMorl3';
+
+WHERE_CONDITION *parse_WHERE_CONDITION(
+        TABLE_LIST_NODE *head,TOKENSB *tokensb
+        , int curr , int *whereCondition_field_count
+        ,int *whereCondition_data_count,int *whereCondition_logic_count
+        ){
+    int is_over_single_quote = 0;
+    WHERE_CONDITION *whereCondition = create_whereCondition();
+    for (int i = curr; i < tokensb->count; ++i) {
+        if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")
+        && !compare(tokensb->tokens[i] , "\'")&&!is_over_single_quote){
+            if(*whereCondition_field_count == whereCondition->common_count - 1){
+                whereCondition = extend_whereCondition(whereCondition);
+                copy_string(tokensb->tokens[i] , whereCondition->field_name[*whereCondition_field_count++]);
+            }
+            copy_string(tokensb->tokens[i] , whereCondition->field_name[*whereCondition_field_count++]);
+            continue;
+        } else if(IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "\'")){
+            if(is_over_single_quote)is_over_single_quote = 0; else is_over_single_quote = 1;
+            continue;
+        } else if(is_over_single_quote){
+            if(*whereCondition_data_count == whereCondition->common_count - 1){
+                whereCondition = extend_whereCondition(whereCondition);
+                copy_string(tokensb->tokens[i] , whereCondition->data[*whereCondition_data_count++]);
+            }
+            copy_string(tokensb->tokens[i] , whereCondition->data[*whereCondition_data_count++]);
+            continue;
+        } else if(!is_over_single_quote&& IS_CONTAIN_KEYS(tokensb->tokens[i]->str)){
+            if(*whereCondition_logic_count == whereCondition->common_count - 1){
+                whereCondition = extend_whereCondition(whereCondition);
+                copy_string(tokensb->tokens[i] , whereCondition->logic_condition[*whereCondition_logic_count++]);
+            }
+            copy_string(tokensb->tokens[i] , whereCondition->logic_condition[*whereCondition_logic_count++]);
+            continue;
+        } else if(compare(tokensb->tokens[i] , ";")){
+            return whereCondition;
+        }
+    }
+}
+
+int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node,SELECT_CONDITION *selectCondition , int effective_selectCondition_count){
+    if(compare(selectCondition->content[0] , "*")){
+        int *reflect_field_index = (int*)malloc(target_table_node->table->length * sizeof(int));
+        for (int i = 0; i < target_table_node->table->length; ++i)
+            reflect_field_index[i] = i;
+        return reflect_field_index;
+    }
+    int *reflect_field_index = (int*)malloc(effective_selectCondition_count * sizeof(int));
+    int reflect_count = 0;
+    for (int i = 0; i < effective_selectCondition_count; ++i) {
+        for (int j = 0; j < target_table_node->table->length; ++j) {
+            compare(selectCondition->content[i] , target_table_node->table->FIELD[j]->str);
+            reflect_field_index[reflect_count++] = j;
+        }
+    }
+    return reflect_field_index;
+}
+
+WHERE_CONDITION *create_whereCondition(){
+    WHERE_CONDITION *whereCondition = (WHERE_CONDITION *) malloc(sizeof(WHERE_CONDITION));
+    whereCondition->field_name = (String**) malloc(10 * sizeof(String*));
+    whereCondition->data = (String**) malloc(10 * sizeof(String*));
+    whereCondition->logic_condition = (String**) malloc(10 * sizeof(String*));
+    whereCondition->common_count = 10;
+    for (int i = 0; i < 10; ++i)
+        whereCondition->field_name[i] = create_string("");
+    for (int i = 0; i < 10; ++i)
+        whereCondition->data[i] = create_string("");
+    for (int i = 0; i < 10; ++i)
+        whereCondition->logic_condition[i] = create_string("");
+    return whereCondition;
+}
+
+WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old){
+    int new_count = old->common_count * 2;
+    WHERE_CONDITION *whereCondition = (WHERE_CONDITION *) malloc(sizeof(WHERE_CONDITION));
+    whereCondition->field_name = (String**) malloc(new_count * sizeof(String*));
+    whereCondition->data = (String**) malloc(new_count * sizeof(String*));
+    whereCondition->logic_condition = (String**) malloc(new_count * sizeof(String*));
+    whereCondition->common_count = new_count;
+    for (int i = 0; i < old->common_count; ++i)
+        copy_string(old->field_name[i] , whereCondition->field_name[i]);
+    for (int i = 0; i < old->common_count; ++i)
+        copy_string(old->data[i] , whereCondition->data[i]);
+    for (int i = 0; i < old->common_count; ++i)
+        copy_string(old->logic_condition[i] , old->logic_condition[i]);
+
+    for (int i = old->common_count; i < new_count; ++i)
+        whereCondition->field_name[i] = create_string("");
+    for (int i = old->common_count; i < new_count; ++i)
+        whereCondition->data[i] = create_string("");
+    for (int i = old->common_count; i < new_count; ++i)
+        whereCondition->logic_condition[i] = create_string("");
+
+    whereCondition->common_count = new_count;
+}
+
+void free_whereCondition(WHERE_CONDITION *whereCondition){
+    for (int i = 0; i < whereCondition->common_count; ++i)
+        string_free(whereCondition->field_name[i]);
+    for (int i = 0; i < whereCondition->common_count; ++i)
+        string_free(whereCondition->data[i]);
+    for (int i = 0; i < whereCondition->common_count; ++i)
+        string_free(whereCondition->logic_condition[i]);
+    free(whereCondition);
+}
+
+void SELECT_exe_DATA_QUERY(SELECT_CONDITION *selectCondition , WHERE_CONDITION *whereCondition){
+
 }
 
 static KEYS keys_to_KEYSTYPE(String *key){
@@ -371,20 +537,18 @@ void XSQL_RUN(TOKENSB *tokensb){
                 i = CREATE_exe(head , tokensb , i);
                 TABLE_LIST_NODE *table_get = get_TABLE_LIST_NODE(head , "student");
                 String** table_msg = table_get->table->FIELD;
-                //printf("[COUNT][TABLE]%d\n" , table_get->table->length);
-                for (int j = 0; j < table_get->table->length; ++j)
-                    //printf("[FOR][STUDENT   TEST   TABLE   FIELD]%s\n" , table_msg[j]->str);
-                //printf("[55]%s\n" , table_msg[4]->str);
+                //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i]->str);
                 break;
             case INSERT_K:
                 i = INSERT_exe(head , tokensb , i);
+                //printf("[BREAK INSERT TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i]->str);
                 //printf("[INSERT EXE SUCCESS!!!]\n\n\n");
                 break;
             case SELECT_K:
-                SELECT_exe(head , tokensb , i);
+                //SELECT_exe(head , tokensb , i);
                 break;
             default:
-                continue;
+                break;
 
         }
     }

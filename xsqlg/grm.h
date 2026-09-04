@@ -29,10 +29,17 @@ typedef struct SELECT_CONDITION{
     int count;
 }SELECT_CONDITION;
 
-static char* sql_keys[19] = {"SELECT" , "CREATE" , "TABLE" , "{" , "}"
+typedef struct WHERE_CONDITION{
+    String **logic_condition;
+    String **field_name;
+    String **data;
+    int common_count;
+}WHERE_CONDITION;
+
+static char* sql_keys[20] = {"SELECT" , "CREATE" , "TABLE" , "{" , "}"
                             , "(" , ")" , "COMMENT" , "\'" , "FROM"
                             , "," , "WHERE" , ";" , " " , "*" , "INSERT"
-                            ,"STRING" , ":" , "\n"};
+                            ,"STRING" , ":" , "\n" , "ADD"};
 
 static char* primary_keys[5] = {"INSERT" , "SELECT" , "UPDATE" , "CREATE" , "DELETE"};
 
@@ -46,5 +53,14 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 SELECT_CONDITION *create_selectCondition();
 SELECT_CONDITION *extend_selectCondition(SELECT_CONDITION *old);
 void free_selectCondition(SELECT_CONDITION *selectCondition);
+int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node ,SELECT_CONDITION *selectCondition,int effective_selectCondition_count);
+void SELECT_exe_DATA_QUERY(SELECT_CONDITION *selectCondition, WHERE_CONDITION *whereCondition);
+WHERE_CONDITION *create_whereCondition();
+WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old);
+void free_whereCondition(WHERE_CONDITION *whereCondition);
+WHERE_CONDITION *parse_WHERE_CONDITION(TABLE_LIST_NODE *head,TOKENSB *tokensb
+        , int curr ,int *whereCondition_field_count
+        ,int *whereCondition_data_count,int *whereCondition_logic_count);
+
 
 #endif //XOKSQLC语言版_GRM_H
