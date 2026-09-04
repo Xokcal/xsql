@@ -2,10 +2,10 @@
 #include "file/file.h"
 #include "xstr/String.h"
 #include "xsqlg/grm.h"
-
+#include "time/xtime.h"
 int main() {
     String* origin = open_file("xoksql/exe.xsql");
-    string_println(origin);
+    //string_println(origin);
     TOKENSB *tokensb = tokens_parse(origin);
     XSQL_RUN(tokensb);
 

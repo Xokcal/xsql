@@ -38,7 +38,7 @@ TABLE_LIST_NODE *get_TABLE_LIST_NODE(TABLE_LIST_NODE *head , char*name){
 
 // dataline list
 DATALINE_NODE *create_DATALINE_NODE(String **data , int* indexs , int count , int field_count){
-    printf("[ENTRE CREATE!!]\n");
+    //printf("[ENTRE CREATE!!]\n");
     DATALINE_NODE *dataline_node = (DATALINE_NODE*)malloc(sizeof(DATALINE_NODE));
     dataline_node->next = NULL;
     dataline_node->dataline = (DATALINE*)malloc(sizeof(DATALINE));
@@ -50,14 +50,14 @@ DATALINE_NODE *create_DATALINE_NODE(String **data , int* indexs , int count , in
     for (int i = 0; i < count; ++i)
         copy_string(data[i] , dataline_node->dataline->DATA[indexs[i]]);
 
-    printf("[FIELD_COUNT]%d\n" , field_count);
+    //printf("[FIELD_COUNT]%d\n" , field_count);
 
     for (int i = 0; i < field_count; ++i) {
         if(dataline_node->dataline->DATA[i] == NULL){
-            printf("[DATA]NULL\n");
+            //printf("[DATA]NULL\n");
             continue;
         }
-        printf("[DATA]%s\n" , dataline_node->dataline->DATA[i]->str);
+        //printf("[DATA]%s\n" , dataline_node->dataline->DATA[i]->str);
     }
     return dataline_node;
 }
@@ -75,13 +75,13 @@ void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node){
 
 DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key){
     if(head == NULL){ printf("[NULL]\n");return NULL;}
-    printf("[ENTRE GET!!]\n");
+    //printf("[ENTRE GET!!]\n");
 
     DATALINE_NODE *temp = head->next;
-    printf("[temp]%s\n" , temp->dataline->DATA[0]->str);
+    //printf("[temp]%s\n" , temp->dataline->DATA[0]->str);
     while (temp != NULL){
         if(compare(temp->dataline->DATA[0] , primary_key)){
-            printf("[temp  result]%s\n" , temp->dataline->DATA[3]->str);
+            //printf("[temp  result]%s\n" , temp->dataline->DATA[3]->str);
             return temp;
         }
         temp = temp->next;

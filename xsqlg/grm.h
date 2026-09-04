@@ -24,6 +24,11 @@ typedef struct TOKENSB{
     int count;
 }TOKENSB;
 
+typedef struct SELECT_CONDITION{
+    String **content;
+    int count;
+}SELECT_CONDITION;
+
 static char* sql_keys[19] = {"SELECT" , "CREATE" , "TABLE" , "{" , "}"
                             , "(" , ")" , "COMMENT" , "\'" , "FROM"
                             , "," , "WHERE" , ";" , " " , "*" , "INSERT"
@@ -37,9 +42,9 @@ TOKENSB *tokens_parse(String *origin);
 int CREATE_exe(TABLE_LIST_NODE *head , TOKENSB *tokensb , int curr);
 void XSQL_RUN(TOKENSB *tokensb);
 int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
-
-
-
-
+int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
+SELECT_CONDITION *create_selectCondition();
+SELECT_CONDITION *extend_selectCondition(SELECT_CONDITION *old);
+void free_selectCondition(SELECT_CONDITION *selectCondition);
 
 #endif //XOKSQLC语言版_GRM_H

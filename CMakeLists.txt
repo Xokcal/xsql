@@ -14,4 +14,6 @@ add_executable(new_target xstr/String.c
         xsqlg/grm.h
         list/list.c
         list/list.h
-        cpp_test/main.cpp)
+        cpp_test/main.cpp
+        time/xtime.c
+        time/xtime.h)
