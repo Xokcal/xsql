@@ -31,6 +31,16 @@ CREATE TABLE student(
     address STRING COMMENT 'address'
 )COMMENT 'student';
 
+CREATE TABLE a(
+    id STRING COMMENT 'id',
+    age STRING COMMENT 'age',
+    name STRING COMMENT 'name',
+    school STRING COMMENT 'school',
+    student_id STRING COMMENT 'student_id',
+    address STRING COMMENT 'address'
+)COMMENT 'a';
+
+
 INSERT student(id , school , name) : ('12' , 'SeYeplochilsUnivserty' , 'HadelioManton');
 
 INSERT student(id , school , name) : ('13' , 'MorHaton' , 'GeemMorl');
@@ -39,6 +49,9 @@ INSERT student(id , school , name) : ('14' , 'MorHaton2' , 'GeemMorl2');
 
 INSERT student(id , age ,  address ,  student_id , name , school) :
 ('15' , '24' ,  'island' , '5' , 'GeemMorl3' , 'SeYeplochilsUnivserty');
+
+SELECT id , age , name , address , student_id  FROM student WHERE id = '15' AND age = '24' AND name = 'GeemMorl3';
+
 ```
 ## 运行
 gcc main.c file/file.c xstr/String.c xsqlg/grm.c list/list.c -o main.exe
