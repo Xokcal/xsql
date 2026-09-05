@@ -57,6 +57,7 @@ static char* primary_keys[5] = {"INSERT" , "SELECT" , "UPDATE" , "CREATE" , "DEL
 static char* sql_keys_primary[2] = {"CREATE" , "INSERT"};
 
 TOKENSB *tokens_parse(String *origin);
+int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length);
 int CREATE_exe(TABLE_LIST_NODE *head , TOKENSB *tokensb , int curr);
 void XSQL_RUN(TOKENSB *tokensb);
 int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
@@ -64,7 +65,8 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 SELECT_CONDITION *create_selectCondition();
 SELECT_CONDITION *extend_selectCondition(SELECT_CONDITION *old);
 void free_selectCondition(SELECT_CONDITION *selectCondition);
-int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node ,SELECT_CONDITION *selectCondition,int effective_selectCondition_count);
+int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node ,SELECT_CONDITION *selectCondition
+                                            ,int effective_selectCondition_count , int *where_start_char_effective_count);
 WHERE_CONDITION *create_whereCondition();
 WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old);
 void free_whereCondition(WHERE_CONDITION *whereCondition);
@@ -74,8 +76,8 @@ WHERE_CONDITION *parse_WHERE_CONDITION(TABLE_LIST_NODE *head,TOKENSB *tokensb
 
 
 DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE);
-void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE, int * reflect_field_index , int select_condition_count, WHERE_CONDITION *whereCondition
-        , int *whereCondition_field_count,int *whereCondition_data_count,int *whereCondition_logic_count);
+void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCondition, int * reflect_field_index , int select_condition_count, WHERE_CONDITION *whereCondition
+        , int *whereCondition_field_count,int *whereCondition_data_count,int *whereCondition_logic_count,int *where_start_char_effective_count);
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count);
 DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old);
 

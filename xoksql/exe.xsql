@@ -7,14 +7,15 @@ CREATE TABLE student(
     address STRING COMMENT 'address'
 )COMMENT 'student';
 
-CREATE TABLE a(
+CREATE TABLE teacher(
     id STRING COMMENT 'id',
     age STRING COMMENT 'age',
     name STRING COMMENT 'name',
     school STRING COMMENT 'school',
-    student_id STRING COMMENT 'student_id',
-    address STRING COMMENT 'address'
-)COMMENT 'a';
+    teacher_id STRING COMMENT 'student_id',
+    address STRING COMMENT 'address',
+    universy STRING COMMENT 'universy'
+)COMMENT 'teacher';
 
 
 INSERT student(id , school , name) : ('12' , 'SeYeplochilsUnivserty' , 'HadelioManton');
@@ -23,7 +24,30 @@ INSERT student(id , school , name) : ('13' , 'MorHaton' , 'GeemMorl');
 
 INSERT student(id , school , name) : ('14' , 'MorHaton2' , 'GeemMorl2');
 
-INSERT student(id , age ,  address ,  student_id , name , school) :
-('15' , '24' ,  'island' , '5' , 'GeemMorl3' , 'SeYeplochilsUnivserty');
+INSERT teacher(id , name , school) : ('1' , 'LiAn' , 'MorHaton2');
 
-SELECT id , age , name , address , student_id  FROM student WHERE id = '15' AND age = '24' AND name = 'GeemMorl3';
+INSERT teacher(id , name , school) : ('2' , 'ZengHua' , 'MorHaton2');
+
+INSERT teacher(id , name , school) : ('3' , 'PanMengDie' , 'MorHaton2');
+
+INSERT teacher(id , school , name) : ('4' , 'MorHaton2' , 'HuangYuLian');
+
+INSERT teacher(id , school , name) : ('5' , 'MorHaton2' , 'DengLian');
+
+INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
+('15' , '24' ,  'island' , '5' , 'GeLiliang' , 'SeYeplochilsUnivserty' , 'TechEcUniversy');
+
+INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
+('16' , '22' ,  'island2' , '15' , 'ZhuYu' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
+
+INSERT teacher(id , age ,  address ,  teacher_id , name , school) :
+('17' , '19' ,  'island4' , '54' , 'SuHeng' , 'SeYeplochilsUnivserty');
+
+INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
+('18' , '28' ,  'island6' , '3' , 'LanAn' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
+
+INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
+('19' , '21' ,  'island1' , '34' , 'HanShizhong' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
+
+SELECT * FROM teacher WHERE universy = 'TechEcUniversy' AND id = '19';
+
