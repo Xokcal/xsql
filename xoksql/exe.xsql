@@ -24,18 +24,18 @@ INSERT student(id , school , name) : ('13' , 'MorHaton' , 'GeemMorl');
 
 INSERT student(id , school , name) : ('14' , 'MorHaton2' , 'GeemMorl2');
 
-INSERT teacher(id , name , school) : ('1' , 'LiAn' , 'MorHaton2');
+INSERT teacher(id , name , school , universy) : ('1' , 'LiAn' , 'MorHaton2' , 'TechEcUniversy');
 
-INSERT teacher(id , name , school) : ('2' , 'ZengHua' , 'MorHaton2');
+INSERT teacher(id , name , school , universy) : ('2' , 'ZengHua' , 'MorHaton2' , 'TechEcUniversy');
 
-INSERT teacher(id , name , school) : ('3' , 'PanMengDie' , 'MorHaton2');
+INSERT teacher(id , name , school , universy) : ('3' , 'PanMengDie' , 'MorHaton2' , 'TechEcUniversy');
 
 INSERT teacher(id , school , name) : ('4' , 'MorHaton2' , 'HuangYuLian');
 
 INSERT teacher(id , school , name) : ('5' , 'MorHaton2' , 'DengLian');
 
 INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
-('15' , '24' ,  'island' , '5' , 'GeLiliang' , 'SeYeplochilsUnivserty' , 'TechEcUniversy');
+('1512412' , '24' ,  'island' , '5' , 'GeLiliang' , 'SeYeplochilsUnivserty' , 'TechEcUniversy');
 
 INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
 ('16' , '22' ,  'island2' , '15' , 'ZhuYu' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
@@ -50,4 +50,5 @@ INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
 ('19' , '21' ,  'island1' , '34' , 'HanShizhong' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
 
 SELECT * FROM teacher WHERE universy = 'TechEcUniversy';
+
 

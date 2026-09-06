@@ -49,7 +49,6 @@ int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length){
 
 // ["id" , "name" , "age"]
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count){
-    printf("[eff]%d\n" , field_effective_count);
     FIELD_INDEXS *fieldIndex = (FIELD_INDEXS*) malloc(sizeof(FIELD_INDEXS));
     fieldIndex->field_indexs = (int *) malloc(field_effective_count * sizeof(int ));
     int count = 0;
@@ -501,15 +500,25 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
     }
     if (compare(selectCondition->content[0] , "*"))
             select_condition_count = *where_start_char_effective_count;
-        String *lines = query_upon_down_line_num_calc(TARGET_TABLE , datalineArray 
+        int *field_max_len = (int*)malloc(select_condition_count * sizeof(int));
+        String *lines = query_upon_down_line_num_calc(field_max_len , TARGET_TABLE , datalineArray 
         , reflect_field_index , select_condition_count);
+        //int *field_max_len , TABLE_LIST_NODE*target_table 
+    //, DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num 
+        int *field_space_nums = query_field_space_nums_calc(field_max_len , TARGET_TABLE 
+            , datalineArray , reflect_field_index , select_condition_count);
         printf("+%s+\n" , lines->str);
         for (int i = 0; i < select_condition_count; ++i) {
+            String *space = create_string("");
                 if(i == select_condition_count - 1){
                     printf("%s\n\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
                 continue;
             }
-            printf("%s         " , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
+            for (int j = 0; j < field_space_nums[i]; j++)
+                combine_tail(space , " ");
+            printf("%s%s" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str 
+                , space->str);
+                delete_all(space);
         }
     for (int i = 0; i < dataline_count; ++i) {
         for (int j = 0; j < select_condition_count; ++j) {
@@ -517,38 +526,58 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
                 printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
                 break;
             }
-            printf("%s         ", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
+            String *data_space = query_data_field_space(datalineArray->datalines[i]
+                ,TARGET_TABLE , reflect_field_index[j] , field_max_len , field_space_nums , j);
+            printf("%s%s", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str,data_space->str);
+            //printf("%s        ", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
+            string_free(data_space);
         }
     }
     printf("+%s+\n" , lines->str);
 }
 
-String *query_upon_down_line_num_calc(TABLE_LIST_NODE*target_table ,DATALINE_ARRAY *dataline_array_t 
-    , int *query_field_indexs , int authentic_query_field_num){
+String *query_data_field_space(DATALINE*dataline ,TABLE_LIST_NODE *target_table 
+    , int curr_field_place_index ,int *field_max_len , int *field_space_nums , int curr_select_condition_index){
+    int space_count = 0;String *data_field_space = create_string("");
+    int field_space_all = target_table->table->FIELD[curr_field_place_index]->length
+    + field_space_nums[curr_select_condition_index];
+    space_count = abs(field_space_all  - dataline->DATA[curr_field_place_index]->length);
+    for(int i = 0 ; i < space_count; i++)combine_tail(data_field_space , " ");
+    return data_field_space;
+}
+
+String *query_upon_down_line_num_calc(int *field_max_len ,TABLE_LIST_NODE*target_table 
+    ,DATALINE_ARRAY *dataline_array_t , int *query_field_indexs , int authentic_query_field_num){
     String *lines = create_string("");
-    int line_num = 0;
+    int line_num = 0 , max_count = 0;
     for (int i = 0; i < authentic_query_field_num;i++){ // 3
         int temp_field_line_num = 0;
         for (int j = 0; j < dataline_array_t->count;j++){
-            if (dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length > temp_field_line_num){
-                printf("[str.length]%s   %d\n" ,dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->str
-                      , dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length);
+            if (dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length > temp_field_line_num)
                 temp_field_line_num = dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length;
-            }
-            temp_field_line_num = dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length + 10;
         }
-        printf("[temp_num**]%d\n" , temp_field_line_num);
-        line_num += temp_field_line_num;
+        field_max_len[max_count++] = temp_field_line_num;
+        line_num += temp_field_line_num + 6;
     }
-    printf("[line*]%d\n" , line_num);
-    printf("[AUTH]%d\n" , authentic_query_field_num);
-    for(int i = 0 ; i < authentic_query_field_num ; i++){
-    printf("[field_ori_length]%s   %d\n" ,target_table->table->FIELD[i]->str ,  target_table->table->FIELD[i]->length);
-        line_num += target_table->table->FIELD[query_field_indexs[i]]->length;}
-    printf("[line*]%d\n" , line_num);
+    for(int i = 0 ; i < authentic_query_field_num ; i++)
+        line_num += target_table->table->FIELD[query_field_indexs[i]]->length;
     for (int i = 0 ; i < line_num ; i++)
         combine_tail(lines , "-");
     return lines;
+}
+
+int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_table 
+    , DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num ){
+    int *space_nums = (int*)malloc(authentic_query_field_num * sizeof(int));
+    int spance_nums_count = 0;
+    for(int i = 0 ; i < authentic_query_field_num ; i++){ // 2
+        int temp_space_num = 0;
+        temp_space_num = target_table->table->FIELD[query_field_indexs[i]]->length 
+        < field_max_len[i]   ?   abs(target_table->table->FIELD[query_field_indexs[i]]->
+            length - field_max_len[i]) + 6 : 6;
+        space_nums[spance_nums_count++] = temp_space_num;
+    }
+    return space_nums;
 }
 
 DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){
@@ -597,7 +626,6 @@ WHERE_CONDITION *parse_WHERE_CONDITION(
                 whereCondition = extend_whereCondition(whereCondition);
                 copy_string(tokensb->tokens[i] , whereCondition->field_name[(*whereCondition_field_count)++]);
             }
-
             copy_string(tokensb->tokens[i] , whereCondition->field_name[(*whereCondition_field_count)++]);
             //printf("[field  is  !!] %s\n" , whereCondition->field_name[*whereCondition_field_count - 1]->str);
             continue;

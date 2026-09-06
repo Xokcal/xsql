@@ -82,7 +82,12 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
                            ,int *whereCondition_logic_count,int *where_start_char_effective_count);
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count);
 DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old);
-String *query_upon_down_line_num_calc(TABLE_LIST_NODE*target_table ,DATALINE_ARRAY *dataline_array_t 
+String *query_upon_down_line_num_calc(int *field_max_len , TABLE_LIST_NODE*target_table ,DATALINE_ARRAY *dataline_array_t 
     , int *query_field_indexs , int authentic_query_field_num);
+int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_table 
+    , DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num );
+String *query_data_field_space(DATALINE*dataline , TABLE_LIST_NODE *target_table , int curr_field_place_index 
+    ,int *field_max_len , int *field_space_nums , int curr_select_condition_index);
+
 
 #endif //XOKSQLC语言版_GRM_H

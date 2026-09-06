@@ -23,10 +23,8 @@ String *query_upon_down_line_num_calc(TABLE*target_table ,DATALINE_ARRAY *datali
         }
         line_num += temp_field_line_num;
     }
-    printf("[line*]%d\n" , line_num);
     for(int i = 0 ; i < authentic_query_field_num ; i++)
         line_num += target_table->FIELD[i]->length;
-    printf("[line*]%d\n" , line_num);
     for (int i = 0 ; i < line_num ; i++)
         combine_tail(lines , "-");
     return lines;
