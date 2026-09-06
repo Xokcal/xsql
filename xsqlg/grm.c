@@ -265,8 +265,8 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                     int is_over_insert_right = 0;
                     int is_open_single_quote = 0;
                     for (int k = j; k < tokensb->count; ++k) {
-                        if (IS_CONTAIN_KEYS(tokensb->tokens[k]->str)&& compare(tokensb->tokens[k] , "(")
-                        &&is_over_insert_left == 0&&is_over_insert_right == 0){
+                        if (IS_CONTAIN_KEYS(tokensb->tokens[k]->str) && compare(tokensb->tokens[k] , "(")
+                        && is_over_insert_left == 0 && is_over_insert_right == 0){
                             combine_tail(xsql_row , tokensb->tokens[k]->str);
                             // "("
                             //printf("[:  \"(\"]\n");
@@ -483,26 +483,6 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
     FIELD_INDEXS *pFieldIndexs = get_field_indexs_by_field(
             TARGET_TABLE , whereCondition->field_name , *whereCondition_field_count);
     int dataline_count = 0;
-    if (compare(selectCondition->content[0] , "*")){
-        printf("+----------------------------------------------------------------+*\n");
-        for (int i = 0; i < *where_start_char_effective_count; ++i) {
-            if(i == (*where_start_char_effective_count) - 1){
-                printf("%s\n\n" , TARGET_TABLE->table->FIELD[i]->str);
-                continue;
-            }
-            printf("%s         " , TARGET_TABLE->table->FIELD[i]->str);
-        }
-        reflect_field_index = replace_reflect_index_to_all(reflect_field_index , TARGET_TABLE->table->length);
-    } else {
-        printf("+----------------------------------------------------------------+\n");
-        for (int i = 0; i < select_condition_count; ++i) {
-                if(i == select_condition_count - 1){
-                    printf("%s\n\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
-                continue;
-            }
-            printf("%s         " , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
-        }
-    }
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(TARGET_TABLE);
     DATALINE_NODE *temp = TARGET_TABLE->table->dataline_head->next;
     while (temp != NULL){
@@ -519,29 +499,56 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
         }
         temp = temp->next;
     }
-    //打印数据...
-    if (compare(selectCondition->content[0] , "*")){
-        for (int i = 0; i < dataline_count; ++i) {
-            for (int j = 0; j < *where_start_char_effective_count; ++j) {
-                if (j == (*where_start_char_effective_count) - 1) {
-                    printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
-                    break;
-                }
-                printf("%s         ", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
+    if (compare(selectCondition->content[0] , "*"))
+            select_condition_count = *where_start_char_effective_count;
+        String *lines = query_upon_down_line_num_calc(TARGET_TABLE , datalineArray 
+        , reflect_field_index , select_condition_count);
+        printf("+%s+\n" , lines->str);
+        for (int i = 0; i < select_condition_count; ++i) {
+                if(i == select_condition_count - 1){
+                    printf("%s\n\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
+                continue;
             }
+            printf("%s         " , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
         }
-    } else {
-        for (int i = 0; i < dataline_count; ++i) {
-            for (int j = 0; j < select_condition_count; ++j) {
-                if (j == select_condition_count - 1) {
-                    printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
-                    break;
-                }
-                printf("%s         ", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
+    for (int i = 0; i < dataline_count; ++i) {
+        for (int j = 0; j < select_condition_count; ++j) {
+            if (j == select_condition_count - 1) {
+                printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
+                break;
             }
+            printf("%s         ", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
         }
     }
-    printf("+----------------------------------------------------------------+\n");
+    printf("+%s+\n" , lines->str);
+}
+
+String *query_upon_down_line_num_calc(TABLE_LIST_NODE*target_table ,DATALINE_ARRAY *dataline_array_t 
+    , int *query_field_indexs , int authentic_query_field_num){
+    String *lines = create_string("");
+    int line_num = 0;
+    for (int i = 0; i < authentic_query_field_num;i++){ // 3
+        int temp_field_line_num = 0;
+        for (int j = 0; j < dataline_array_t->count;j++){
+            if (dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length > temp_field_line_num){
+                printf("[str.length]%s   %d\n" ,dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->str
+                      , dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length);
+                temp_field_line_num = dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length;
+            }
+            temp_field_line_num = dataline_array_t->datalines[j]->DATA[query_field_indexs[i]]->length + 10;
+        }
+        printf("[temp_num**]%d\n" , temp_field_line_num);
+        line_num += temp_field_line_num;
+    }
+    printf("[line*]%d\n" , line_num);
+    printf("[AUTH]%d\n" , authentic_query_field_num);
+    for(int i = 0 ; i < authentic_query_field_num ; i++){
+    printf("[field_ori_length]%s   %d\n" ,target_table->table->FIELD[i]->str ,  target_table->table->FIELD[i]->length);
+        line_num += target_table->table->FIELD[query_field_indexs[i]]->length;}
+    printf("[line*]%d\n" , line_num);
+    for (int i = 0 ; i < line_num ; i++)
+        combine_tail(lines , "-");
+    return lines;
 }
 
 DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){

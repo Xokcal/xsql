@@ -76,10 +76,13 @@ WHERE_CONDITION *parse_WHERE_CONDITION(TABLE_LIST_NODE *head,TOKENSB *tokensb
 
 
 DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE);
-void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCondition, int * reflect_field_index , int select_condition_count, WHERE_CONDITION *whereCondition
-        , int *whereCondition_field_count,int *whereCondition_data_count,int *whereCondition_logic_count,int *where_start_char_effective_count);
+void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCondition
+                           , int * reflect_field_index , int select_condition_count, WHERE_CONDITION *whereCondition
+                           , int *whereCondition_field_count,int *whereCondition_data_count
+                           ,int *whereCondition_logic_count,int *where_start_char_effective_count);
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count);
 DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old);
-
+String *query_upon_down_line_num_calc(TABLE_LIST_NODE*target_table ,DATALINE_ARRAY *dataline_array_t 
+    , int *query_field_indexs , int authentic_query_field_num);
 
 #endif //XOKSQLC语言版_GRM_H

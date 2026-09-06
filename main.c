@@ -9,10 +9,10 @@ int main() {
     TOKENSB *tokensb = tokens_parse(origin);
     XSQL_RUN(tokensb);
 
-    /*TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("name1") , NULL , 10);
+    TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("name1") , NULL , 10);
     TABLE_LIST_NODE *node1 = create_TABLE_LIST_NODE(create_string("name2") , NULL , 11);
     add_TABLE_LIST_NODE(head , node1);
     TABLE_LIST_NODE *node_r = get_TABLE_LIST_NODE(head , "name2");
-    printf("[R]%s\n" , node_r->table->NAME->str);*/
+    printf("[R]%s\n" , node_r->table->NAME->str);
     return 0;
 }

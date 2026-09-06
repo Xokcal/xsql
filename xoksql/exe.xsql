@@ -49,5 +49,5 @@ INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
 INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
 ('19' , '21' ,  'island1' , '34' , 'HanShizhong' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
 
-SELECT * FROM teacher WHERE universy = 'TechEcUniversy' AND id = '19';
+SELECT * FROM teacher WHERE universy = 'TechEcUniversy';
 
