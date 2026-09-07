@@ -1,10 +1,19 @@
 CREATE TABLE student(
     id STRING COMMENT 'id',
-    age STRING COMMENT 'age',
     name STRING COMMENT 'name',
+    age STRING COMMENT 'age',
     school STRING COMMENT 'school',
     student_id STRING COMMENT 'student_id',
-    address STRING COMMENT 'address'
+    address STRING COMMENT 'address',
+    f1 STRING,
+    f2 STRING,
+    f3 STRING,
+    f4 STRING,
+    f5 STRING,
+    f6 STRING,
+    f7 STRING,
+    f8 STRING,
+    f9 STRING
 )COMMENT 'student';
 
 CREATE TABLE teacher(
@@ -14,15 +23,14 @@ CREATE TABLE teacher(
     school STRING COMMENT 'school',
     teacher_id STRING COMMENT 'student_id',
     address STRING COMMENT 'address',
-    universy STRING COMMENT 'universy'
+    universy STRING COMMENT 'universy',
+    f1 STRING,
+    f2,
+    f3,
+    f4,
+    f5,
+    f6
 )COMMENT 'teacher';
-
-
-INSERT student(id , school , name) : ('12' , 'SeYeplochilsUnivserty' , 'HadelioManton');
-
-INSERT student(id , school , name) : ('13' , 'MorHaton' , 'GeemMorl');
-
-INSERT student(id , school , name) : ('14' , 'MorHaton2' , 'GeemMorl2');
 
 INSERT teacher(id , name , school , universy) : ('1' , 'LiAn' , 'MorHaton2' , 'TechEcUniversy');
 
@@ -46,9 +54,29 @@ INSERT teacher(id , age ,  address ,  teacher_id , name , school) :
 INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
 ('18' , '28' ,  'island6' , '3' , 'LanAn' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
 
-INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
-('19' , '21' ,  'island1' , '34' , 'HanShizhong' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
+INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy , f6) :
+('19' , '21' ,  'island1' , '34' , 'HanShizhong' , 'SeYeplochilsUnivserty', 'TechEcUniversy' , 'F6');
 
-SELECT * FROM teacher WHERE universy = 'TechEcUniversy';
+INSERT student(id, name, age, school , f1) : ('1', 'Alice', '20', 'MIT' , 'F1');
+
+INSERT student(id, name, age, school, f1) : ('2', 'Bob', '21', 'Stanford', 'F1');
+
+INSERT student(id, name, age, school, f1) : ('3', 'Cindy', '22', 'Harvard','F1');
+
+INSERT student(id, name, school, student_id, f1) : ('4', 'David', 'Oxford', 'S1001','F1');
+
+INSERT student(id, name, school, student_id, f1) : ('5', 'Ella', 'Cambridge', 'S1002','F1');
+
+INSERT student(id, name, age, address, school, f1) : ('6', 'Frank', '23', 'New York', 'MIT','F1');
+
+INSERT student(id, name, age, address, school, f1) : ('7', 'Grace', '24', 'London', 'UCL', 'F1');
+
+INSERT student(id, name, age, address, school, f1, f2) : ('8', 'Henry', '25', 'Tokyo', 'TokyoU', 'F1', 'F2');
+
+INSERT student(id, name, age, address, school, f1, f2, f3) : ('9', 'Ivy', '26', 'Paris', 'Sorbonne', 'F1', 'F2', 'F3');
+
+INSERT student(id, name, age, address, school, student_id, f1, f2, f3, f4) : ('10', 'Jack', '27', 'Berlin', 'TUB', 'S1010', 'F1', 'F2', 'F3', 'F4');
+
+SELECT * FROM student WHERE f1 = 'F1';
 
 

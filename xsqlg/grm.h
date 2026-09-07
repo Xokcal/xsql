@@ -59,7 +59,7 @@ static char* sql_keys_primary[2] = {"CREATE" , "INSERT"};
 TOKENSB *tokens_parse(String *origin);
 int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length);
 int CREATE_exe(TABLE_LIST_NODE *head , TOKENSB *tokensb , int curr);
-void XSQL_RUN(TOKENSB *tokensb);
+void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head);
 int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 SELECT_CONDITION *create_selectCondition();

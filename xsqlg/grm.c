@@ -63,7 +63,7 @@ FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **field
 }
 
 TOKENSB *tokens_parse(String *origin){
-    String **tokens = (String**)malloc(1000 * sizeof(String*));
+    String **tokens = (String**)malloc(400000 * sizeof(String*));
     String *temp = create_string("");
     String *temp_test = create_string("");
     int count = 0;
@@ -86,6 +86,7 @@ TOKENSB *tokens_parse(String *origin){
             continue;
         }
     }
+    printf("[count]%d\n" , count);
     string_free(temp);
     string_free(temp_test);
     TOKENSB *tokensb = (TOKENSB*)malloc(sizeof(TOKENSB));
@@ -157,7 +158,7 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                        , table_name->str
                                        , run_time_diff(start , end));
                                 string_free(table_name);
-                                //printf("[CREATE END RETURN I] %d" , k);
+                                printf("[CREATE END RETURN I]%s %d" , tokensb->tokens[k]->str , k);
                                 return k - 1;
                             } else if (k == tokensb->count - 1){
                                 //printf("[K]%s\n" , tokensb->tokens[k]->str);
@@ -297,8 +298,6 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                             }*/
                             add_DATALINE_NODE(TARGET_TABLE_NODE->table->dataline_head , new_node);
                             //printf("[IS ADD!!!]\n");
-                            DATALINE_NODE *data1 = get_DATALINE_NODE(TARGET_TABLE_NODE->table->dataline_head , "12");
-                            //printf("[DATA1  VALUE]%s\n" , data1->dataline->DATA[0]->str);
                             delete_all(temp_data);
                             for (int l = k; l < tokensb->count; ++l) {
                                 //printf("[L]%s\n" , tokensb->tokens[l]->str);
@@ -388,6 +387,7 @@ void free_selectCondition(SELECT_CONDITION *selectCondition){
 
 int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     clock_t start = clock();
+    //printf("[EN SELECT]\n");
     int is_over_key_from = 0;
     int is_over_key_where = 0;
     int select_condition_count = 0;
@@ -520,7 +520,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
                 , space->str);
                 delete_all(space);
         }
-    for (int i = 0; i < dataline_count; ++i) {
+   for (int i = 0; i < dataline_count; ++i) {
         for (int j = 0; j < select_condition_count; ++j) {
             if (j == select_condition_count - 1) {
                 printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
@@ -534,6 +534,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
         }
     }
     printf("+%s+\n" , lines->str);
+    printf("query %d rows is ok!>\n" , datalineArray->count);
 }
 
 String *query_data_field_space(DATALINE*dataline ,TABLE_LIST_NODE *target_table 
@@ -581,6 +582,7 @@ int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_tab
 }
 
 DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){
+    //printf("[EN extend dataline_array]\n");
     DATALINE_ARRAY *pDatalineArray = (DATALINE_ARRAY*) malloc(sizeof(DATALINE_ARRAY));
     pDatalineArray->datalines = (DATALINE **) malloc(10 * sizeof(DATALINE*));
     for (int i = 0; i < 10; ++i) {
@@ -691,6 +693,7 @@ WHERE_CONDITION *create_whereCondition(){
 }
 
 WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old){
+    printf("EN extend\n");
     int new_count = old->common_count * 2;
     WHERE_CONDITION *whereCondition = (WHERE_CONDITION *) malloc(sizeof(WHERE_CONDITION));
     whereCondition->field_name = (String**) malloc(new_count * sizeof(String*));
@@ -731,17 +734,14 @@ static KEYS keys_to_KEYSTYPE(String *key){
     else return NULL_K;
 }
 
-void XSQL_RUN(TOKENSB *tokensb){
-    TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
+void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head){
     for (int i = 0; i < tokensb->count; ++i) {
         //printf("[1] i = %d ; str = %s\n" , i , tokensb->tokens[i]->str);
         KEYS keys_enum = keys_to_KEYSTYPE(tokensb->tokens[i]);
         switch (keys_enum) {
             case CREATE_K:
                 i = CREATE_exe(head , tokensb , i);
-                TABLE_LIST_NODE *table_get = get_TABLE_LIST_NODE(head , "student");
-                String** table_msg = table_get->table->FIELD;
-                //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i]->str);
+                printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
                 break;
             case INSERT_K:
                 i = INSERT_exe(head , tokensb , i);

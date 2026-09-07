@@ -62,6 +62,12 @@ DATALINE_NODE *create_DATALINE_NODE(String **data , int* indexs , int count , in
     return dataline_node;
 }
 
+/*void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node){
+    if(*head == NULL || new_node == NULL)return;
+    new_node->next = *head;
+    *head = new_node;
+}*/
+
 void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node){
     if(head == NULL){
         head = new_node;
