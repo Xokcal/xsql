@@ -88,6 +88,6 @@ int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_tab
     , DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num );
 String *query_data_field_space(DATALINE*dataline , TABLE_LIST_NODE *target_table , int curr_field_place_index 
     ,int *field_max_len , int *field_space_nums , int curr_select_condition_index);
-
+void free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray);
 
 #endif //XOKSQLC语言版_GRM_H

@@ -597,7 +597,7 @@ DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){
 
 DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old){
     int new_count = old->count * 2;
-    DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(TARGET);
+    DATALINE_ARRAY *datalineArray = (DATALINE_ARRAY*)malloc(sizeof(DATALINE_ARRAY));
     datalineArray->datalines = (DATALINE **) malloc(new_count * sizeof(DATALINE*));
     for (int i = 0; i < new_count; ++i) {
         datalineArray->datalines[i] = (DATALINE *) malloc(sizeof(DATALINE));
@@ -611,7 +611,15 @@ DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *
         }
     }
     datalineArray->count = new_count;
+    free_DATALINE_ARRAY(old);
     return datalineArray;
+}
+
+//free DATALINE_ARRAY
+void free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray){
+    for (int i = 0; i< datalineArray->count ; i++)
+        free(datalineArray->datalines[i]);
+    free(datalineArray);
 }
 
 WHERE_CONDITION *parse_WHERE_CONDITION(
