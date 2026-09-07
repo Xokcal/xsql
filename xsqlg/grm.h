@@ -47,6 +47,16 @@ typedef struct DATALINE_ARRAY{
     int count;
 }DATALINE_ARRAY;
 
+/* ---------- function struct --------- */
+ typedef struct datalineArray_calc_param_t{
+    TABLE_LIST_NODE *target_table;
+    int *whereCondition_field_count;
+    int select_condition_count;
+    FIELD_INDEXS *field_indexs;
+    WHERE_CONDITION *whereCondition;
+    int *dataline_count;
+ }datalineArray_calc_param_t;
+
 static char* sql_keys[20] = {"SELECT" , "CREATE" , "TABLE" , "{" , "}"
                             , "(" , ")" , "COMMENT" , "\'" , "FROM"
                             , "," , "WHERE" , ";" , " " , "*" , "INSERT"
@@ -83,11 +93,13 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count);
 DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old);
 String *query_upon_down_line_num_calc(int *field_max_len , TABLE_LIST_NODE*target_table ,DATALINE_ARRAY *dataline_array_t 
-    , int *query_field_indexs , int authentic_query_field_num);
+    , int *query_field_indexs , int authentic_query_field_num,int authentic_datalines_count);
 int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_table 
     , DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num );
 String *query_data_field_space(DATALINE*dataline , TABLE_LIST_NODE *target_table , int curr_field_place_index 
     ,int *field_max_len , int *field_space_nums , int curr_select_condition_index);
-void free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray);
+void free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray, int authentic_table_field_count);
+DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArray_calc_param);
+DATALINE_ARRAY *query_dataline_array_all_calc(TABLE_LIST_NODE *target_table , int *dataline_count);
 
 #endif //XOKSQLC语言版_GRM_H
