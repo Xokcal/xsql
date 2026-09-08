@@ -9,7 +9,6 @@ typedef struct ARPMessage{
     int arp_req_arr;
 }ARPMessage;
 
-
 int main() {
     TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
 

@@ -66,6 +66,13 @@ static char* primary_keys[5] = {"INSERT" , "SELECT" , "UPDATE" , "CREATE" , "DEL
 
 static char* sql_keys_primary[2] = {"CREATE" , "INSERT"};
 
+
+int IS_CONTAIN_KEYS(char *str);
+
+int IS_CONTAIN_KEYS_PRIMARY(char *str);
+
+int IS_PRIMARY_KEY(char *str);
+
 TOKENSB *tokens_parse(String *origin);
 int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length);
 int CREATE_exe(TABLE_LIST_NODE *head , TOKENSB *tokensb , int curr);

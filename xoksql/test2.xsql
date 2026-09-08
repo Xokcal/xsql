@@ -1,0 +1,22 @@
+CREATE TABLE student(
+    id STRING COMMENT 'id',
+    name STRING COMMENT 'name',
+    age STRING COMMENT 'age',
+    school STRING COMMENT 'school',
+    student_id STRING COMMENT 'student_id',
+    address STRING COMMENT 'address',
+    f1 STRING,
+    f2 STRING,
+    f3 STRING,
+    f4 STRING,
+    f5 STRING,
+    f6 STRING,
+    f7 STRING,
+    f8 STRING,
+    f9 STRING
+)COMMENT 'student';
+
+CREATE TABLE a(
+    cpu STRING COMMENT 'cpu',
+    thread STRING COMMENT 'thread'
+) COMMENT 'a';

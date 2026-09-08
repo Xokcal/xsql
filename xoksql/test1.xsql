@@ -312,6 +312,7 @@ INSERT user(id, username, password, phone, email, status, created_at, updated_at
 INSERT user(id, username,   email, status, created_at, updated_at) :
 ('3021', 'user81', 'user81examplecomdqwdqwdwdqsdqw', '0', '20260908222000', '20260908222000');
 
+UPDATE user(username , status) SET ('hajimi' , '0');
 
-SELECT * FROM user ;
+SELECT * FROM user;
 

@@ -11,7 +11,7 @@
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
 
-static int IS_CONTAIN_KEYS(char *str){
+int IS_CONTAIN_KEYS(char *str){
     int length = sizeof(sql_keys) / sizeof(sql_keys[0]);
     for (int i = 0; i < length; ++i) {
         if(strcmp(sql_keys[i] , str) == 0)
@@ -20,7 +20,7 @@ static int IS_CONTAIN_KEYS(char *str){
     return 0;
 }
 
-static int IS_CONTAIN_KEYS_PRIMARY(char *str){
+int IS_CONTAIN_KEYS_PRIMARY(char *str){
     int length = sizeof(sql_keys_primary) / sizeof(sql_keys_primary[0]);
     for (int i = 0; i < length; ++i) {
         if(strcmp(sql_keys_primary[i] , str) == 0)
@@ -29,7 +29,7 @@ static int IS_CONTAIN_KEYS_PRIMARY(char *str){
     return 0;
 }
 
-static int IS_PRIMARY_KEY(char *str){
+int IS_PRIMARY_KEY(char *str){
     int length = sizeof(primary_keys) / sizeof(primary_keys[0]);
     for (int i = 0; i < length; ++i) {
         if(strcmp(primary_keys[i] , str) == 0){
@@ -161,7 +161,7 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                 printf("[CREATE END RETURN I]%s %d" , tokensb->tokens[k]->str , k);
                                 return k - 1;
                             } else if (k == tokensb->count - 1){
-                                //printf("[K]%s\n" , tokensb->tokens[k]->str);
+                               // printf("[K]%s\n" , tokensb->tokens[k]->str);
                                 printf("[%s] xsql server> %s \n"
                                         , current_time_format()->str
                                         , xsql->str);
@@ -172,6 +172,7 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                         , run_time_diff(start , end));
                                 string_free(table_name);
                                 //printf("[CREATE END RETURN I] %d" , k);
+                               // printf("[KKKV]%d\n" , k);
                                 return k;
                             }
                         }
@@ -780,7 +781,8 @@ void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head){
         switch (keys_enum) {
             case CREATE_K:
                 i = CREATE_exe(head , tokensb , i);
-                printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
+                //printf("[i]%s  %d\n" , tokensb->tokens[i]->str , i);
+                //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
                 break;
             case INSERT_K:
                 i = INSERT_exe(head , tokensb , i);
@@ -792,7 +794,6 @@ void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head){
                 break;
             default:
                 break;
-
         }
     }
 }
