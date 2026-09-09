@@ -36,47 +36,6 @@ INSERT teacher(id , name , school , universy) : ('1' , 'LiAn' , 'MorHaton2' , 'T
 
 INSERT teacher(id , name , school , universy) : ('2' , 'ZengHua' , 'MorHaton2' , 'TechEcUniversy');
 
-INSERT teacher(id , name , school , universy) : ('3' , 'PanMengDie' , 'MorHaton2' , 'TechEcUniversy');
-
-INSERT teacher(id , school , name) : ('4' , 'MorHaton2' , 'HuangYuLian');
-
-INSERT teacher(id , school , name) : ('5' , 'MorHaton2' , 'DengLian');
-
-INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
-('1512412' , '24' ,  'island' , '5' , 'GeLiliang' , 'SeYeplochilsUnivserty' , 'TechEcUniversy');
-
-INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
-('16' , '22' ,  'island2' , '15' , 'ZhuYu' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
-
-INSERT teacher(id , age ,  address ,  teacher_id , name , school) :
-('17' , '19' ,  'island4' , '54' , 'SuHeng' , 'SeYeplochilsUnivserty');
-
-INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy) :
-('18' , '28' ,  'island6' , '3' , 'LanAn' , 'SeYeplochilsUnivserty', 'TechEcUniversy');
-
-INSERT teacher(id , age ,  address ,  teacher_id , name , school , universy , f6) :
-('19' , '21' ,  'island1' , '34' , 'HanShizhong' , 'SeYeplochilsUnivserty', 'TechEcUniversy' , 'F6');
-
-INSERT student(id, name, age, school , f1) : ('1', 'Alice', '20', 'MIT' , 'F1');
-
-INSERT student(id, name, age, school, f1) : ('2', 'Bob', '21', 'Stanford', 'F1');
-
-INSERT student(id, name, age, school, f1) : ('3', 'Cindy', '22', 'Harvard','F1');
-
-INSERT student(id, name, school, student_id, f1) : ('4', 'David', 'Oxford', 'S1001','F1');
-
-INSERT student(id, name, school, student_id, f1) : ('5', 'Ella', 'Cambridge', 'S1002','F1');
-
-INSERT student(id, name, age, address, school, f1) : ('6', 'Frank', '23', 'New York', 'MIT','F1');
-
-INSERT student(id, name, age, address, school, f1) : ('7', 'Grace', '24', 'London', 'UCL', 'F1');
-
-INSERT student(id, name, age, address, school, f1, f2) : ('8', 'Henry', '25', 'Tokyo', 'TokyoU', 'F1', 'F2');
-
-INSERT student(id, name, age, address, school, f1, f2, f3) : ('9', 'Ivy', '26', 'Paris', 'Sorbonne', 'F1', 'F2', 'F3');
-
-INSERT student(id, name, age, address, school, student_id, f1, f2, f3, f4) : ('10', 'Jack', '27', 'Berlin', 'TUB', 'S1010', 'F1', 'F2', 'F3', 'F4');
-
-SELECT * FROM student WHERE f1 = 'F1';
+SELECT * FROM teacher WHERE id = '1';
 
 

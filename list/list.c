@@ -42,14 +42,15 @@ DATALINE_NODE *create_DATALINE_NODE(String **data , int* indexs , int count , in
     DATALINE_NODE *dataline_node = (DATALINE_NODE*)malloc(sizeof(DATALINE_NODE));
     dataline_node->next = NULL;
     dataline_node->dataline = (DATALINE*)malloc(sizeof(DATALINE));
-    dataline_node->dataline->DATA = (String**)malloc(field_count * sizeof(String*));
-
+    if(data == NULL)
+        dataline_node->dataline->DATA = NULL;
+    else
+        dataline_node->dataline->DATA = (String**)malloc(field_count * sizeof(String*));
     for (int i = 0; i < field_count; ++i) {
         dataline_node->dataline->DATA[i] = create_string("");
     }
     for (int i = 0; i < count; ++i)
         copy_string(data[i] , dataline_node->dataline->DATA[indexs[i]]);
-
     //printf("[FIELD_COUNT]%d\n" , field_count);
 
     for (int i = 0; i < field_count; ++i) {
@@ -62,13 +63,18 @@ DATALINE_NODE *create_DATALINE_NODE(String **data , int* indexs , int count , in
     return dataline_node;
 }
 
-/*void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node){
-    if(*head == NULL || new_node == NULL)return;
+void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node){
+    if(new_node == NULL)return;
+    if(head[0]->dataline->DATA == NULL){
+        *head = new_node;
+        new_node->next = NULL;
+        return;
+    }
     new_node->next = *head;
     *head = new_node;
-}*/
+}
 
-void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node){
+/*void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node){
     if(head == NULL){
         head = new_node;
         return;
@@ -77,7 +83,7 @@ void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node){
     while (temp->next != NULL)temp = temp->next;
     temp->next = new_node;
     return;
-}
+}*/
 
 DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key){
     if(head == NULL){ printf("[NULL]\n");return NULL;}

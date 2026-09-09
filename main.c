@@ -25,7 +25,6 @@ int main() {
     arp_message.arp_req_arr = 10;
     printf("%d\n" , arp_message.arp_req_arr);*/
 
-
     char input[512];
     String *xsql_input = create_string("");
 

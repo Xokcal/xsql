@@ -22,6 +22,19 @@ typedef struct update_set_t{
     int *auth_count;
 }update_set_t;
 
+typedef struct update_where_t{
+    int count;
+    String **field;
+    String **data;
+    String **logic;
+    int *field_indexs;
+    int *auth_logic_count;
+    int *auth_field_count;
+    int *auth_data_count;
+    int *auth_indexs_count;
+}update_where_t;
+
+
 
 /*----- param_t------*/
 typedef struct PUField_p{
@@ -31,7 +44,7 @@ typedef struct PUField_p{
     load_container_t *update_fields;
     load_container_t *set_datas;
     int *update_field_table_indexs;
-
+    update_where_t *updateWhereT;
 }PUField_p;
 
 /*-------- exe --------*/
@@ -43,8 +56,9 @@ int parse_update_set(PUField_p pufield_p);
 load_container_t *create_updateFieldT();
 load_container_t *extend_updateFieldT(load_container_t *old);
 void free_updateFieldT(load_container_t * load_container);
-
-
-
+/*-------update_where_t--------- */
+update_where_t *create_updateWhereT();
+update_where_t *extend_updateWhereT(update_where_t *old);
+void free_updateWhereT(update_where_t *ptr);
 
 #endif //XOKSQLC语言版_UPDATE_H

@@ -49,6 +49,7 @@ int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length){
 
 // ["id" , "name" , "age"]
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count){
+    printf("[get_field_indexs_by_field]\n");
     FIELD_INDEXS *fieldIndex = (FIELD_INDEXS*) malloc(sizeof(FIELD_INDEXS));
     fieldIndex->field_indexs = (int *) malloc(field_effective_count * sizeof(int ));
     int count = 0;
@@ -63,7 +64,7 @@ FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **field
 }
 
 TOKENSB *tokens_parse(String *origin){
-    String **tokens = (String**)malloc(400000 * sizeof(String*));
+    String **tokens = (String**)malloc(1000000 * sizeof(String*));
     String *temp = create_string("");
     String *temp_test = create_string("");
     int count = 0;
@@ -158,7 +159,7 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                        , table_name->str
                                        , run_time_diff(start , end));
                                 string_free(table_name);
-                                printf("[CREATE END RETURN I]%s %d" , tokensb->tokens[k]->str , k);
+                                //printf("[CREATE END RETURN I]%s %d" , tokensb->tokens[k]->str , k);
                                 return k - 1;
                             } else if (k == tokensb->count - 1){
                                // printf("[K]%s\n" , tokensb->tokens[k]->str);
@@ -297,7 +298,7 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                             /*for (int l = 0; l < splitor->count; ++l) {
                                 printf("[splitor  str]%s\n" , splitor->splits[l]->str);
                             }*/
-                            add_DATALINE_NODE(TARGET_TABLE_NODE->table->dataline_head , new_node);
+                            add_DATALINE_NODE(&TARGET_TABLE_NODE->table->dataline_head , new_node);
                             //printf("[IS ADD!!!]\n");
                             delete_all(temp_data);
                             for (int l = k; l < tokensb->count; ++l) {
@@ -435,13 +436,13 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
             , i,&whereCondition_field_count,&whereCondition_data_count , &whereCondition_logic_count);
             continue;
         }else if(is_over_key_from && !is_over_key_where && compare(tokensb->tokens[i] , ";")){
-            printf("[;]\n");
+            //printf("[;]\n");
             is_over_key_where = 1;
             i--;
             continue;
         } 
         else if(is_over_key_from&&is_over_key_where&&compare(tokensb->tokens[i] , ";")){ // not WHERE , is ";"
-            printf("[where]%d\n" , whereCondition_field_count);
+            //printf("[where]%d\n" , whereCondition_field_count);
             
             SELECT_exe_DATA_QUERY(TARGET_TABLE , selectCondition , reflect_field_index
                                   , select_condition_count , whereCondition , &whereCondition_field_count
@@ -489,10 +490,8 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
                            , WHERE_CONDITION *whereCondition, int *whereCondition_field_count
                            ,int *whereCondition_data_count,int *whereCondition_logic_count
                            ,int *where_start_char_effective_count){
-    printf("[EN]\n");
-    printf("{whereD}%d\n" , *whereCondition_field_count);
     FIELD_INDEXS *pFieldIndexs;
-    if(*whereCondition_field_count != 0)pFieldIndexs = get_field_indexs_by_field(
+     if(*whereCondition_field_count != 0)pFieldIndexs = get_field_indexs_by_field(
         TARGET_TABLE , whereCondition->field_name , *whereCondition_field_count);
     int dataline_count = 0;
     datalineArray_calc_param_t datalineArray_calc_param;
@@ -506,7 +505,6 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
     if(*whereCondition_field_count == 0){
         datalineArray = query_dataline_array_all_calc(TARGET_TABLE , &dataline_count);
     }else {datalineArray = query_dataline_array_calc(datalineArray_calc_param);}
-    printf("[BEHIND ]%d\n" , dataline_count);
     DATALINE_NODE *temp = TARGET_TABLE->table->dataline_head->next;
     if (compare(selectCondition->content[0] , "*"))
             select_condition_count = *where_start_char_effective_count;
@@ -526,7 +524,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
             printf("%s%s" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , space->str);
                 delete_all(space);
         }
-   for (int i = 0; i < dataline_count; ++i) {
+   /*for (int i = 0; i < dataline_count; ++i) {
         for (int j = 0; j < select_condition_count; ++j) {
             if (j == select_condition_count - 1) {
                 printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
@@ -537,18 +535,20 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
             printf("%s%s", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str,data_space->str);
             string_free(data_space);
         }
-    }
+    }*/
     printf("+%s+\n" , lines->str);
     printf("query %d rows is ok!>\n" , dataline_count);
 }
 
 DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArray_calc_param){
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(datalineArray_calc_param.target_table);
-    DATALINE_NODE *temp = datalineArray_calc_param.target_table->table->dataline_head->next;
+    DATALINE_NODE *temp = datalineArray_calc_param.target_table->table->dataline_head;
+    printf("--------------------------] %s\n" , temp->dataline->DATA[2]->str);
     while (temp != NULL){
         for (int i = 0; i < *datalineArray_calc_param.whereCondition_field_count; ++i) { // ^ 3
             if (compare(temp->dataline->DATA[datalineArray_calc_param.field_indexs->field_indexs[i]]
-                        ,datalineArray_calc_param.whereCondition->data[i]->str)){} else break;
+                        ,datalineArray_calc_param.whereCondition->data[i]->str)){} 
+                        else break;
             if (i == (*datalineArray_calc_param.whereCondition_field_count) - 1
             && compare(temp->dataline->DATA[datalineArray_calc_param.field_indexs->field_indexs[i]]
                        , datalineArray_calc_param.whereCondition->data[i]->str)){

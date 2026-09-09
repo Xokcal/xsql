@@ -312,7 +312,573 @@ INSERT user(id, username, password, phone, email, status, created_at, updated_at
 INSERT user(id, username,   email, status, created_at, updated_at) :
 ('3021', 'user81', 'user81examplecomdqwdqwdwdqsdqw', '0', '20260908222000', '20260908222000');
 
-UPDATE user(username , status) SET ('hajimi' , '0');
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1001', 'alice', 'pass123', '13800000001', 'aliceexamplecom', '0', '20260901100000', '20260901100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1002', 'bob', 'pass456', '13800000002', 'bobexamplecom', '0', '20260901110000', '20260901110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1003', 'cindy', 'pass789', '13800000003', 'cindyexamplecom', '1', '20260901120000', '20260901120000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1004', 'david', 'pass101', '13800000004', 'davidexamplecom', '0', '20260902090000', '20260902090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1005', 'ella', 'pass102', '13800000005', 'ellaexamplecom', '0', '20260902100000', '20260902100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1006', 'frank', 'pass103', '13800000006', 'frankexamplecom', '1', '20260902110000', '20260902110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1007', 'grace', 'pass104', '13800000007', 'graceexamplecom', '0', '20260903080000', '20260903080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1008', 'henry', 'pass105', '13800000008', 'henryexamplecom', '0', '20260903090000', '20260903090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1009', 'ivy', 'pass106', '13800000009', 'ivyexamplecom', '0', '20260903100000', '20260903100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1010', 'jack', 'pass107', '13800000010', 'jackexamplecom', '0', '20260904080000', '20260904080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1011', 'kate', 'pass108', '13800000011', 'kateexamplecom', '0', '20260904090000', '20260904090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1012', 'leo', 'pass109', '13800000012', 'leoexamplecom', '0', '20260904100000', '20260904100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1013', 'mia', 'pass110', '13800000013', 'miaexamplecom', '0', '20260905080000', '20260905080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1014', 'nick', 'pass111', '13800000014', 'nickexamplecom', '0', '20260905090000', '20260905090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1015', 'olivia', 'pass112', '13800000015', 'oliviaexamplecom', '0', '20260905100000', '20260905100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1016', 'peter', 'pass113', '13800000016', 'peterexamplecom', '0', '20260906080000', '20260906080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1017', 'queen', 'pass114', '13800000017', 'queenexamplecom', '0', '20260906090000', '20260906090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1018', 'ryan', 'pass115', '13800000018', 'ryanexamplecom', '0', '20260906100000', '20260906100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1019', 'sara', 'pass116', '13800000019', 'saraexamplecom', '0', '20260907080000', '20260907080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1020', 'tom', 'pass117', '13800000020', 'tomexamplecom', '0', '20260907090000', '20260907090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2001', 'user01', 'pass001', '13900000001', 'user01examplecom', '0', '20260908090000', '20260908090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2002', 'user02', 'pass002', '13900000002', 'user02examplecom', '0', '20260908091000', '20260908091000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2003', 'user03', 'pass003', '13900000003', 'user03examplecom', '0', '20260908092000', '20260908092000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2004', 'user04', 'pass004', '13900000004', 'user04examplecom', '0', '20260908093000', '20260908093000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2005', 'user05', 'pass005', '13900000005', 'user05examplecom', '0', '20260908094000', '20260908094000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2006', 'user06', 'pass006', '13900000006', 'user06examplecom', '0', '20260908095000', '20260908095000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2007', 'user07', 'pass007', '13900000007', 'user07examplecom', '0', '20260908100000', '20260908100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2008', 'user08', 'pass008', '13900000008', 'user08examplecom', '0', '20260908101000', '20260908101000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2009', 'user09', 'pass009', '13900000009', 'user09examplecom', '0', '20260908102000', '20260908102000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2010', 'user10', 'pass010', '13900000010', 'user10examplecom', '0', '20260908103000', '20260908103000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2011', 'user11', 'pass011', '13900000011', 'user11examplecom', '0', '20260908104000', '20260908104000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2012', 'user12', 'pass012', '13900000012', 'user12examplecom', '0', '20260908105000', '20260908105000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2013', 'user13', 'pass013', '13900000013', 'user13examplecom', '0', '20260908110000', '20260908110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2014', 'user14', 'pass014', '13900000014', 'user14examplecom', '1', '20260908111000', '20260908111000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2015', 'user15', 'pass015', '13900000015', 'user15examplecom', '0', '20260908112000', '20260908112000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2016', 'user16', 'pass016', '13900000016', 'user16examplecom', '0', '20260908113000', '20260908113000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2017', 'user17', 'pass017', '13900000017', 'user17examplecom', '0', '20260908114000', '20260908114000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2020', 'user20', 'pass020', '13900000020', 'user20examplecom', '0', '20260908121000', '20260908121000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1001', 'alice', 'pass123', '13800000001', 'aliceexamplecom', '0', '20260901100000', '20260901100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1002', 'bob', 'pass456', '13800000002', 'bobexamplecom', '0', '20260901110000', '20260901110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1003', 'cindy', 'pass789', '13800000003', 'cindyexamplecom', '1', '20260901120000', '20260901120000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1004', 'david', 'pass101', '13800000004', 'davidexamplecom', '0', '20260902090000', '20260902090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1005', 'ella', 'pass102', '13800000005', 'ellaexamplecom', '0', '20260902100000', '20260902100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1006', 'frank', 'pass103', '13800000006', 'frankexamplecom', '1', '20260902110000', '20260902110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1007', 'grace', 'pass104', '13800000007', 'graceexamplecom', '0', '20260903080000', '20260903080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1008', 'henry', 'pass105', '13800000008', 'henryexamplecom', '0', '20260903090000', '20260903090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1009', 'ivy', 'pass106', '13800000009', 'ivyexamplecom', '0', '20260903100000', '20260903100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1010', 'jack', 'pass107', '13800000010', 'jackexamplecom', '0', '20260904080000', '20260904080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1011', 'kate', 'pass108', '13800000011', 'kateexamplecom', '0', '20260904090000', '20260904090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1012', 'leo', 'pass109', '13800000012', 'leoexamplecom', '0', '20260904100000', '20260904100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1013', 'mia', 'pass110', '13800000013', 'miaexamplecom', '0', '20260905080000', '20260905080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1014', 'nick', 'pass111', '13800000014', 'nickexamplecom', '0', '20260905090000', '20260905090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1015', 'olivia', 'pass112', '13800000015', 'oliviaexamplecom', '0', '20260905100000', '20260905100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1016', 'peter', 'pass113', '13800000016', 'peterexamplecom', '0', '20260906080000', '20260906080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1017', 'queen', 'pass114', '13800000017', 'queenexamplecom', '0', '20260906090000', '20260906090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1018', 'ryan', 'pass115', '13800000018', 'ryanexamplecom', '0', '20260906100000', '20260906100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1019', 'sara', 'pass116', '13800000019', 'saraexamplecom', '0', '20260907080000', '20260907080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1020', 'tom', 'pass117', '13800000020', 'tomexamplecom', '0', '20260907090000', '20260907090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2001', 'user01', 'pass001', '13900000001', 'user01examplecom', '0', '20260908090000', '20260908090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2002', 'user02', 'pass002', '13900000002', 'user02examplecom', '0', '20260908091000', '20260908091000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2003', 'user03', 'pass003', '13900000003', 'user03examplecom', '0', '20260908092000', '20260908092000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2004', 'user04', 'pass004', '13900000004', 'user04examplecom', '0', '20260908093000', '20260908093000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2005', 'user05', 'pass005', '13900000005', 'user05examplecom', '0', '20260908094000', '20260908094000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2006', 'user06', 'pass006', '13900000006', 'user06examplecom', '0', '20260908095000', '20260908095000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2007', 'user07', 'pass007', '13900000007', 'user07examplecom', '0', '20260908100000', '20260908100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2008', 'user08', 'pass008', '13900000008', 'user08examplecom', '0', '20260908101000', '20260908101000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2009', 'user09', 'pass009', '13900000009', 'user09examplecom', '0', '20260908102000', '20260908102000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2010', 'user10', 'pass010', '13900000010', 'user10examplecom', '0', '20260908103000', '20260908103000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2011', 'user11', 'pass011', '13900000011', 'user11examplecom', '0', '20260908104000', '20260908104000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2012', 'user12', 'pass012', '13900000012', 'user12examplecom', '0', '20260908105000', '20260908105000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2013', 'user13', 'pass013', '13900000013', 'user13examplecom', '0', '20260908110000', '20260908110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2014', 'user14', 'pass014', '13900000014', 'user14examplecom', '1', '20260908111000', '20260908111000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2015', 'user15', 'pass015', '13900000015', 'user15examplecom', '0', '20260908112000', '20260908112000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2016', 'user16', 'pass016', '13900000016', 'user16examplecom', '0', '20260908113000', '20260908113000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2017', 'user17', 'pass017', '13900000017', 'user17examplecom', '0', '20260908114000', '20260908114000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2018', 'user18', 'pass018', '13900000018', 'user18examplecom', '0', '20260908115000', '20260908115000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2019', 'user19', 'pass019', '13900000019', 'user19examplecom', '0', '20260908120000', '20260908120000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2020', 'user20', 'pass020', '13900000020', 'user20examplecom', '0', '20260908121000', '20260908121000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2021', 'user21', 'pass021', '13900000021', 'user21examplecom', '0', '20260908122000', '20260908122000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2022', 'user22', 'pass022', '13900000022', 'user22examplecom', '0', '20260908123000', '20260908123000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2023', 'user23', 'pass023', '13900000023', 'user23examplecom', '0', '20260908124000', '20260908124000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2024', 'user24', 'pass024', '13900000024', 'user24examplecom', '0', '20260908125000', '20260908125000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2025', 'user25', 'pass025', '13900000025', 'user25examplecom', '0', '20260908130000', '20260908130000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2026', 'user26', 'pass026', '13900000026', 'user26examplecom', '0', '20260908131000', '20260908131000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2027', 'user27', 'pass027', '13900000027', 'user27examplecom', '0', '20260908132000', '20260908132000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2028', 'user28', 'pass028', '13900000028', 'user28examplecom', '0', '20260908133000', '20260908133000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2029', 'user29', 'pass029', '13900000029', 'user29examplecom', '0', '20260908134000', '20260908134000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2030', 'user30', 'pass030', '13900000030', 'user30examplecom', '0', '20260908135000', '20260908135000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2031', 'user31', 'pass031', '13900000031', 'user31examplecom', '0', '20260908140000', '20260908140000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2032', 'user32', 'pass032', '13900000032', 'user32examplecom', '0', '20260908141000', '20260908141000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2033', 'user33', 'pass033', '13900000033', 'user33examplecom', '0', '20260908142000', '20260908142000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2034', 'user34', 'pass034', '13900000034', 'user34examplecom', '0', '20260908143000', '20260908143000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2035', 'user35', 'pass035', '13900000035', 'user35examplecom', '0', '20260908144000', '20260908144000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2036', 'user36', 'pass036', '13900000036', 'user36examplecom', '0', '20260908145000', '20260908145000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2037', 'user37', 'pass037', '13900000037', 'user37examplecom', '0', '20260908150000', '20260908150000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2038', 'user38', 'pass038', '13900000038', 'user38examplecom', '0', '20260908151000', '20260908151000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2039', 'user39', 'pass039', '13900000039', 'user39examplecom', '0', '20260908152000', '20260908152000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2040', 'user40', 'pass040', '13900000040', 'user40examplecom', '0', '20260908153000', '20260908153000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2041', 'user41', 'pass041', '13900000041', 'user41examplecom', '0', '20260908154000', '20260908154000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2042', 'user42', 'pass042', '13900000042', 'user42examplecom', '0', '20260908155000', '20260908155000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2043', 'user43', 'pass043', '13900000043', 'user43examplecom', '0', '20260908160000', '20260908160000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2044', 'user44', 'pass044', '13900000044', 'user44examplecom', '0', '20260908161000', '20260908161000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2045', 'user45', 'pass045', '13900000045', 'user45examplecom', '0', '20260908162000', '20260908162000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2046', 'user46', 'pass046', '13900000046', 'user46examplecom', '0', '20260908163000', '20260908163000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2047', 'user47', 'pass047', '13900000047', 'user47examplecom', '0', '20260908164000', '20260908164000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2048', 'user48', 'pass048', '13900000048', 'user48examplecom', '0', '20260908165000', '20260908165000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2049', 'user49', 'pass049', '13900000049', 'user49examplecom', '0', '20260908170000', '20260908170000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2050', 'user50', 'pass050', '13900000050', 'user50examplecom', '0', '20260908171000', '20260908171000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2051', 'user51', 'pass051', '13900000051', 'user51examplecom', '0', '20260908172000', '20260908172000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2052', 'user52', 'pass052', '13900000052', 'user52examplecom', '0', '20260908173000', '20260908173000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2053', 'user53', 'pass053', '13900000053', 'user53examplecom', '0', '20260908174000', '20260908174000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2054', 'user54', 'pass054', '13900000054', 'user54examplecom', '0', '20260908175000', '20260908175000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2055', 'user55', 'pass055', '13900000055', 'user55examplecom', '0', '20260908180000', '20260908180000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2056', 'user56', 'pass056', '13900000056', 'user56examplecom', '0', '20260908181000', '20260908181000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2057', 'user57', 'pass057', '13900000057', 'user57examplecom', '0', '20260908182000', '20260908182000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2058', 'user58', 'pass058', '13900000058', 'user58examplecom', '0', '20260908183000', '20260908183000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2059', 'user59', 'pass059', '13900000059', 'user59examplecom', '0', '20260908184000', '20260908184000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2060', 'user60', 'pass060', '13900000060', 'user60examplecom', '0', '20260908185000', '20260908185000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3001', 'user61', 'pass061', '13900000061', 'user61examplecom', '0', '20260908190000', '20260908190000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3002', 'user62', 'pass062', '13900000062', 'user62examplecom', '0', '20260908191000', '20260908191000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3003', 'user63', 'pass063', '13900000063', 'user63examplecom', '0', '20260908192000', '20260908192000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3004', 'user64', 'pass064', '13900000064', 'user64examplecom', '0', '20260908193000', '20260908193000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3005', 'user65', 'pass065', '13900000065', 'user65examplecom', '0', '20260908194000', '20260908194000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3006', 'user66', 'pass066', '13900000066', 'user66examplecom', '0', '20260908195000', '20260908195000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3007', 'user67', 'pass067', '13900000067', 'user67examplecom', '0', '20260908200000', '20260908200000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3008', 'user68', 'pass068', '13900000068', 'user68examplecom', '0', '20260908201000', '20260908201000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3009', 'user69', 'pass069', '13900000069', 'user69examplecom', '0', '20260908202000', '20260908202000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3010', 'user70', 'pass070', '13900000070', 'user70examplecom', '0', '20260908203000', '20260908203000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3011', 'user71', 'pass071', '13900000071', 'user71examplecom', '0', '20260908204000', '20260908204000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3012', 'user72', 'pass072', '13900000072', 'user72examplecom', '0', '20260908205000', '20260908205000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3013', 'user73', 'pass073', '13900000073', 'user73examplecom', '0', '20260908210000', '20260908210000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3014', 'user74', 'pass074', '13900000074', 'user74examplecom', '0', '20260908211000', '20260908211000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3015', 'user75', 'pass075', '13900000075', 'user75examplecom', '0', '20260908212000', '20260908212000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3016', 'user76', 'pass076', '13900000076', 'user76examplecom', '0', '20260908213000', '20260908213000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3017', 'user77', 'pass077', '13900000077', 'user77examplecom', '0', '20260908214000', '20260908214000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3018', 'user78', 'pass078', '13900000078', 'user78examplecom', '0', '20260908215000', '20260908215000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3019', 'user79', 'pass079', '13900000079', 'user79examplecom', '0', '20260908220000', '20260908220000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('3020', 'user80', 'pass080', '13900000080', 'user80examplecom', '0', '20260908221000', '20260908221000');
+
+INSERT user(id, username,   email, status, created_at, updated_at) :
+('3021', 'user81', 'user81examplecomdqwdqwdwdqsdqw', '0', '20260908222000', '20260908222000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1001', 'alice', 'pass123', '13800000001', 'aliceexamplecom', '0', '20260901100000', '20260901100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1002', 'bob', 'pass456', '13800000002', 'bobexamplecom', '0', '20260901110000', '20260901110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1003', 'cindy', 'pass789', '13800000003', 'cindyexamplecom', '1', '20260901120000', '20260901120000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1004', 'david', 'pass101', '13800000004', 'davidexamplecom', '0', '20260902090000', '20260902090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1005', 'ella', 'pass102', '13800000005', 'ellaexamplecom', '0', '20260902100000', '20260902100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1006', 'frank', 'pass103', '13800000006', 'frankexamplecom', '1', '20260902110000', '20260902110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1007', 'grace', 'pass104', '13800000007', 'graceexamplecom', '0', '20260903080000', '20260903080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1008', 'henry', 'pass105', '13800000008', 'henryexamplecom', '0', '20260903090000', '20260903090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1009', 'ivy', 'pass106', '13800000009', 'ivyexamplecom', '0', '20260903100000', '20260903100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1010', 'jack', 'pass107', '13800000010', 'jackexamplecom', '0', '20260904080000', '20260904080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1011', 'kate', 'pass108', '13800000011', 'kateexamplecom', '0', '20260904090000', '20260904090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1012', 'leo', 'pass109', '13800000012', 'leoexamplecom', '0', '20260904100000', '20260904100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1013', 'mia', 'pass110', '13800000013', 'miaexamplecom', '0', '20260905080000', '20260905080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1014', 'nick', 'pass111', '13800000014', 'nickexamplecom', '0', '20260905090000', '20260905090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1015', 'olivia', 'pass112', '13800000015', 'oliviaexamplecom', '0', '20260905100000', '20260905100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1016', 'peter', 'pass113', '13800000016', 'peterexamplecom', '0', '20260906080000', '20260906080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1017', 'queen', 'pass114', '13800000017', 'queenexamplecom', '0', '20260906090000', '20260906090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1018', 'ryan', 'pass115', '13800000018', 'ryanexamplecom', '0', '20260906100000', '20260906100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1019', 'sara', 'pass116', '13800000019', 'saraexamplecom', '0', '20260907080000', '20260907080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1020', 'tom', 'pass117', '13800000020', 'tomexamplecom', '0', '20260907090000', '20260907090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2001', 'user01', 'pass001', '13900000001', 'user01examplecom', '0', '20260908090000', '20260908090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2002', 'user02', 'pass002', '13900000002', 'user02examplecom', '0', '20260908091000', '20260908091000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2003', 'user03', 'pass003', '13900000003', 'user03examplecom', '0', '20260908092000', '20260908092000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2004', 'user04', 'pass004', '13900000004', 'user04examplecom', '0', '20260908093000', '20260908093000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2005', 'user05', 'pass005', '13900000005', 'user05examplecom', '0', '20260908094000', '20260908094000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2006', 'user06', 'pass006', '13900000006', 'user06examplecom', '0', '20260908095000', '20260908095000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2007', 'user07', 'pass007', '13900000007', 'user07examplecom', '0', '20260908100000', '20260908100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2008', 'user08', 'pass008', '13900000008', 'user08examplecom', '0', '20260908101000', '20260908101000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2009', 'user09', 'pass009', '13900000009', 'user09examplecom', '0', '20260908102000', '20260908102000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2010', 'user10', 'pass010', '13900000010', 'user10examplecom', '0', '20260908103000', '20260908103000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2011', 'user11', 'pass011', '13900000011', 'user11examplecom', '0', '20260908104000', '20260908104000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2012', 'user12', 'pass012', '13900000012', 'user12examplecom', '0', '20260908105000', '20260908105000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2013', 'user13', 'pass013', '13900000013', 'user13examplecom', '0', '20260908110000', '20260908110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2014', 'user14', 'pass014', '13900000014', 'user14examplecom', '1', '20260908111000', '20260908111000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2015', 'user15', 'pass015', '13900000015', 'user15examplecom', '0', '20260908112000', '20260908112000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2016', 'user16', 'pass016', '13900000016', 'user16examplecom', '0', '20260908113000', '20260908113000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2017', 'user17', 'pass017', '13900000017', 'user17examplecom', '0', '20260908114000', '20260908114000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('2020', 'user20', 'pass020', '13900000020', 'user20examplecom', '0', '20260908121000', '20260908121000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1001', 'alice', 'pass123', '13800000001', 'aliceexamplecom', '0', '20260901100000', '20260901100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1002', 'bob', 'pass456', '13800000002', 'bobexamplecom', '0', '20260901110000', '20260901110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1003', 'cindy', 'pass789', '13800000003', 'cindyexamplecom', '1', '20260901120000', '20260901120000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1004', 'david', 'pass101', '13800000004', 'davidexamplecom', '0', '20260902090000', '20260902090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1005', 'ella', 'pass102', '13800000005', 'ellaexamplecom', '0', '20260902100000', '20260902100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1006', 'frank', 'pass103', '13800000006', 'frankexamplecom', '1', '20260902110000', '20260902110000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1007', 'grace', 'pass104', '13800000007', 'graceexamplecom', '0', '20260903080000', '20260903080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1008', 'henry', 'pass105', '13800000008', 'henryexamplecom', '0', '20260903090000', '20260903090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1009', 'ivy', 'pass106', '13800000009', 'ivyexamplecom', '0', '20260903100000', '20260903100000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1010', 'jack', 'pass107', '13800000010', 'jackexamplecom', '0', '20260904080000', '20260904080000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1011', 'kate', 'pass108', '13800000011', 'kateexamplecom', '0', '20260904090000', '20260904090000');
+
+INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
+('1012', 'leo', 'pass109', '13800000012', 'leoexamplecom', '0', '20260904100000', '20260904100000');
+
 
 SELECT * FROM user;
 

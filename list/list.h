@@ -44,7 +44,7 @@ void add_TABLE_LIST_NODE(TABLE_LIST_NODE *head , TABLE_LIST_NODE *new);
 TABLE_LIST_NODE *get_TABLE_LIST_NODE(TABLE_LIST_NODE *head , char *name);
 // dataline list
 DATALINE_NODE *create_DATALINE_NODE(String **data , int *indexs , int count , int field_count);
-void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node);
+void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node);
 DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key);
 
 #endif //XOKSQLC语言版_LIST_H
