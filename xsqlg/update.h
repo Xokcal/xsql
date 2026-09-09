@@ -27,7 +27,7 @@ typedef struct update_where_t{
     String **field;
     String **data;
     String **logic;
-    int *field_indexs;
+    int *field_indexs; // 要修改的表的索引集合
     int *auth_logic_count;
     int *auth_field_count;
     int *auth_data_count;
@@ -38,13 +38,14 @@ typedef struct update_where_t{
 
 /*----- param_t------*/
 typedef struct PUField_p{
-    TABLE *target_table;
+    TABLE_LIST_NODE *target_table;
     TOKENSB *tokensb;
     int curr;
     load_container_t *update_fields;
     load_container_t *set_datas;
     int *update_field_table_indexs;
     update_where_t *updateWhereT;
+    int *datalineArray_count;
 }PUField_p;
 
 /*-------- exe --------*/
@@ -52,6 +53,9 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 int parse_update_field(PUField_p pufield_p);
 void parse_update_auth_field_indexs(PUField_p pufield_p);
 int parse_update_set(PUField_p pufield_p);
+DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p);
+void update_data_core(PUField_p pufield_p);
+
 /*---- update_field_t -------*/
 load_container_t *create_updateFieldT();
 load_container_t *extend_updateFieldT(load_container_t *old);

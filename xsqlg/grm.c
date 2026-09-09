@@ -524,7 +524,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
             printf("%s%s" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , space->str);
                 delete_all(space);
         }
-   /*for (int i = 0; i < dataline_count; ++i) {
+   for (int i = 0; i < dataline_count; ++i) {
         for (int j = 0; j < select_condition_count; ++j) {
             if (j == select_condition_count - 1) {
                 printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
@@ -535,7 +535,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
             printf("%s%s", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str,data_space->str);
             string_free(data_space);
         }
-    }*/
+    }
     printf("+%s+\n" , lines->str);
     printf("query %d rows is ok!>\n" , dataline_count);
 }
@@ -543,7 +543,6 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
 DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArray_calc_param){
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(datalineArray_calc_param.target_table);
     DATALINE_NODE *temp = datalineArray_calc_param.target_table->table->dataline_head;
-    printf("--------------------------] %s\n" , temp->dataline->DATA[2]->str);
     while (temp != NULL){
         for (int i = 0; i < *datalineArray_calc_param.whereCondition_field_count; ++i) { // ^ 3
             if (compare(temp->dataline->DATA[datalineArray_calc_param.field_indexs->field_indexs[i]]

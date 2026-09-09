@@ -16,17 +16,20 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     load_container_t *update_fields = create_loadContainerT();
     load_container_t *set_datas = create_loadContainerT();
     int *update_field_table_indexs;
-    TABLE *target_table;
+    TABLE_LIST_NODE *target_table;
     update_where_t *updateWhereT;
+    int *datalineArray_count = (int*) malloc(sizeof(int));
+    *datalineArray_count = 0;
     PUField_p pufield_p;
             pufield_p.tokensb = tokensb , pufield_p.target_table = target_table 
             , pufield_p.update_fields = update_fields,pufield_p
             .update_field_table_indexs = update_field_table_indexs
-            ,pufield_p.set_datas = set_datas , pufield_p.updateWhereT = updateWhereT;
+            ,pufield_p.set_datas = set_datas , pufield_p.updateWhereT = updateWhereT 
+            , pufield_p.datalineArray_count = datalineArray_count;
     for(int i = 0 ; i < tokensb->count ; i++){
         if(!is_over_update_field_left && !IS_CONTAIN_KEYS(tokensb->tokens[i]->str)){
             combine_tail(table_name , tokensb->tokens[i]->str);
-            target_table = (head , table_name->str);
+            target_table = get_TABLE_LIST_NODE(head , table_name->str);
             continue;
         }else if (!is_over_update_field_left && compare(tokensb->tokens[i] , "(")){
             is_over_update_field_left = 1;
@@ -43,8 +46,44 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
             continue;
         }else if(is_over_update_set&&compare(tokensb->tokens[i] , "WHERE")){
             i = parse_update_where(pufield_p); // ; i - 1
+            continue;
+        }else if(compare(tokensb->tokens[i] , ";")){
+            update_data_core(pufield_p);
+            return i - 1;
         }
     }
+}
+
+//UPDATE user(username , status) SET ('hajimi' , '0') WHERE id = '2001';
+void update_data_core(PUField_p pufield_p){
+    DATALINE_ARRAY *datalineArray = select_match_dataline_array(pufield_p);
+    for (int i = 0; i < *pufield_p.datalineArray_count; i++){
+        for (int j = 0; j < pufield_p.updateWhereT->auth_field_count; j++){
+            copy_string(pufield_p.updateWhereT->auth_data_count[j] ,
+                 datalineArray->datalines[i]->DATA[pufield_p.updateWhereT->field_indexs[j]]);
+        } 
+    }
+}
+
+DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p){
+    DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(pufield_p.target_table);
+    DATALINE_NODE *temp = pufield_p.target_table->table->dataline_head;
+    while (temp != NULL){
+        for(int i = 0 ; i < pufield_p.target_table->table->length ; i++){
+            if(!compare(temp->dataline->DATA[pufield_p.updateWhereT->auth_indexs_count[i]]
+                 , pufield_p.updateWhereT->auth_data_count[i]))break;
+            if(i == pufield_p.target_table->table->length - 1 
+                && compare(temp->dataline->DATA[pufield_p.updateWhereT->auth_indexs_count[i]]
+                 , pufield_p.updateWhereT->auth_data_count[i])){
+                if(*(pufield_p.datalineArray_count) == datalineArray->count)
+                    extend_DATALINE_ARRAY(pufield_p.target_table->table , datalineArray);
+                datalineArray->datalines[*(pufield_p.datalineArray_count)++] = temp->dataline;
+                continue;
+            }
+        }
+        temp = temp->next;
+    }
+    return datalineArray;
 }
 
 int parse_update_field(PUField_p pufield_p){
@@ -60,7 +99,7 @@ int parse_update_field(PUField_p pufield_p){
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , ")")){
             parse_update_auth_field_indexs(pufield_p);
-            return i - 1;        
+            return i - 1;   
         }
     }
 }
