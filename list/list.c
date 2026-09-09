@@ -86,7 +86,7 @@ void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node){
 }*/
 
 DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key){
-    if(head == NULL){ printf("[NULL]\n");return NULL;}
+    if(head == NULL){return NULL;}
     //printf("[ENTRE GET!!]\n");
 
     DATALINE_NODE *temp = head->next;

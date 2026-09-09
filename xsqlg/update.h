@@ -7,7 +7,7 @@
 #include "grm.h"
 #include <string.h>
 #include <time.h>
-#include "list/list.h"
+#include "../list/list.h"
 #include "../time/xtime.h"
 
 typedef struct load_container_t{
@@ -53,12 +53,14 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 int parse_update_field(PUField_p pufield_p);
 void parse_update_auth_field_indexs(PUField_p pufield_p);
 int parse_update_set(PUField_p pufield_p);
+int parse_update_where(PUField_p pufield_p);
 DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p);
 void update_data_core(PUField_p pufield_p);
 
+
 /*---- update_field_t -------*/
-load_container_t *create_updateFieldT();
-load_container_t *extend_updateFieldT(load_container_t *old);
+load_container_t *create_loadContainerT();
+load_container_t *extend_loadContainerT(load_container_t *old);
 void free_updateFieldT(load_container_t * load_container);
 /*-------update_where_t--------- */
 update_where_t *create_updateWhereT();

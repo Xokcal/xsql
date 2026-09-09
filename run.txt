@@ -1,5 +1,14 @@
 // C运行终端语句
 
-gcc.exe main.c time/xtime.c xsqlg/grm.c list/list.c file/file.c xstr/String.c -o main.exe
+gcc.exe main.c log/xlog.c xsqlg/update.c time/xtime.c xsqlg/grm.c list/list.c file/file.c xstr/String.c -o main.exe
 
 .\main.exe
+
+gcc.exe main.c log/xlog.c xsqlg/update.c time/xtime.c xsqlg/grm.c list/list.c file/file.c xstr/String.c -o main.exe
+
+
+CREATE TABLE a(id STRING);
+
+INSERT a(id) : ('1');
+
+SELECT * FROM a;

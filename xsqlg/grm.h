@@ -17,6 +17,7 @@ typedef enum KEYS{
     FROM_K,
     WHERE_K,
     INSERT_K,
+    UPDATE_K,
     NULL_K
 }KEYS;
 

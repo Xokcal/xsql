@@ -4,10 +4,13 @@
 #include "xsqlg/grm.h"
 #include "time/xtime.h"
 #include <string.h>
+#include "log/xlog.h"
 
-typedef struct ARPMessage{
-    int arp_req_arr;
-}ARPMessage;
+#define XSQL_WEL_STATUE "Welcome use XSQL terminal. \
+\nxsql boot is success. \
+\ncurrent version is 1.0.1 single service. \
+\n\nXSQL is create by Xokcal, it's a individual developer. \
+\ncongratulate you use nice!\n" \
 
 int main() {
     TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
@@ -17,6 +20,7 @@ int main() {
     TOKENSB *tokensb = tokens_parse(origin);
     XSQL_RUN(tokensb , head);
 
+    printf("%s" , XSQL_WEL_STATUE);
     /*TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("name1") , NULL , 10);
     TABLE_LIST_NODE *node1 = create_TABLE_LIST_NODE(create_string("name2") , NULL , 11);
     add_TABLE_LIST_NODE(head , node1);
@@ -29,7 +33,7 @@ int main() {
     String *xsql_input = create_string("");
 
     while (1) {
-        printf("XSQL> ");
+        printf("xsql> ");
         fflush(stdout);
 
         if (fgets(input, sizeof(input), stdin) == NULL) {
@@ -48,7 +52,7 @@ int main() {
         }
 
         // 这里把 input 交给你的 XSQL 解析执行
-        printf("you input> %s\n", input);
+        //printf("you input> %s\n", input);
         char *xsql_char = input;
         combine_tail(xsql_input , xsql_char);
         TOKENSB *tokensb_input = tokens_parse(xsql_input);

@@ -8,6 +8,8 @@
 #include <string.h>
 #include <time.h>
 #include "../time/xtime.h"
+#include "update.h"
+#include "../log/xlog.h"
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
 
@@ -49,7 +51,7 @@ int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length){
 
 // ["id" , "name" , "age"]
 FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **fields , int field_effective_count){
-    printf("[get_field_indexs_by_field]\n");
+    //printf("[get_field_indexs_by_field]\n");
     FIELD_INDEXS *fieldIndex = (FIELD_INDEXS*) malloc(sizeof(FIELD_INDEXS));
     fieldIndex->field_indexs = (int *) malloc(field_effective_count * sizeof(int ));
     int count = 0;
@@ -87,7 +89,7 @@ TOKENSB *tokens_parse(String *origin){
             continue;
         }
     }
-    printf("[count]%d\n" , count);
+    //printf("[count]%d\n" , count);
     string_free(temp);
     string_free(temp_test);
     TOKENSB *tokensb = (TOKENSB*)malloc(sizeof(TOKENSB));
@@ -393,7 +395,7 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     int is_over_key_from = 0;
     int is_over_key_where = 0;
     int select_condition_count = 0;
-    TABLE_LIST_NODE *TARGET_TABLE;
+    TABLE_LIST_NODE *TARGET_TABLE = NULL;
     String *table_name = create_string("");
     SELECT_CONDITION *selectCondition = create_selectCondition();
     WHERE_CONDITION *whereCondition;
@@ -410,6 +412,10 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                  &&!is_over_key_where&&is_over_key_from){ // table name
             combine_tail(table_name , tokensb->tokens[i]->str);
             TARGET_TABLE = get_TABLE_LIST_NODE(head , table_name->str);
+            if(TARGET_TABLE == NULL){
+                log_error_string("table is not create!");
+                return i + 1;
+            }
             is_over_key_from = 0;
             continue;
         }
@@ -475,15 +481,6 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
         }
     }
 }
-
-// SELECT id , school FROM student WHERE id = '15' AND age = '24' AND name = 'GeemMorl3';
-
-/*
- * reflect : [0 , 3]   ->   [id(1) , age(0) , name(0) , school(1) , studen_id(0) , address(0)]
- * whereCon : ["id" , "age" , "name"]
- *            ["15" , "24" , "GeemMorl3"]
- *            ["AND" , "AND"]
- * */
 
 void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCondition
                            , int *reflect_field_index, int select_condition_count
@@ -563,7 +560,7 @@ DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArr
 
 DATALINE_ARRAY *query_dataline_array_all_calc(TABLE_LIST_NODE *target_table , int *dataline_count){
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(target_table);
-    DATALINE_NODE *temp = target_table->table->dataline_head->next;
+    DATALINE_NODE *temp = target_table->table->dataline_head;
     while (temp != NULL){
         if(*dataline_count == datalineArray->count)
             datalineArray = extend_DATALINE_ARRAY(target_table , datalineArray);
@@ -698,7 +695,7 @@ WHERE_CONDITION *create_whereCondition(){
 }
 
 WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old){
-    printf("EN extend\n");
+    //printf("EN extend\n");
     int new_count = old->common_count * 2;
     WHERE_CONDITION *whereCondition = (WHERE_CONDITION *) malloc(sizeof(WHERE_CONDITION));
     whereCondition->field_name = (String**) malloc(new_count * sizeof(String*));
@@ -770,6 +767,7 @@ static KEYS keys_to_KEYSTYPE(String *key){
     if(compare(key , "CREATE"))return CREATE_K;
     else if(compare(key , "INSERT"))return INSERT_K;
     else if(compare(key , "SELECT"))return SELECT_K;
+    else if(compare(key , "UPDATE"))return UPDATE_K;
     else return NULL_K;
 }
 
@@ -790,6 +788,9 @@ void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head){
                 break;
             case SELECT_K:
                 SELECT_exe(head , tokensb , i);
+                break;
+            case UPDATE_K:
+                UPDATE_exe(head , tokensb , i);
                 break;
             default:
                 break;

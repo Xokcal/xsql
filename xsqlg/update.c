@@ -9,6 +9,7 @@
 
 //UPDATE user(username , status) SET ('hajimi' , '0') WHERE id = '2001';
 int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
+    
     String *table_name = create_string("");
     int is_over_update_field_left = 0;
     int is_over_update_field_right = 0;
@@ -58,9 +59,9 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
 void update_data_core(PUField_p pufield_p){
     DATALINE_ARRAY *datalineArray = select_match_dataline_array(pufield_p);
     for (int i = 0; i < *pufield_p.datalineArray_count; i++){
-        for (int j = 0; j < pufield_p.updateWhereT->auth_field_count; j++){
-            copy_string(pufield_p.updateWhereT->auth_data_count[j] ,
-                 datalineArray->datalines[i]->DATA[pufield_p.updateWhereT->field_indexs[j]]);
+        for (int j = 0; j < *pufield_p.updateWhereT->auth_field_count; j++){
+            copy_string(pufield_p.set_datas->data[j] 
+                ,datalineArray->datalines[i]->DATA[pufield_p.updateWhereT->field_indexs[j]]);
         } 
     }
 }
@@ -71,12 +72,12 @@ DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p){
     while (temp != NULL){
         for(int i = 0 ; i < pufield_p.target_table->table->length ; i++){
             if(!compare(temp->dataline->DATA[pufield_p.updateWhereT->auth_indexs_count[i]]
-                 , pufield_p.updateWhereT->auth_data_count[i]))break;
+                 , pufield_p.updateWhereT->data[i]->str))break;
             if(i == pufield_p.target_table->table->length - 1 
                 && compare(temp->dataline->DATA[pufield_p.updateWhereT->auth_indexs_count[i]]
-                 , pufield_p.updateWhereT->auth_data_count[i])){
+                 , pufield_p.updateWhereT->data[i]->str)){
                 if(*(pufield_p.datalineArray_count) == datalineArray->count)
-                    extend_DATALINE_ARRAY(pufield_p.target_table->table , datalineArray);
+                    extend_DATALINE_ARRAY(pufield_p.target_table , datalineArray);
                 datalineArray->datalines[*(pufield_p.datalineArray_count)++] = temp->dataline;
                 continue;
             }
@@ -90,7 +91,7 @@ int parse_update_field(PUField_p pufield_p){
     String *temp_field_name = create_string("");
     for(int i = pufield_p.curr; i < pufield_p.tokensb->count ; i++){
         if(!compare(pufield_p.tokensb->tokens[i] , " ")&&!compare(pufield_p.tokensb->tokens[i] , ",")){ //field_name
-            combine_tail(temp_field_name , pufield_p.tokensb->tokens[i]);
+            combine_tail(temp_field_name , pufield_p.tokensb->tokens[i]->str);
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , ",")){
             combine_tail(pufield_p.update_fields->data[*pufield_p.update_fields->auth_capable++] 
@@ -124,7 +125,7 @@ int parse_update_set(PUField_p pufield_p){
             is_over_single_quote = 1;
             continue;
         }else if(is_over_single_quote&&!compare(pufield_p.tokensb->tokens[i] , " ")){
-            combine_tail(temp_data , pufield_p.tokensb->tokens[i]);
+            combine_tail(temp_data , pufield_p.tokensb->tokens[i]->str);
             continue;
         }else if(is_over_set_left&&!is_over_set_right&&compare(pufield_p.tokensb->tokens[i] , ")")){
             return i - 1;
@@ -165,11 +166,11 @@ int parse_update_where(PUField_p pufield_p){
 }
 
 void parse_update_auth_field_indexs(PUField_p pufield_p){
-    TABLE *target_table = pufield_p.target_table;
+    TABLE_LIST_NODE *target_table = pufield_p.target_table;
     int *auth_field_indexs = (int*)malloc((*pufield_p.update_fields->auth_capable) * sizeof(int));
     for(int i = 0; i < *pufield_p.update_fields->auth_capable ; i++){
-        for(int j = 0 ; j < target_table->length ; j++){
-            if(compare(target_table->FIELD[j] , pufield_p.update_fields->data[i]))
+        for(int j = 0 ; j < target_table->table->length ; j++){
+            if(compare(target_table->table->FIELD[j] , pufield_p.update_fields->data[i]->str))
                 auth_field_indexs[i] = j;
         }
     }
