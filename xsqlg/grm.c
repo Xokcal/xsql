@@ -218,8 +218,8 @@ static int select_field_place(TABLE_LIST_NODE *table , int length , char *field_
 
 // insert student(id , age , name) : ('12' , '21' , 'XiaoLi');
 
-int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
-    printf("[ENTRE_K][INSERT]\n");
+int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *insertDbT){
+    //printf("[ENTRE_K][INSERT]\n");
     clock_t start = clock();
     TABLE_LIST_NODE *TARGET_TABLE_NODE;
     int is_over_table_field_left = 0;
@@ -230,8 +230,16 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     String *temp_data = create_string("");
     String *table_name = create_string("");
     String *xsql_row = create_string("");
-    for (int i = curr; i < tokensb->count; ++i) {
+    for(int i = 0 ; i < tokensb->count ; i ++){
+        if(compare(tokensb->tokens[i] , ";")){
+            combine_tail(xsql_row , tokensb->tokens[i]->str);
+            combine_tail(xsql_row , "\n");
+            break;}
         combine_tail(xsql_row , tokensb->tokens[i]->str);
+    }
+    printf("[]%s\n" , xsql_row->str);
+    add_tableDbT(insertDbT , xsql_row);
+    for (int i = curr; i < tokensb->count; ++i) {
         //printf("[I]%s\n" , tokensb->tokens[i]->str);
         if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")
         &&is_over_table_field_left == 0){ // table name
@@ -287,14 +295,12 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                     for (int k = j; k < tokensb->count; ++k) {
                         if (IS_CONTAIN_KEYS(tokensb->tokens[k]->str) && compare(tokensb->tokens[k] , "(")
                         && is_over_insert_left == 0 && is_over_insert_right == 0){
-                            combine_tail(xsql_row , tokensb->tokens[k]->str);
                             // "("
                             //printf("[:  \"(\"]\n");
                             is_over_insert_left = 1;
                             continue;
                         } else if(IS_CONTAIN_KEYS(tokensb->tokens[k]->str)&& compare(tokensb->tokens[k] , "\'")){
                             //printf("[:  \"\'\"]%d\n" , is_open_single_quote);
-                            combine_tail(xsql_row , tokensb->tokens[k]->str);
                             if(is_open_single_quote) { // =1
                                 is_open_single_quote = 0;
                             }
@@ -302,7 +308,6 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                             continue;
                         } else if (IS_CONTAIN_KEYS(tokensb->tokens[k]->str)&&is_open_single_quote == 0
                         && compare(tokensb->tokens[k] , ")")){
-                            combine_tail(xsql_row , tokensb->tokens[k]->str);
                             //printf("[temp   data]%s\n" , temp_data->str);
                             Splitor *splitor = split(temp_data , "^");
                             //printf("[DATA_COUNT]%d\n" , splitor->count);
@@ -323,7 +328,6 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                 //printf("[L]%s\n" , tokensb->tokens[l]->str);
                                 //printf("[LNUM]%d\n" , l);
                                 if (compare(tokensb->tokens[l] , ";")){
-                                    combine_tail(xsql_row , tokensb->tokens[l]->str);
                                     //printf("[ENTRE LLLL!!!]\n");
                                     for (int m = l; m < tokensb->count; ++m) {
                                         if (IS_PRIMARY_KEY(tokensb->tokens[m]->str)){
@@ -787,19 +791,20 @@ static KEYS keys_to_KEYSTYPE(String *key){
     else return NULL_K;
 }
 
-void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head , FILE *table_file , FILE *data_file , table_db_t *tableDbT){
+void XSQL_RUN(TOKENSB *tokensb,TABLE_LIST_NODE *head , FILE *table_file 
+    , FILE *data_file , table_db_t *dbT , table_db_t *insertDbT){
     for (int i = 0; i < tokensb->count; ++i) {
-        printf("[1] i = %d ; str = %s\n" , i , tokensb->tokens[i]->str);
+        //printf("[1] i = %d ; str = %s\n" , i , tokensb->tokens[i]->str);
         KEYS keys_enum = keys_to_KEYSTYPE(tokensb->tokens[i]);
         switch (keys_enum) {
             case CREATE_K:
             printf("EN create\n");
-                i = CREATE_exe(head , tokensb , i , table_file , data_file , tableDbT);
+                i = CREATE_exe(head , tokensb , i , table_file , data_file , dbT);
                 //printf("[i]%s  %d\n" , tokensb->tokens[i]->str , i);
                 //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
                 break;
             case INSERT_K:
-                i = INSERT_exe(head , tokensb , i);
+                i = INSERT_exe(head , tokensb , i , insertDbT);
                 //printf("[BREAK INSERT TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i]->str);
                 //printf("[INSERT EXE SUCCESS!!!]\n\n\n");
                 break;
