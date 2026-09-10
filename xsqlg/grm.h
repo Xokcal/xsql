@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../list/list.h"
+#include "dbt.h"
 
 typedef enum KEYS{
     CREATE_K,
@@ -58,14 +59,14 @@ typedef struct DATALINE_ARRAY{
     int *dataline_count;
  }datalineArray_calc_param_t;
 
-static char* sql_keys[20] = {"SELECT" , "CREATE" , "TABLE" , "{" , "}"
-                            , "(" , ")" , "COMMENT" , "\'" , "FROM"
-                            , "," , "WHERE" , ";" , " " , "*" , "INSERT"
-                            ,"STRING" , ":" , "\n" , "AND"};
+static char* sql_keys[20] = {"select" , "create" , "table" , "{" , "}"
+                            , "(" , ")" , "commit" , "\'" , "from"
+                            , "," , "where" , ";" , " " , "*" , "insert"
+                            ,"string" , ":" , "\n" , "and"};
 
-static char* primary_keys[5] = {"INSERT" , "SELECT" , "UPDATE" , "CREATE" , "DELETE"};
+static char* primary_keys[5] = {"insert" , "select" , "update" , "create" , "delete"};
 
-static char* sql_keys_primary[2] = {"CREATE" , "INSERT"};
+static char* sql_keys_primary[2] = {"create" , "insert"};
 
 
 int IS_CONTAIN_KEYS(char *str);
@@ -76,8 +77,8 @@ int IS_PRIMARY_KEY(char *str);
 
 TOKENSB *tokens_parse(String *origin);
 int *replace_reflect_index_to_all(int *reflect_inedxs , int all_length);
-int CREATE_exe(TABLE_LIST_NODE *head , TOKENSB *tokensb , int curr);
-void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head);
+int CREATE_exe(TABLE_LIST_NODE *head , TOKENSB *tokensb , int curr, FILE *table_file , FILE *data_file , table_db_t *tableDbT);
+void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head, FILE *table_file , FILE *data_file,table_db_t *table_db_content);
 int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
 SELECT_CONDITION *create_selectCondition();

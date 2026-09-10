@@ -7,4 +7,6 @@
 
 #include "../xstr/String.h"
 String *open_file(char* URL);
+void print_open(char *URL , char *content);
+FILE *get_file_w(char *URL);
 #endif //XOKSQLC语言版_FILE_H

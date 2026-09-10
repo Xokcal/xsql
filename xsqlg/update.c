@@ -9,7 +9,7 @@
 
 //UPDATE user(username , status) SET ('hajimi' , '0') WHERE id = '2001';
 int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
-    
+    printf("[EN UPDATE!]\n");
     String *table_name = create_string("");
     int is_over_update_field_left = 0;
     int is_over_update_field_right = 0;
@@ -88,6 +88,7 @@ DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p){
 }
 
 int parse_update_field(PUField_p pufield_p){
+    printf("[EN update (id , name , ...)]\n");
     String *temp_field_name = create_string("");
     for(int i = pufield_p.curr; i < pufield_p.tokensb->count ; i++){
         if(!compare(pufield_p.tokensb->tokens[i] , " ")&&!compare(pufield_p.tokensb->tokens[i] , ",")){ //field_name
@@ -107,6 +108,7 @@ int parse_update_field(PUField_p pufield_p){
 
 //SET ('10' , '40')
 int parse_update_set(PUField_p pufield_p){
+    printf("[EN SET('' , '' , '' , ...)]\n");
     int is_over_single_quote = 0;
     int is_over_set_left = 0;
     int is_over_set_right = 0;

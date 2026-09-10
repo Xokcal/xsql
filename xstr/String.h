@@ -34,5 +34,5 @@ Splitor *split(String *string , char *split_c);
 void splitor_free(Splitor *splitor);
 String *join(String **strings , int join_count , char* join_str);
 void delete_strof(String* string , char* target);
-
+void lowercase(String *s);
 #endif //XOKSQLC语言版_STRING_H

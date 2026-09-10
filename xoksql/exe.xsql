@@ -1,41 +1,22 @@
-CREATE TABLE student(
-    id STRING COMMENT 'id',
-    name STRING COMMENT 'name',
-    age STRING COMMENT 'age',
-    school STRING COMMENT 'school',
-    student_id STRING COMMENT 'student_id',
-    address STRING COMMENT 'address',
-    f1 STRING,
-    f2 STRING,
-    f3 STRING,
-    f4 STRING,
-    f5 STRING,
-    f6 STRING,
-    f7 STRING,
-    f8 STRING,
-    f9 STRING
-)COMMENT 'student';
+CREATE TABLE users (
+    id       STRING,
+    name     STRING,
+    age      STRING,
+    email    STRING,
+    status   STRING
+);
 
-CREATE TABLE teacher(
-    id STRING COMMENT 'id',
-    age STRING COMMENT 'age',
-    name STRING COMMENT 'name',
-    school STRING COMMENT 'school',
-    teacher_id STRING COMMENT 'student_id',
-    address STRING COMMENT 'address',
-    universy STRING COMMENT 'universy',
-    f1 STRING,
-    f2,
-    f3,
-    f4,
-    f5,
-    f6
-)COMMENT 'teacher';
+CREATE TABLE orders (
+    order_id   STRING,
+    user_id    STRING,
+    product    STRING,
+    quantity   STRING,
+    price      STRING
+);
 
-INSERT teacher(id , name , school , universy) : ('1' , 'LiAn' , 'MorHaton2' , 'TechEcUniversy');
-
-INSERT teacher(id , name , school , universy) : ('2' , 'ZengHua' , 'MorHaton2' , 'TechEcUniversy');
-
-SELECT * FROM teacher WHERE id = '1';
-
-
+CREATE TABLE logs (
+    log_id     STRING,
+    user_id    STRING,
+    action     STRING,
+    timestamp  STRING
+);

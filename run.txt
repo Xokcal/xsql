@@ -4,7 +4,7 @@ gcc.exe main.c log/xlog.c xsqlg/update.c time/xtime.c xsqlg/grm.c list/list.c fi
 
 .\main.exe
 
-gcc.exe main.c log/xlog.c xsqlg/update.c time/xtime.c xsqlg/grm.c list/list.c file/file.c xstr/String.c -o main.exe
+gcc.exe xsqlg/dbt.c main.c log/xlog.c xsqlg/update.c time/xtime.c xsqlg/grm.c list/list.c file/file.c xstr/String.c -o main.exe
 
 
 CREATE TABLE a(id STRING);

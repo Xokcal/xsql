@@ -1,0 +1,7 @@
+CREATE TABLE orders (
+    order_id   STRING,
+    user_id    STRING,
+    product    STRING,
+    quantity   STRING,
+    price      STRING
+);

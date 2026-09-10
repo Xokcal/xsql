@@ -879,5 +879,6 @@ INSERT user(id, username, password, phone, email, status, created_at, updated_at
 INSERT user(id, username, password, phone, email, status, created_at, updated_at) :
 ('1012', 'leo', 'pass109', '13800000012', 'leoexamplecom', '0', '20260904100000', '20260904100000');
 
+
 SELECT * FROM user;
 

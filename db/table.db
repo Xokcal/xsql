@@ -1,0 +1,6 @@
+create table user(id string , name string);
+
+create table student(id string , name string , student_id string);
+
+create table universy(id string , student_count string , create_year string);
+

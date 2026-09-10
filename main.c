@@ -5,6 +5,7 @@
 #include "time/xtime.h"
 #include <string.h>
 #include "log/xlog.h"
+#include "xsqlg/dbt.h"
 
 #define XSQL_WEL_STATUE "Welcome use XSQL terminal. \
 \nxsql boot is success. \
@@ -13,21 +14,29 @@
 \ncongratulate you use nice!\n" \
 
 int main() {
-    TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
 
-    String* origin = open_file("xoksql/test1.xsql");
-    //string_println(origin);
-    TOKENSB *tokensb = tokens_parse(origin);
-    XSQL_RUN(tokensb , head);
+    String *a = create_string("CREATE");
+    lowercase(a);
+    printf("[A]%s\n" , a->str);
+    //开机，初始化储存表
+    String *table_file_init = open_file("db/table.db");
+    string_println(table_file_init);
+    TOKENSB *table_token_init = tokens_parse(table_file_init);
+
+    table_db_t *tableDbT = create_tableDbT();
+    TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
+    FILE *table_file = get_file_w("db/table.db");
+    FILE *data_file = get_file_w("db/data.db");
+    XSQL_RUN(table_token_init , head , table_file , data_file ,tableDbT);
+
+    //全部获取，并且重新存入文件
+    String *all_table_data = create_string("");
+    for(int i = 0 ; i < *tableDbT->auth_count ; i++)
+        combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
+    print_open("db/table.db" , all_table_data->str);
+    delete_all(all_table_data);
 
     printf("%s" , XSQL_WEL_STATUE);
-    /*TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("name1") , NULL , 10);
-    TABLE_LIST_NODE *node1 = create_TABLE_LIST_NODE(create_string("name2") , NULL , 11);
-    add_TABLE_LIST_NODE(head , node1);
-    TABLE_LIST_NODE *node_r = get_TABLE_LIST_NODE(head , "name2");
-    ARPMessage arp_message;
-    arp_message.arp_req_arr = 10;
-    printf("%d\n" , arp_message.arp_req_arr);*/
 
     char input[512];
     String *xsql_input = create_string("");
@@ -56,7 +65,11 @@ int main() {
         char *xsql_char = input;
         combine_tail(xsql_input , xsql_char);
         TOKENSB *tokensb_input = tokens_parse(xsql_input);
-        XSQL_RUN(tokensb_input , head);
+        XSQL_RUN(tokensb_input , head , table_file , data_file , tableDbT);
+        for(int i = 0 ; i < *tableDbT->auth_count ; i++)
+            combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
+        print_open("db/table.db" , all_table_data->str);
+        delete_all(all_table_data);
         delete_all(xsql_input);
     }
     return 0;

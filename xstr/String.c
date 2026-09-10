@@ -347,3 +347,13 @@ void delete_str_strof(String* string , char* target){
 void string_println(String *string){
     printf("%s\n" , string->str);
 }
+
+/* 小写 */
+void lowercase(String *s){
+    for (int i = 0 ; i < s->length ; i++){
+        if(s->str[i] >= 'A' && s->str[i] <= 'Z'){
+            s->str[i] = s->str[i] + 32;
+            continue;
+        }
+    }
+}

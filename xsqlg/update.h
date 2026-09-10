@@ -9,6 +9,7 @@
 #include <time.h>
 #include "../list/list.h"
 #include "../time/xtime.h"
+#include "dbt.h"
 
 typedef struct load_container_t{
     String **data;

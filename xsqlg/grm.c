@@ -9,6 +9,7 @@
 #include <time.h>
 #include "../time/xtime.h"
 #include "update.h"
+#include "../file/file.h"
 #include "../log/xlog.h"
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
@@ -74,6 +75,7 @@ TOKENSB *tokens_parse(String *origin){
         combine_tail_char(temp , origin->str[i]);
         if(IS_CONTAIN_KEYS(temp->str) == 1){
             tokens[count] = create_string("");
+            lowercase(temp);
             combine_tail(tokens[count++] , temp->str);
             delete_all(temp);
             delete_all(temp_test);
@@ -82,6 +84,7 @@ TOKENSB *tokens_parse(String *origin){
             combine_tail_char(temp_test , origin->str[i + 1]);
             if(IS_CONTAIN_KEYS(temp_test->str)){
                 tokens[count] = create_string("");
+                lowercase(temp);
                 combine_tail(tokens[count++] , temp->str);
                 delete_all(temp);
             }
@@ -98,7 +101,7 @@ TOKENSB *tokens_parse(String *origin){
     return tokensb;
 }
 
-int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
+int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr, FILE *table_file , FILE *data_file,table_db_t *tableDbT){
     clock_t start = clock();
     //printf("[ENTRE_CREATE_EXE]\n");
     String *table_name = create_string("");
@@ -109,7 +112,7 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
         if(IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")){
 
             //printf("[ENTRE   TABLE   KEY]%s\n" , tokensb->tokens[i]->str);
-            if(compare(tokensb->tokens[i] , "TABLE")){
+            if(compare(tokensb->tokens[i] , "table")){
                 combine_tail(xsql , tokensb->tokens[i]->str);
                 int is_table_name = 0;
                 int field_count = 0;
@@ -127,7 +130,12 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                         combine_tail(TABLE_NAME , tokensb->tokens[j]->str);
                         is_table_name = 1;
                         continue;
-                    }if (!IS_CONTAIN_KEYS(tokensb->tokens[j]->str)
+                    }if(compare(tokensb->tokens[i] , "(")){
+                        /*if(!compare(tokensb->tokens[j + 1] , "\n"))
+                            combine_tail(xsql , "\n");*/
+                        combine_tail(xsql , "\n");continue;
+                    }
+                    if (!IS_CONTAIN_KEYS(tokensb->tokens[j]->str)
                     &&is_over_field_name == 0&&!compare(tokensb->tokens[j] , " ")){ // field name
                         combine_tail(xsql , tokensb->tokens[j]->str);
                         //printf("[FIELD   NAME    FIELD]%s\n" , tokensb->tokens[j]->str);
@@ -139,6 +147,10 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                     }if (is_over_field_name&&IS_CONTAIN_KEYS(tokensb->tokens[j]->str)
                     && compare(tokensb->tokens[j] , ",")){ // ;
                         combine_tail(xsql , tokensb->tokens[j]->str);
+                        /*if(!compare(tokensb->tokens[j + 1] , "\n")){
+                            printf("is OK!!  %s \n" , tokensb->tokens[j]->str);
+                            combine_tail(xsql , "\n");
+                        }*/
                         is_over_field_name = 0;
                         continue;
                     }if(IS_CONTAIN_KEYS(tokensb->tokens[j]->str)
@@ -160,7 +172,9 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                        , current_time_format()->str
                                        , table_name->str
                                        , run_time_diff(start , end));
-                                string_free(table_name);
+                                if(!compare(tokensb->tokens[i + 1] , "\n"))
+                                    combine_tail(xsql , "\n\n");
+                                add_tableDbT(tableDbT , xsql);
                                 //printf("[CREATE END RETURN I]%s %d" , tokensb->tokens[k]->str , k);
                                 return k - 1;
                             } else if (k == tokensb->count - 1){
@@ -173,7 +187,9 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                                         , current_time_format()->str
                                         , table_name->str
                                         , run_time_diff(start , end));
-                                string_free(table_name);
+                                if(!compare(tokensb->tokens[i + 1] , "\n"))
+                                    combine_tail(xsql , "\n\n");
+                                add_tableDbT(tableDbT , xsql);
                                 //printf("[CREATE END RETURN I] %d" , k);
                                // printf("[KKKV]%d\n" , k);
                                 return k;
@@ -203,7 +219,7 @@ static int select_field_place(TABLE_LIST_NODE *table , int length , char *field_
 // insert student(id , age , name) : ('12' , '21' , 'XiaoLi');
 
 int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
-    //printf("[ENTRE_K][INSERT]\n");
+    printf("[ENTRE_K][INSERT]\n");
     clock_t start = clock();
     TABLE_LIST_NODE *TARGET_TABLE_NODE;
     int is_over_table_field_left = 0;
@@ -405,7 +421,7 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     int whereCondition_logic_count = 0;
     int where_start_char_effective_count = 0;
     for (int i = curr; i < tokensb->count; ++i) {
-        if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "FROM")
+        if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "from")
             &&!is_over_key_where){
             is_over_key_from = 1;
         }else if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")
@@ -429,14 +445,14 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
             }
             copy_string(tokensb->tokens[i] , selectCondition->content[select_condition_count++]);
             continue;
-        } else if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "FROM")
+        } else if (IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&& compare(tokensb->tokens[i] , "from")
         &&!is_over_key_where){
             reflect_field_index = SELECT_exe_SELECT_CONDITION_end_handle
                     (TARGET_TABLE , selectCondition , select_condition_count , &where_start_char_effective_count);
             is_over_key_from = 1;
             continue;
         } else if (is_over_key_from == 1&& IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
-        && compare(tokensb->tokens[i] , "WHERE")&&!is_over_key_where){
+        && compare(tokensb->tokens[i] , "where")&&!is_over_key_where){
             is_over_key_where = 1;
             whereCondition = parse_WHERE_CONDITION(head , tokensb
             , i,&whereCondition_field_count,&whereCondition_data_count , &whereCondition_logic_count);
@@ -644,7 +660,7 @@ WHERE_CONDITION *parse_WHERE_CONDITION(
             copy_string(tokensb->tokens[i] , whereCondition->data[(*whereCondition_data_count)++]);
             continue;
         } else if(!is_over_single_quote&& IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
-        &&!compare(tokensb->tokens[i] , " ")&& compare(tokensb->tokens[i] , "AND")){ // logic
+        &&!compare(tokensb->tokens[i] , " ")&& compare(tokensb->tokens[i] , "and")){ // logic
             if(*whereCondition_logic_count == whereCondition->common_count - 1){
                 whereCondition = extend_whereCondition(whereCondition);
                 copy_string(tokensb->tokens[i] , whereCondition->logic_condition[(*whereCondition_logic_count)++]);
@@ -764,20 +780,21 @@ void free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray , int authentic_table_fie
 }
 
 static KEYS keys_to_KEYSTYPE(String *key){
-    if(compare(key , "CREATE"))return CREATE_K;
-    else if(compare(key , "INSERT"))return INSERT_K;
-    else if(compare(key , "SELECT"))return SELECT_K;
-    else if(compare(key , "UPDATE"))return UPDATE_K;
+    if(compare(key , "create"))return CREATE_K;
+    else if(compare(key , "insert"))return INSERT_K;
+    else if(compare(key , "select"))return SELECT_K;
+    else if(compare(key , "update"))return UPDATE_K;
     else return NULL_K;
 }
 
-void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head){
+void XSQL_RUN(TOKENSB *tokensb , TABLE_LIST_NODE *head , FILE *table_file , FILE *data_file , table_db_t *tableDbT){
     for (int i = 0; i < tokensb->count; ++i) {
-        //printf("[1] i = %d ; str = %s\n" , i , tokensb->tokens[i]->str);
+        printf("[1] i = %d ; str = %s\n" , i , tokensb->tokens[i]->str);
         KEYS keys_enum = keys_to_KEYSTYPE(tokensb->tokens[i]);
         switch (keys_enum) {
             case CREATE_K:
-                i = CREATE_exe(head , tokensb , i);
+            printf("EN create\n");
+                i = CREATE_exe(head , tokensb , i , table_file , data_file , tableDbT);
                 //printf("[i]%s  %d\n" , tokensb->tokens[i]->str , i);
                 //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
                 break;
