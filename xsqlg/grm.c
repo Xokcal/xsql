@@ -13,6 +13,7 @@
 #include "../log/xlog.h"
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
+#define LOG(log , statue)(printf("[DEBUG]-{%s} %s\n" , (log) , (statue)))
 
 int IS_CONTAIN_KEYS(char *str){
     int length = sizeof(sql_keys) / sizeof(sql_keys[0]);
@@ -67,7 +68,7 @@ FIELD_INDEXS *get_field_indexs_by_field(TABLE_LIST_NODE *TARGET , String **field
 }
 
 TOKENSB *tokens_parse(String *origin){
-    String **tokens = (String**)malloc(1000000 * sizeof(String*));
+    String **tokens = (String**)malloc(2000000 * sizeof(String*));
     String *temp = create_string("");
     String *temp_test = create_string("");
     int count = 0;
@@ -129,6 +130,11 @@ int CREATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr, FILE *table_fi
                         combine_tail(table_name , tokensb->tokens[j]->str);
                         combine_tail(TABLE_NAME , tokensb->tokens[j]->str);
                         is_table_name = 1;
+                        TABLE_LIST_NODE *target_table = get_TABLE_LIST_NODE(head , table_name->str);
+                        if(target_table != NULL){
+                            log_error_string("table is exist.");
+                            return j;    
+                        }
                         continue;
                     }if(compare(tokensb->tokens[i] , "(")){
                         /*if(!compare(tokensb->tokens[j + 1] , "\n"))
@@ -230,22 +236,21 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
     String *temp_data = create_string("");
     String *table_name = create_string("");
     String *xsql_row = create_string("");
-    for(int i = 0 ; i < tokensb->count ; i ++){
+    for(int i = curr ; i < tokensb->count ; i ++){
         if(compare(tokensb->tokens[i] , ";")){
             combine_tail(xsql_row , tokensb->tokens[i]->str);
             combine_tail(xsql_row , "\n");
             break;}
         combine_tail(xsql_row , tokensb->tokens[i]->str);
     }
-    printf("[]%s\n" , xsql_row->str);
     add_tableDbT(insertDbT , xsql_row);
     for (int i = curr; i < tokensb->count; ++i) {
         //printf("[I]%s\n" , tokensb->tokens[i]->str);
         if(!IS_CONTAIN_KEYS(tokensb->tokens[i]->str)&&!compare(tokensb->tokens[i] , " ")
         &&is_over_table_field_left == 0){ // table name
             TARGET_TABLE_NODE = get_TABLE_LIST_NODE(head , tokensb->tokens[i]->str);
-            //printf("[insert  table  name ]:%s\n" , TARGET_TABLE_NODE->table->NAME->str);
-            //printf("[insert  parse  table  name  ]:%s\n" , tokensb->tokens[i]->str);
+           //printf("[insert  table  name ]:%s\n" , TARGET_TABLE_NODE->table->NAME->str);
+           //printf("[insert  parse  table  name  ]:%s\n" , tokensb->tokens[i]->str);
             combine_tail(table_name , tokensb->tokens[i]->str);
             continue;
         }else if(compare(tokensb->tokens[i] , "(")&& IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
@@ -275,9 +280,9 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
                             , tokensb->tokens[j]->str
                             );
                     field_place_index[field_place_count++] = curr_field_place;
-                    for (int k = 0; k < field_place_count; ++k) {
-                        //printf("[field_place_index]%d\n" , field_place_index[k]);
-                    }
+                    /*for (int k = 0; k < field_place_count; ++k) {
+                        printf("[field_place_index]%d\n" , field_place_index[k]);
+                    }*/
                     continue;
                 } else if (is_over_table_field_left == 1&&is_over_table_field_right == 0
                 && IS_CONTAIN_KEYS(tokensb->tokens[j]->str)&& compare(tokensb->tokens[j] , ")")){ // ")"
@@ -286,7 +291,7 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
                     continue;
                 } else if(IS_CONTAIN_KEYS(tokensb->tokens[j]->str)&& compare(tokensb->tokens[j] , ":")){
                     // ":"
-                    // insert student(id , age , name) : ('12' , '21' , 'XiaoLi');
+                    //insert student(id , age , name) : ('12' , '21' , 'XiaoLi');
                     //printf("[is \":\"]\n");
                     combine_tail(temp_field , tokensb->tokens[j]->str);
                     int is_over_insert_left = 0;
@@ -317,11 +322,16 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
                                     , field_place_count
                                     , TARGET_TABLE_NODE->table->length
                             );
+
+                            //printf("{DATA[1] v = }  : %s\n" , new_node->dataline->DATA[1]->str);
                             //printf("[IS CREATE DATALINE!!!]\n");
                             /*for (int l = 0; l < splitor->count; ++l) {
                                 printf("[splitor  str]%s\n" , splitor->splits[l]->str);
                             }*/
+                            //printf("[INSERT] TARGET_TABLE_NODE->table->dataline_head = %p\n", 
+                            //TARGET_TABLE_NODE->table->dataline_head);
                             add_DATALINE_NODE(&TARGET_TABLE_NODE->table->dataline_head , new_node);
+                            //printf("{%s}\n" , TARGET_TABLE_NODE->table->dataline_head->dataline->DATA[1]->str);
                             //printf("[IS ADD!!!]\n");
                             delete_all(temp_data);
                             for (int l = k; l < tokensb->count; ++l) {
@@ -331,8 +341,10 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
                                     //printf("[ENTRE LLLL!!!]\n");
                                     for (int m = l; m < tokensb->count; ++m) {
                                         if (IS_PRIMARY_KEY(tokensb->tokens[m]->str)){
+                                            printf("[TARGET VALUE]%s\n" , TARGET_TABLE_NODE->table->FIELD[0]->str);
+                                            printf("[DATALINE VALUE]%s\n" , TARGET_TABLE_NODE->table->dataline_head->dataline->DATA[1]->str);
                                             clock_t end = clock();
-                                            //printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
+                                            printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
                                             /*printf("[%s] xsql server> %s\n"
                                                    , current_time_format()->str , xsql_row->str);*/
                                             printf("[%s] (insert) to \'%s\' 1 row execute in %.2f ms is ok ! \n"
@@ -342,15 +354,17 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
                                             //printf("[INSERT END RETURN M] %d AND %s\n" , m , tokensb->tokens[m]->str);
                                             return m - 1;
                                         } else if (m == tokensb->count - 1){
+                                            printf("[TARGET VALUE]%s\n" , TARGET_TABLE_NODE->table->FIELD[0]->str);
+                                            printf("[DATALINE VALUE]%s\n" , TARGET_TABLE_NODE->table->dataline_head->dataline->DATA[1]->str);
                                             clock_t end = clock();
-                                            //printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
+                                            printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
                                             /*printf("[%s] xsql server> %s\n"
                                                    , current_time_format()->str , xsql_row->str);*/
                                             printf("[%s] (insert) to \'%s\' 1 row execute in %.2f ms is ok ! \n"
                                                     , current_time_format()->str
                                                     , table_name->str
                                                     , run_time_diff(start , end));
-                                            //printf("[INSERT END RETURN M] %d AND %s\n" , m , tokensb->tokens[m]->str);
+                                            printf("[INSERT END RETURN M] %d AND %s\n" , m , tokensb->tokens[m]->str);
                                             return m;
                                         }
                                     }
@@ -436,6 +450,7 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
                 log_error_string("table is not create!");
                 return i + 1;
             }
+            //printf("[select target_table] %s\n" , TARGET_TABLE->table->dataline_head->dataline->DATA[1]->str);
             is_over_key_from = 0;
             continue;
         }
@@ -508,7 +523,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
                            ,int *whereCondition_data_count,int *whereCondition_logic_count
                            ,int *where_start_char_effective_count){
     FIELD_INDEXS *pFieldIndexs;
-     if(*whereCondition_field_count != 0)pFieldIndexs = get_field_indexs_by_field(
+    if(*whereCondition_field_count != 0)pFieldIndexs = get_field_indexs_by_field(
         TARGET_TABLE , whereCondition->field_name , *whereCondition_field_count);
     int dataline_count = 0;
     datalineArray_calc_param_t datalineArray_calc_param;
@@ -519,29 +534,44 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
     datalineArray_calc_param.whereCondition = whereCondition;
     datalineArray_calc_param.dataline_count = &dataline_count;
     DATALINE_ARRAY *datalineArray;
+    /*LOG("print exe data targetTable" ,TARGET_TABLE->table->NAME->str);
+    printf("[DEBUG] %s\n" , TARGET_TABLE->table->dataline_head->dataline->DATA[1]->str);
+    printf("auth datalineArray count : %d\n" , dataline_count);*/
     if(*whereCondition_field_count == 0){
         datalineArray = query_dataline_array_all_calc(TARGET_TABLE , &dataline_count);
-    }else {datalineArray = query_dataline_array_calc(datalineArray_calc_param);}
-    DATALINE_NODE *temp = TARGET_TABLE->table->dataline_head->next;
-    if (compare(selectCondition->content[0] , "*"))
-            select_condition_count = *where_start_char_effective_count;
-        int *field_max_len = (int*)malloc(select_condition_count * sizeof(int));
-        String *lines = query_upon_down_line_num_calc(field_max_len , TARGET_TABLE , datalineArray 
-        , reflect_field_index , select_condition_count , dataline_count);
-        int *field_space_nums = query_field_space_nums_calc(field_max_len , TARGET_TABLE 
-            , datalineArray , reflect_field_index , select_condition_count);
-        printf("+%s+\n" , lines->str);
-        for (int i = 0; i < select_condition_count; ++i) {
-            String *space = create_string("");
-                if(i == select_condition_count - 1){
-                    printf("%s\n\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
-                continue;
-            }
-            for (int j = 0; j < field_space_nums[i]; j++)combine_tail(space , " ");
-            printf("%s%s" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , space->str);
-                delete_all(space);
+    }else {/*LOG("" , "!= 0 !!!");*/datalineArray = query_dataline_array_calc(datalineArray_calc_param);}
+    //LOG("print arrays" , datalineArray->datalines[1]->DATA[1]->str);
+    
+    /*for(int i = 0 ; i < TARGET_TABLE->table->length ; i++){
+        LOG("table field list" , TARGET_TABLE->table->FIELD[i]->str);
+    }
+    for(int i = 0; i < dataline_count ; i++){
+        for(int j = 0 ; j < TARGET_TABLE->table->length ; j ++){
+            LOG("dataline array list" , datalineArray->datalines[i]->DATA[j]->str);
         }
-   for (int i = 0; i < dataline_count; ++i) {
+    }*/
+    DATALINE_NODE *temp = TARGET_TABLE->table->dataline_head->next;
+    if (compare(selectCondition->content[0] , "*")){
+        LOG("" , "is * !!");
+        select_condition_count = *where_start_char_effective_count;
+    }
+    int *field_max_len = (int*)malloc(select_condition_count * sizeof(int));
+    String *lines = query_upon_down_line_num_calc(field_max_len , TARGET_TABLE , datalineArray 
+    , reflect_field_index , select_condition_count , dataline_count);
+    int *field_space_nums = query_field_space_nums_calc(field_max_len , TARGET_TABLE 
+        , datalineArray , reflect_field_index , select_condition_count);
+    printf("+%s+\n" , lines->str);
+    for (int i = 0; i < select_condition_count; ++i) {
+        String *space = create_string("");
+            if(i == select_condition_count - 1){
+                printf("%s\n\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str);
+            continue;
+        }
+        for (int j = 0; j < field_space_nums[i]; j++)combine_tail(space , " ");
+        printf("%s%s" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , space->str);
+            delete_all(space);
+    }
+   /*for (int i = 0; i < dataline_count; ++i) {
         for (int j = 0; j < select_condition_count; ++j) {
             if (j == select_condition_count - 1) {
                 printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
@@ -552,29 +582,40 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
             printf("%s%s", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str,data_space->str);
             string_free(data_space);
         }
-    }
+    }*/
     printf("+%s+\n" , lines->str);
     printf("query %d rows is ok!>\n" , dataline_count);
 }
 
 DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArray_calc_param){
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(datalineArray_calc_param.target_table);
+    //LOG("SELECT ... FROM; table name" , datalineArray_calc_param.target_table->table->NAME->str);
     DATALINE_NODE *temp = datalineArray_calc_param.target_table->table->dataline_head;
+    //LOG("end node" , temp->next->dataline->DATA[1]->str);
+    /*if(temp->next->next == NULL){
+        LOG("" , "no matter!!!!!!!!!!!!!");
+    }*/
     while (temp != NULL){
         for (int i = 0; i < *datalineArray_calc_param.whereCondition_field_count; ++i) { // ^ 3
             if (compare(temp->dataline->DATA[datalineArray_calc_param.field_indexs->field_indexs[i]]
-                        ,datalineArray_calc_param.whereCondition->data[i]->str)){} 
+                        ,datalineArray_calc_param.whereCondition->data[i]->str)){
+                            //LOG("WHERE field match" , temp->dataline->DATA[datalineArray_calc_param.field_indexs->field_indexs[i]]->str);
+                            //LOG("AUTH WHERE field" , datalineArray_calc_param.whereCondition->data[i]->str);
+                        } 
                         else break;
             if (i == (*datalineArray_calc_param.whereCondition_field_count) - 1
             && compare(temp->dataline->DATA[datalineArray_calc_param.field_indexs->field_indexs[i]]
                        , datalineArray_calc_param.whereCondition->data[i]->str)){
                 if (datalineArray->count == *datalineArray_calc_param.dataline_count) // 扩容
                     datalineArray = extend_DATALINE_ARRAY(datalineArray_calc_param.target_table , datalineArray );
+                //LOG("dataline Array is store!!" , temp->dataline->DATA[1]->str);
                 datalineArray->datalines[(*datalineArray_calc_param.dataline_count)++] = temp->dataline;
+                //LOG("process" , "store is ok!!");
             }
         }
         temp = temp->next;
     }
+    //LOG("process" , "break array calc");
     return datalineArray;
 }
 
@@ -603,6 +644,7 @@ String *query_data_field_space(DATALINE*dataline ,TABLE_LIST_NODE *target_table
 String *query_upon_down_line_num_calc(int *field_max_len ,TABLE_LIST_NODE*target_table 
     ,DATALINE_ARRAY *dataline_array_t , int *query_field_indexs , int authentic_query_field_num 
     ,int authentic_datalines_count ){
+    //LOG("EN line" , "");
     String *lines = create_string("");
     int line_num = 0 , max_count = 0;
     for (int i = 0; i < authentic_query_field_num;i++){ // 3
@@ -791,20 +833,21 @@ static KEYS keys_to_KEYSTYPE(String *key){
     else return NULL_K;
 }
 
-void XSQL_RUN(TOKENSB *tokensb,TABLE_LIST_NODE *head , FILE *table_file 
-    , FILE *data_file , table_db_t *dbT , table_db_t *insertDbT){
+void XSQL_RUN(TOKENSB *tokensb, TABLE_LIST_NODE *head , FILE *table_file 
+    , FILE *data_file , table_db_t *dbT){
     for (int i = 0; i < tokensb->count; ++i) {
         //printf("[1] i = %d ; str = %s\n" , i , tokensb->tokens[i]->str);
         KEYS keys_enum = keys_to_KEYSTYPE(tokensb->tokens[i]);
         switch (keys_enum) {
             case CREATE_K:
-            printf("EN create\n");
+            //printf("EN create\n");
                 i = CREATE_exe(head , tokensb , i , table_file , data_file , dbT);
                 //printf("[i]%s  %d\n" , tokensb->tokens[i]->str , i);
                 //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
                 break;
             case INSERT_K:
-                i = INSERT_exe(head , tokensb , i , insertDbT);
+                //printf("[DEBUG] INSERT_exe  = %s\n", tokensb->tokens[i]->str);
+                i = INSERT_exe(head ,tokensb , i , dbT);
                 //printf("[BREAK INSERT TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i]->str);
                 //printf("[INSERT EXE SUCCESS!!!]\n\n\n");
                 break;

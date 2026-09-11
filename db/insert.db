@@ -1,7 +1,0 @@
-insert user(id):('1');
-insert user(id):('2');
-insert user(id):('3');
-insert user(id):('4');
-insert user(id):('5');
-insert user(id):('6');
-select * from user;select * from user;insert user(name):('zasx');select * from user;insert universy(id):('1');select * from universy;

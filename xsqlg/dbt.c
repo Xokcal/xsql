@@ -29,6 +29,7 @@ void extend_tableDbT(table_db_t *tableDbT){
         string_free(tableDbT->table_db_str[i]);
     free(tableDbT->table_db_str);
     tableDbT->table_db_str = new_string;
+    tableDbT->count = new_count;
 }
 
 void add_tableDbT(table_db_t *tableDbT , String *data){
