@@ -11,6 +11,8 @@
 #include "../list/list.h"
 #include "dbt.h"
 
+#define LOG(log , statue)(printf("[DEBUG]-{%s} %s\n" , (log) , (statue)))
+
 typedef enum KEYS{
     CREATE_K,
     TABLE_K,

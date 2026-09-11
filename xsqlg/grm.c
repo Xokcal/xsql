@@ -13,7 +13,6 @@
 #include "../log/xlog.h"
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
-#define LOG(log , statue)(printf("[DEBUG]-{%s} %s\n" , (log) , (statue)))
 
 int IS_CONTAIN_KEYS(char *str){
     int length = sizeof(sql_keys) / sizeof(sql_keys[0]);
@@ -552,7 +551,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
     }*/
     DATALINE_NODE *temp = TARGET_TABLE->table->dataline_head->next;
     if (compare(selectCondition->content[0] , "*")){
-        LOG("" , "is * !!");
+        //LOG("" , "is * !!");
         select_condition_count = *where_start_char_effective_count;
     }
     int *field_max_len = (int*)malloc(select_condition_count * sizeof(int));
