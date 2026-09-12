@@ -9,6 +9,7 @@
 #include "../xsqlg/grm.h"
 
 #define ENTER_LIMIT_COUNT 50
+#define CRYPT_KEY_NUM 120
 
 String *open_file(char* URL){
     FILE *file = fopen(URL , "r");
@@ -45,13 +46,13 @@ FILE *get_file_w(char *URL){
 
 static void encrypt(String *s){
     for(int i = 0 ; i< s->length ; i++){
-        s->str[i] = s->str[i] + 1314;
+        s->str[i] = s->str[i] + CRYPT_KEY_NUM;
     }
 }
 
 static void decrypt(String *s){
     for(int i = 0 ; i< s->length ; i++){
-        s->str[i] = s->str[i] - 1314;
+        s->str[i] = s->str[i] - CRYPT_KEY_NUM;
     }
 }
 
@@ -65,14 +66,14 @@ void save_snapPhoto(char *URL , TABLE_LIST_NODE *head){
         table_len++;
         temp = temp->next;
     }
-    printf("table_len] %d\n" , table_len);
+    //printf("table_len] %d\n" , table_len);
     fwrite(&table_len , sizeof(int) , 1 , fp);
     temp = head->next;
     while(temp != NULL){
         // ---- table name
         String *table_name = create_string(temp->table->NAME->str);
         fwrite(&table_name->length , sizeof(int) , 1 , fp);
-        printf("[save table name] %s\n" , table_name->str);
+        //printf("[save table name] %s\n" , table_name->str);
         //encrypt(table_name);
         fwrite(table_name->str , sizeof(char) , table_name->length , fp);
         string_free(table_name);
@@ -96,20 +97,28 @@ void save_snapPhoto(char *URL , TABLE_LIST_NODE *head){
             dataline_temp = dataline_temp->next;
         }
         dataline_temp = temp->table->dataline_head;
+        /*if(dataline_temp->dataline->DATA == NULL)
+        {dataline_temp = dataline_temp->next;continue;}*/
         fwrite(&datalines_count , sizeof(int) , 1 , fp);
-        printf("[datalines_count] %d\n" , datalines_count);
+        //printf("[datalines_count] %d\n" , datalines_count);
         // ---- datalines
-        printf("EN datalines--------------\n");
+        //printf("EN datalines--------------\n");
         int space_count = 0;
         while (dataline_temp != NULL){
+            //printf("[EN dataline 1]\n");
             int auth_FIELD_count = 0;
+            if(dataline_temp->dataline->DATA == NULL)
+            {dataline_temp = dataline_temp->next;continue;}
             for(int j = 0; j < temp->table->length;j++){
+                //printf("[2]\n");
                 if(!compare(dataline_temp->dataline->DATA[j] , "")){
+                    //printf("[3]\n");
                     auth_FIELD_count++;
                     continue;
                 }
+                //printf("else\n");
             }
-            printf("[auth_FIELD_count] %d\n" , auth_FIELD_count);
+            //printf("[auth_FIELD_count] %d\n" , auth_FIELD_count);
             fwrite(&auth_FIELD_count , sizeof(int) , 1 , fp);
             for(int i = 0; i < temp->table->length ; i++){
                 /*if(space_count == ENTER_LIMIT_COUNT){
@@ -121,13 +130,13 @@ void save_snapPhoto(char *URL , TABLE_LIST_NODE *head){
                     // ---- DATA[] -> i
                     int DATA_i = i;
                     fwrite(&DATA_i , sizeof(int) , 1 , fp);
-                    printf("[DATA_i]%d\n" , DATA_i);
+                    //printf("[DATA_i]%d\n" , DATA_i);
                     String *dataline_str = create_string(dataline_temp->dataline->DATA[i]->str);
                     fwrite(&dataline_str->length , sizeof(int) , 1 , fp);
-                    printf("[dataline_str_length] %d\n" , dataline_str->length);
+                    //printf("[dataline_str_length] %d\n" , dataline_str->length);
                     //encrypt(dataline_str);
                     fwrite(dataline_str->str , sizeof(char) , dataline_str->length , fp);
-                    printf("[save dataline name] %s\n" , dataline_str->str);
+                    //printf("[save dataline name] %s\n" , dataline_str->str);
                     string_free(dataline_str);
                     //space_count++;
                 }
@@ -148,23 +157,26 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
     // ---- table count
     int table_count = 0;
     fread(&table_count , sizeof(int) , 1 , fp);
-    printf("[table count-----] %d\n" , table_count);
+    printf("[table count] %d\n" , table_count);
+    if(table_count == 0){return head;}
+    //printf("[table count-----] %d\n" , table_count);
     for(int i = 0 ; i < table_count ; i++){
         // ---- table name
         int name_len = 0;
         fread(&name_len , sizeof(int) , 1 , fp);
-        printf("name len] %d \n" , name_len);
+        //printf("name len] %d \n" , name_len);
         String *name = create_string("");
         char *temp_name = malloc(name_len * sizeof(char) + 1);
         fread(temp_name , sizeof(char) , name_len , fp);
         temp_name[name_len] = '\0';
         combine_tail(name , temp_name);
+        //decrypt(name);
         free(temp_name);
-        printf("[name] %s\n" , name->str);
+        //printf("[name] %s\n" , name->str);
         // ---- table length
         int table_field_length = 0;
         fread(&table_field_length , sizeof(int) , 1 , fp);
-        printf("[tablel_field_length]%d\n" , table_field_length);
+        //printf("[tablel_field_length]%d\n" , table_field_length);
         // ---- table FIELD[]
         int field_count = 0;
         String **FIELDS = malloc(table_field_length * sizeof(String*)); // FIELD
@@ -178,22 +190,23 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
             fread(temp_field_str , sizeof(char) , field_str_len , fp);
             temp_field_str[field_str_len] = '\0';
             combine_tail(field_str , temp_field_str);
-            printf("[field name] %s\n" , field_str->str);
+            //decrypt(field_str);
+            //printf("[field name] %s\n" , field_str->str);
             free(temp_field_str);
             FIELDS[field_count++] = field_str;
         }
         // ---- table datalines count
-        printf("save EN datalines--------------\n");
+        //printf("save EN datalines--------------\n");
         int dataline_count = 0;
         fread(&dataline_count , sizeof(int) , 1 , fp);
-        printf("[dataline count] %d\n" , dataline_count); // 65
+        //printf("[dataline count] %d\n" , dataline_count); // 65
         // ---- create table node
         TABLE_LIST_NODE *new_table_node = create_TABLE_LIST_NODE(name , FIELDS, table_field_length);
         add_TABLE_LIST_NODE(head , new_table_node);
         temp_table = new_table_node;
         // ---- datalines 开始获取datalines
         for(int j = 0; j < dataline_count ; j++){
-            printf("every dataline ----------------------------\n");
+            //printf("every dataline ----------------------------\n");
             // every dataline DATA auth count
             int auth_FIELD_count = 0;
             fread(&auth_FIELD_count , sizeof(int) , 1 , fp);
@@ -202,37 +215,38 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
                 DATA[data_i] = create_string("");
             int *indexs = (int *)malloc(auth_FIELD_count * sizeof(int));
             int auth_indexs_count = 0;
-            printf("[auth_FIELD_count---] %d\n" , auth_FIELD_count);
+            //printf("[auth_FIELD_count---] %d\n" , auth_FIELD_count);
             for(int k = 0; k < auth_FIELD_count ; k++){
                 // auth DATA[i]  -> i
                 int auth_DATA_i = 0;
                 fread(&auth_DATA_i , sizeof(int) , 1 , fp);
-                printf("[save auth_DATA_i] %d\n" , auth_DATA_i);
+                //printf("[save auth_DATA_i] %d\n" , auth_DATA_i);
                 indexs[auth_indexs_count++] = auth_DATA_i;
                 // data length
                 int data_length = 0;
                 fread(&data_length , sizeof(int) , 1 , fp);
-                printf("[data_length] %d\n" , data_length);
+                //printf("[data_length] %d\n" , data_length);
                 //data str
                 String *data_str = create_string("");
                 char *temp_data_str = malloc(data_length * sizeof(char) + 1);
                 fread(temp_data_str , sizeof(char) , data_length , fp);
                 temp_data_str[data_length] = '\0';
                 combine_tail(data_str , temp_data_str);
-                printf("[data_str] %s\n" , data_str->str);
+                //decrypt(data_str);
+                //printf("[data_str] %s\n" , data_str->str);
                 copy_string(data_str , DATA[k]);
                 free(temp_data_str);
             }
             DATALINE_NODE *new_dataline_node = create_DATALINE_NODE(DATA , indexs , auth_FIELD_count , table_field_length);
             add_DATALINE_NODE(&temp_table->table->dataline_head , new_dataline_node);
-            printf("--------------------------------}  %s\n" , new_dataline_node->dataline->DATA[1]->str);
+            //printf("--------------------------------}  %s\n" , new_dataline_node->dataline->DATA[1]->str);
         }
     }
     fclose(fp);
-    printf("[-1][test] %s\n" , head->next->table->NAME->str);
+    /*printf("[-1][test] %s\n" , head->next->table->NAME->str);
     printf("[1][test] %s\n" , head->next->table->FIELD[1]->str);   // -------这里报错
     printf("[1][test] %s\n" , head->next->table->dataline_head->next->dataline->DATA[1]->str);
     printf("[2][test] %s\n" , head->next->table->dataline_head->dataline->DATA[0]->str);
-    printf("[4][test] %s\n" , head->next->table->dataline_head->dataline->DATA[1]->str);
+    printf("[4][test] %s\n" , head->next->table->dataline_head->dataline->DATA[1]->str);*/
     return head;
 }
