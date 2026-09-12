@@ -187,7 +187,11 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
         int dataline_count = 0;
         fread(&dataline_count , sizeof(int) , 1 , fp);
         printf("[dataline count] %d\n" , dataline_count); // 65
-        // ---- datalines
+        // ---- create table node
+        TABLE_LIST_NODE *new_table_node = create_TABLE_LIST_NODE(name , FIELDS, table_field_length);
+        add_TABLE_LIST_NODE(head , new_table_node);
+        temp_table = new_table_node;
+        // ---- datalines 开始获取datalines
         for(int j = 0; j < dataline_count ; j++){
             printf("every dataline ----------------------------\n");
             // every dataline DATA auth count
@@ -221,16 +225,14 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
             }
             DATALINE_NODE *new_dataline_node = create_DATALINE_NODE(DATA , indexs , auth_FIELD_count , table_field_length);
             add_DATALINE_NODE(&temp_table->table->dataline_head , new_dataline_node);
+            printf("--------------------------------}  %s\n" , new_dataline_node->dataline->DATA[1]->str);
         }
-        TABLE_LIST_NODE *new_table_node = create_TABLE_LIST_NODE(name , FIELDS, table_field_length);
-        add_TABLE_LIST_NODE(head , new_table_node);
-        temp_table = new_table_node;
     }
     fclose(fp);
-
-    printf("[1][test] %s\n" , head->next->table->FIELD[0]->str);
-    printf("[2][test] %s\n" , head->next->table->dataline_head->dataline->DATA[1]->str);
-    printf("[3][test] %s\n" , head->next->table->dataline_head->next->dataline->DATA[0]->str);
-    printf("[4][test] %s\n" , head->next->next->table->dataline_head->dataline->DATA[0]->str);
+    printf("[-1][test] %s\n" , head->next->table->NAME->str);
+    printf("[1][test] %s\n" , head->next->table->FIELD[1]->str);   // -------这里报错
+    printf("[1][test] %s\n" , head->next->table->dataline_head->next->dataline->DATA[1]->str);
+    printf("[2][test] %s\n" , head->next->table->dataline_head->dataline->DATA[0]->str);
+    printf("[4][test] %s\n" , head->next->table->dataline_head->dataline->DATA[1]->str);
     return head;
 }
