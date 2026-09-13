@@ -18,7 +18,7 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     load_container_t *set_datas = create_loadContainerT();
     int *update_field_table_indexs;
     TABLE_LIST_NODE *target_table;
-    update_where_t *updateWhereT;
+    update_where_t *updateWhereT = create_updateWhereT();
     int *datalineArray_count = (int*) malloc(sizeof(int));
     *datalineArray_count = 0;
     PUField_p pufield_p;
@@ -26,6 +26,7 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
             .update_field_table_indexs = update_field_table_indexs
             ,pufield_p.set_datas = set_datas , pufield_p.updateWhereT = updateWhereT 
             , pufield_p.datalineArray_count = datalineArray_count;
+    printf("[count] %d\n" , *pufield_p.updateWhereT);
     for(int i = 0 ; i < tokensb->count ; i++){
         if(!is_over_update_field_left && !IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
             && !IS_PRIMARY_KEY(tokensb->tokens[i]->str)){
@@ -53,10 +54,12 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
             && compare(tokensb->tokens[i] , "set")){
             pufield_p.curr = i;
             i = parse_update_set(pufield_p);
+            printf("parse update set i v] %s\n" , tokensb->tokens[i + 1]->str);
             is_over_update_set = 1;
             continue;
         }else if(is_over_update_set&&compare(tokensb->tokens[i] , "where")){
             printf("[] -> where\n");
+            pufield_p.curr = i;
             i = parse_update_where(pufield_p); // ; i - 1
             continue;
         }else if(compare(tokensb->tokens[i] , ";")){
@@ -68,6 +71,7 @@ int UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
 
 //UPDATE user(username , status) SET ('hajimi' , '0') WHERE id = '2001';
 void update_data_core(PUField_p pufield_p){
+    printf("EN core\n");
     DATALINE_ARRAY *datalineArray = select_match_dataline_array(pufield_p);
     for (int i = 0; i < *pufield_p.datalineArray_count; i++){
         for (int j = 0; j < *pufield_p.updateWhereT->auth_field_count; j++){
@@ -78,6 +82,7 @@ void update_data_core(PUField_p pufield_p){
 }
 
 DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p){
+    printf("EN array!\n");
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(pufield_p.target_table);
     DATALINE_NODE *temp = pufield_p.target_table->table->dataline_head;
     while (temp != NULL){
@@ -95,6 +100,7 @@ DATALINE_ARRAY *select_match_dataline_array(PUField_p pufield_p){
         }
         temp = temp->next;
     }
+    printf("[datalineArray str] %s\n" , datalineArray->datalines[0]->DATA[0]->str);
     return datalineArray;
 }
 
@@ -161,7 +167,7 @@ int parse_update_set(PUField_p pufield_p){
         }else if(is_over_set_left&&!is_over_set_right&&compare(pufield_p.tokensb->tokens[i] , ")")){
             printf("[set values ---------->] %s\n" , pufield_p.set_datas->data[0]->str);
             printf("[set values ---------->] %s\n" , pufield_p.set_datas->data[1]->str);
-            return i - 1;
+            return i;
         }else continue;
     }
 }
@@ -170,30 +176,46 @@ int parse_update_set(PUField_p pufield_p){
 int parse_update_where(PUField_p pufield_p){
     int is_over_single_quote = 0;
     String *temp_token = create_string("");
-    for (int i = pufield_p.curr ; i < pufield_p.tokensb->count ; i++){
-        if(!is_over_single_quote&&!compare(pufield_p.tokensb->tokens[i] , " ")){
+    for (int i = pufield_p.curr + 1; i < pufield_p.tokensb->count ; i++){
+        printf("[where] [i] [v] %s\n" , pufield_p.tokensb->tokens[i]->str);
+        if(!is_over_single_quote&&!compare(pufield_p.tokensb->tokens[i] , " ")
+        &&!IS_PRIMARY_KEY(pufield_p.tokensb->tokens[i]->str) 
+        && !compare(pufield_p.tokensb->tokens[i] , "\'")&&!compare(pufield_p.tokensb->tokens[i] , "=")
+        && !compare(pufield_p.tokensb->tokens[i] , "and") && !compare(pufield_p.tokensb->tokens[i] , "or")
+        && !compare(pufield_p.tokensb->tokens[i] , ";")){
+            printf("[1]\n");
+            printf("[count] %d\n" , *pufield_p.updateWhereT->auth_field_count);
             copy_string(pufield_p.tokensb->tokens[i] 
                 , pufield_p.updateWhereT->field[(*pufield_p.updateWhereT->auth_field_count)++]);
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , "\'")){
+            printf("[2]\n");
             if(is_over_single_quote){
-                copy_string(pufield_p.tokensb->tokens[i] 
-                    , pufield_p.updateWhereT->data[(*pufield_p.updateWhereT->auth_data_count)++]);
+                printf("-------------] %s\n" , temp_token->str);
+                copy_string(temp_token , pufield_p.updateWhereT->data
+                    [(*pufield_p.updateWhereT->auth_data_count)++]);
                 delete_all(temp_token);
                 is_over_single_quote = 0;
             }else is_over_single_quote = 1;
             continue;
         }else if(is_over_single_quote) {
+            printf("[3]\n");
             combine_tail(temp_token , pufield_p.tokensb->tokens[i]->str);
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , "and")
         ||compare(pufield_p.tokensb->tokens[i] , "or")){
+            printf("[4]\n");
             copy_string(pufield_p.tokensb->tokens[i] 
                 ,pufield_p.updateWhereT->logic[(*pufield_p.updateWhereT->auth_logic_count)++]);
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , ";")){
+            printf("[5]\n");
+            printf("[%d][v] %s\n",*pufield_p.updateWhereT->auth_data_count , pufield_p.updateWhereT->data[1]->str);
+            printf("[%d][v] %s\n",*pufield_p.updateWhereT->auth_field_count , pufield_p.updateWhereT->field[1]->str);
+            printf("[5][v] %s\n" , pufield_p.updateWhereT->logic[1]->str);
+            printf("[5][v] %d\n" , pufield_p.updateWhereT->field_indexs[0]);
             return i - 1;
-        }
+        }else {printf("[else]\n"); continue;}
     }
 }
 
