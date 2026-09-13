@@ -81,7 +81,7 @@ int main() {
             printf("XSQL_RUN is OK!!\n");
             /*for(int i = 0 ; i < *tableDbT->auth_count ; i++)
                 combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
-            print_open("db/xsql.sql" , all_table_data->str);
+            print_open("db/xsql.sql" , );
             delete_all(all_table_data);*/
             save_snapPhoto("db/xsql.bin" , head);
             delete_all(xsql_input);

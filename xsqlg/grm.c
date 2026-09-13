@@ -570,7 +570,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
         printf("%s%s" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , space->str);
             delete_all(space);
     }
-   /*for (int i = 0; i < dataline_count; ++i) {
+   for (int i = 0; i < dataline_count; ++i) {
         for (int j = 0; j < select_condition_count; ++j) {
             if (j == select_condition_count - 1) {
                 printf("%s\n", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str);
@@ -581,7 +581,7 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
             printf("%s%s", datalineArray->datalines[i]->DATA[reflect_field_index[j]]->str,data_space->str);
             string_free(data_space);
         }
-    }*/
+    }
     printf("+%s+\n" , lines->str);
     printf("query %d rows is ok!>\n" , dataline_count);
 }
