@@ -70,15 +70,22 @@ int main() {
         /*for(int i = 0 ; i < *tableDbT->auth_count;i++){
             printf("%s\n" , tableDbT->table_db_str[i]->str);
         }*/
-
-        XSQL_RUN(tokensb_input  ,  head , table_file , data_file , tableDbT);
-        printf("XSQL_RUN is OK!!\n");
-        /*for(int i = 0 ; i < *tableDbT->auth_count ; i++)
-            combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
-        print_open("db/xsql.sql" , all_table_data->str);
-        delete_all(all_table_data);*/
-        save_snapPhoto("db/xsql.bin" , head);
-        delete_all(xsql_input);
+       if(compare(xsql_input , "exe file;")){
+            String *table_file_init = open_file("db/exe.sql");
+            TOKENSB *table_token_init = tokens_parse(table_file_init);
+            XSQL_RUN(table_token_init  ,  head , table_file , data_file , tableDbT);
+            save_snapPhoto("db/xsql.bin" , head);
+            delete_all(xsql_input);
+       }else{
+            XSQL_RUN(tokensb_input  ,  head , table_file , data_file , tableDbT);
+            printf("XSQL_RUN is OK!!\n");
+            /*for(int i = 0 ; i < *tableDbT->auth_count ; i++)
+                combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
+            print_open("db/xsql.sql" , all_table_data->str);
+            delete_all(all_table_data);*/
+            save_snapPhoto("db/xsql.bin" , head);
+            delete_all(xsql_input);
+       }
     }
     return 0;
 }
