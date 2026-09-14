@@ -11,6 +11,8 @@ CREATE TABLE a(id STRING);
 
 INSERT a(id) : ('1');
 
-update a(name , id)set('hajimi' , '011')where id = '001' and name = 'laoda';
+update a(name , id)set('manba' , '999999')where id = 'hajimi' and name = '011';
+
+update employees(full_name)set('WWWWW')where employee_id = 'e001';
 
 SELECT * FROM a;

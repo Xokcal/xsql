@@ -516,11 +516,13 @@ int SELECT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr){
     }
 }
 
-void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCondition
+void 
+SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCondition
                            , int *reflect_field_index, int select_condition_count
                            , WHERE_CONDITION *whereCondition, int *whereCondition_field_count
                            ,int *whereCondition_data_count,int *whereCondition_logic_count
-                           ,int *where_start_char_effective_count){
+                           ,int *where_start_char_effective_count)
+{
     FIELD_INDEXS *pFieldIndexs;
     if(*whereCondition_field_count != 0)pFieldIndexs = get_field_indexs_by_field(
         TARGET_TABLE , whereCondition->field_name , *whereCondition_field_count);
@@ -586,7 +588,9 @@ void SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selec
     printf("query %d rows is ok!>\n" , dataline_count);
 }
 
-DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArray_calc_param){
+DATALINE_ARRAY *
+query_dataline_array_calc(datalineArray_calc_param_t datalineArray_calc_param)
+{
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(datalineArray_calc_param.target_table);
     //LOG("SELECT ... FROM; table name" , datalineArray_calc_param.target_table->table->NAME->str);
     DATALINE_NODE *temp = datalineArray_calc_param.target_table->table->dataline_head;
@@ -618,7 +622,9 @@ DATALINE_ARRAY *query_dataline_array_calc(datalineArray_calc_param_t datalineArr
     return datalineArray;
 }
 
-DATALINE_ARRAY *query_dataline_array_all_calc(TABLE_LIST_NODE *target_table , int *dataline_count){
+DATALINE_ARRAY *
+query_dataline_array_all_calc(TABLE_LIST_NODE *target_table , int *dataline_count)
+{
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(target_table);
     DATALINE_NODE *temp = target_table->table->dataline_head;
     while (temp != NULL){
@@ -630,8 +636,10 @@ DATALINE_ARRAY *query_dataline_array_all_calc(TABLE_LIST_NODE *target_table , in
     return datalineArray;
 }
 
-String *query_data_field_space(DATALINE*dataline ,TABLE_LIST_NODE *target_table 
-    , int curr_field_place_index ,int *field_max_len , int *field_space_nums , int curr_select_condition_index){
+String *
+query_data_field_space(DATALINE*dataline ,TABLE_LIST_NODE *target_table 
+    , int curr_field_place_index ,int *field_max_len , int *field_space_nums , int curr_select_condition_index)
+{
     int space_count = 0;String *data_field_space = create_string("");
     int field_space_all = target_table->table->FIELD[curr_field_place_index]->length
     + field_space_nums[curr_select_condition_index];
@@ -640,9 +648,11 @@ String *query_data_field_space(DATALINE*dataline ,TABLE_LIST_NODE *target_table
     return data_field_space;
 }
 
-String *query_upon_down_line_num_calc(int *field_max_len ,TABLE_LIST_NODE*target_table 
-    ,DATALINE_ARRAY *dataline_array_t , int *query_field_indexs , int authentic_query_field_num 
-    ,int authentic_datalines_count ){
+String *
+query_upon_down_line_num_calc(int *field_max_len ,TABLE_LIST_NODE*target_table 
+    ,DATALINE_ARRAY *dataline_array_t , int *query_field_indexs 
+    , int authentic_query_field_num ,int authentic_datalines_count )
+{
     //LOG("EN line" , "");
     String *lines = create_string("");
     int line_num = 0 , max_count = 0;
@@ -662,8 +672,10 @@ String *query_upon_down_line_num_calc(int *field_max_len ,TABLE_LIST_NODE*target
     return lines;
 }
 
-int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_table 
-    , DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num ){
+int *
+query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_table 
+    , DATALINE_ARRAY*datalineArray , int *query_field_indexs , int authentic_query_field_num )
+{
     int *space_nums = (int*)malloc(authentic_query_field_num * sizeof(int));
     int spance_nums_count = 0;
     for(int i = 0 ; i < authentic_query_field_num ; i++){ // 2
@@ -676,11 +688,12 @@ int *query_field_space_nums_calc(int *field_max_len , TABLE_LIST_NODE*target_tab
     return space_nums;
 }
 
-WHERE_CONDITION *parse_WHERE_CONDITION(
+WHERE_CONDITION *
+parse_WHERE_CONDITION(
         TABLE_LIST_NODE *head,TOKENSB *tokensb
         , int curr , int *whereCondition_field_count
-        ,int *whereCondition_data_count,int *whereCondition_logic_count
-        ){
+        ,int *whereCondition_data_count,int *whereCondition_logic_count)
+{
     int is_over_single_quote = 0;
     WHERE_CONDITION *whereCondition = create_whereCondition();
     for (int i = curr; i < tokensb->count; ++i) {
@@ -720,8 +733,12 @@ WHERE_CONDITION *parse_WHERE_CONDITION(
     }
 }
 
-int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node,SELECT_CONDITION *selectCondition
-                                            , int effective_selectCondition_count , int *where_start_char_effective_count){
+int* 
+SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node
+                                    ,SELECT_CONDITION *selectCondition
+                                    , int effective_selectCondition_count 
+                                    , int *where_start_char_effective_count)
+{
     if(compare(selectCondition->content[0] , "*")){
         int *reflect_field_index = (int*)malloc(target_table_node->table->length * sizeof(int));
         for (int i = 0; i < target_table_node->table->length; ++i)
@@ -740,7 +757,9 @@ int* SELECT_exe_SELECT_CONDITION_end_handle(TABLE_LIST_NODE *target_table_node,S
     return reflect_field_index;
 }
 
-WHERE_CONDITION *create_whereCondition(){
+WHERE_CONDITION *
+create_whereCondition()
+{
     WHERE_CONDITION *whereCondition = (WHERE_CONDITION *) malloc(sizeof(WHERE_CONDITION));
     whereCondition->field_name = (String**) malloc(10 * sizeof(String*));
     whereCondition->data = (String**) malloc(10 * sizeof(String*));
@@ -755,7 +774,9 @@ WHERE_CONDITION *create_whereCondition(){
     return whereCondition;
 }
 
-WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old){
+WHERE_CONDITION *
+extend_whereCondition(WHERE_CONDITION *old)
+{
     //printf("EN extend\n");
     int new_count = old->common_count * 2;
     WHERE_CONDITION *whereCondition = (WHERE_CONDITION *) malloc(sizeof(WHERE_CONDITION));
@@ -780,7 +801,9 @@ WHERE_CONDITION *extend_whereCondition(WHERE_CONDITION *old){
     whereCondition->common_count = new_count;
 }
 
-void free_whereCondition(WHERE_CONDITION *whereCondition){
+void 
+free_whereCondition(WHERE_CONDITION *whereCondition)
+{
     for (int i = 0; i < whereCondition->common_count; ++i)
         string_free(whereCondition->field_name[i]);
     for (int i = 0; i < whereCondition->common_count; ++i)
@@ -793,7 +816,9 @@ void free_whereCondition(WHERE_CONDITION *whereCondition){
     free(whereCondition);
 }
 
-DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){
+DATALINE_ARRAY *
+create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE)
+{
     //printf("[EN extend dataline_array]\n");
     DATALINE_ARRAY *pDatalineArray = (DATALINE_ARRAY*) malloc(sizeof(DATALINE_ARRAY));
     pDatalineArray->datalines = (DATALINE **) malloc(10 * sizeof(DATALINE*));
@@ -803,7 +828,9 @@ DATALINE_ARRAY *create_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET_TABLE){
     return pDatalineArray;
 }
 
-DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old){
+DATALINE_ARRAY *
+extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *old)
+{
     int new_count = old->count * 2;
     DATALINE **datalines = (DATALINE**)malloc(new_count * sizeof(DATALINE*));
     for(int i = 0; i < old->count ; i ++)
@@ -817,14 +844,18 @@ DATALINE_ARRAY *extend_DATALINE_ARRAY(TABLE_LIST_NODE *TARGET , DATALINE_ARRAY *
 }
 
 //free DATALINE_ARRAY
-void free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray , int authentic_table_field_count){
+void 
+free_DATALINE_ARRAY(DATALINE_ARRAY *datalineArray , int authentic_table_field_count)
+{
     if (datalineArray == NULL)return;
     if(datalineArray->datalines != NULL)
         free(datalineArray->datalines);
     free(datalineArray);
 }
 
-static KEYS keys_to_KEYSTYPE(String *key){
+static KEYS 
+keys_to_KEYSTYPE(String *key)
+{
     if(compare(key , "create"))return CREATE_K;
     else if(compare(key , "insert"))return INSERT_K;
     else if(compare(key , "select"))return SELECT_K;

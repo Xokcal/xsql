@@ -1,0 +1,10 @@
+print("hello world!");
+
+class Main{
+    Main->main()
+}
+fn main(){
+    int arg = 10;
+    print(arg);
+    let a = "hajimi";
+}

@@ -58,7 +58,7 @@ static void decrypt(String *s){
 
 void save_snapPhoto(char *URL , TABLE_LIST_NODE *head){
     FILE *fp = fopen(URL , "wb");
-    if(!fp){LOG("ERROR" , "snapPhoto open file is null");return;}
+    if(!fp){printf("ERROR" , "snapPhoto open file is null");return;}
     TABLE_LIST_NODE *temp = head->next;
     // ---- table count
     int table_len = 0;
@@ -151,7 +151,7 @@ void save_snapPhoto(char *URL , TABLE_LIST_NODE *head){
 
 TABLE_LIST_NODE *get_snapPhoto(char *URL){
     FILE *fp = fopen(URL , "rb");
-    if(!fp){LOG("ERROR" , "snapPhoto open file is null");return NULL;}
+    if(!fp){printf("ERROR" , "snapPhoto open file is null");return NULL;}
     TABLE_LIST_NODE *head = create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
     TABLE_LIST_NODE *temp_table = head;
     // ---- table count
