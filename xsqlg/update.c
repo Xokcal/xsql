@@ -23,7 +23,7 @@
 #endif
 
 static int
-check_update_field_valid(PUField_p pufield_p)
+check_update_field(PUField_p pufield_p)
 {
     load_container_t *update_fields = pufield_p.update_fields;
     TABLE_LIST_NODE *table = pufield_p.target_table;
@@ -40,66 +40,78 @@ check_update_field_valid(PUField_p pufield_p)
     return 1;
 }
 
-//UPDATE user(username , status) SET ('hajimi' , '0') WHERE id = '2001';
-int 
-UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
+static int
+check_update_where_field(PUField_p pufield_p)
 {
-    String *table_name = create_string("");
-    int is_over_update_field_left = 0;
-    int is_over_update_field_right = 0;
-    int is_over_update_set = 0;
-    load_container_t *update_fields = create_loadContainerT();
-    load_container_t *set_datas = create_loadContainerT();
-    int *update_field_table_indexs;
-    TABLE_LIST_NODE *target_table;
-    update_where_t *updateWhereT = create_updateWhereT();
-    int *datalineArray_count = (int*) malloc(sizeof(int));
-    *datalineArray_count = 0;
-    PUField_p pufield_p;
-            pufield_p.tokensb = tokensb  , pufield_p.update_fields = update_fields,pufield_p
-            .update_field_table_indexs = update_field_table_indexs
-            ,pufield_p.set_datas = set_datas , pufield_p.updateWhereT = updateWhereT 
-            , pufield_p.datalineArray_count = datalineArray_count;
-    for(int i = 0 ; i < tokensb->count ; i++){
-        if(!is_over_update_field_left && !IS_CONTAIN_KEYS(tokensb->tokens[i]->str)
-            && !IS_PRIMARY_KEY(tokensb->tokens[i]->str)){
-            combine_tail(table_name , tokensb->tokens[i]->str);
-            target_table = get_TABLE_LIST_NODE(head , table_name->str);
-            pufield_p.target_table = target_table;
-            free(table_name);
-            continue;
-        }else if (!is_over_update_field_left && compare(tokensb->tokens[i] , "(")){
-            is_over_update_field_left = 1;
-            continue;
-        }else if(is_over_update_field_left&&!is_over_update_field_right){
-            pufield_p.curr = i;
-            i = parse_update_field(pufield_p);
-            is_over_update_field_right = 1;
-            // check update fields...
-            int check_update_field_status = check_update_field_valid(pufield_p);
-            if(!check_update_field_status){return i;}
-            continue;
-        }else if(is_over_update_field_left && is_over_update_field_right 
-            && compare(tokensb->tokens[i] , "set")){
-            pufield_p.curr = i;
-            i = parse_update_set(pufield_p);
-            if(*pufield_p.set_datas->auth_capable != *pufield_p.update_fields->auth_capable){
-                XSQL_LOG("update set value and field not valid!");
-                return i;
+    update_where_t *updateWhereT = pufield_p.updateWhereT;
+    TABLE_LIST_NODE *table = pufield_p.target_table;
+    for(int i = 0; i < *updateWhereT->auth_field_count; i++){
+        for(int j = 0; j < table->table->length ; j ++){
+            String *origin = table->table->FIELD[j] , *match_field = updateWhereT->field[i];
+            if(compare(origin , match_field->str))break;
+            else if(j == table->table->length - 1&&!compare(origin , match_field->str)){
+                XSQL_LOG_PARAM("update where field not valid : " , match_field->str);
+                return 0;
             }
-            is_over_update_set = 1;
-            continue;
-        }else if(is_over_update_set&&compare(tokensb->tokens[i] , "where")){
-            pufield_p.curr = i;
-            i = parse_update_where(pufield_p); // ; i - 1
-            continue;
-        }else if(compare(tokensb->tokens[i] , ";")){
-            update_data_core(pufield_p);
-            return i - 1;
         }
     }
+    return 1;
 }
-// update a(name , id)set('hajimi' , '011')where id = '001' and name = 'laoda';
+
+static int
+parse_update_is_reach_table_name(TOKENSB *tokensb ,int is_over_update_field_left , int i)
+{
+    String *token = tokensb->tokens[i];
+    if(is_over_update_field_left)return 0;if(compare(token , " "))return 0;
+    if(IS_PRIMARY_KEY(token->str))return 0;if(compare(token , "("))return 0;
+    if(compare(token , ")"))return 0;if(IS_CONTAIN_KEYS(token->str))return 0;
+    if(compare(token , "\'"))return 0;if(compare(token , "set")) return 0;
+    if(compare(token , "where"))return 0;if(compare(token , "and") || compare(token , "or"))return 0;
+    return 1;
+}
+
+static void
+parse_update_reach_table_name_func(PUField_p *pufield_p , String *table_name 
+    , TABLE_LIST_NODE *target_table , int i , TABLE_LIST_NODE *head)
+{
+    TOKENSB *tokensb = pufield_p->tokensb;
+    combine_tail(table_name , tokensb->tokens[i]->str);
+    target_table = get_TABLE_LIST_NODE(head , table_name->str);
+    pufield_p->target_table = target_table;
+    string_free(table_name);
+}
+
+static int
+parse_update_is_over_field_left_func(PUField_p *pufield_p , int i , int *is_over_update_field_right)
+{
+    pufield_p->curr = i; i = parse_update_field(*pufield_p);
+    *is_over_update_field_right = 1;
+    // check update fields...
+    int check_update_field_status = check_update_field(*pufield_p);
+    if(!check_update_field_status){return 0;}return 1;
+}
+
+static int
+parse_update_reach_set_func(PUField_p pufield_p , int i , int *is_over_update_set)
+{
+    pufield_p.curr = i;
+    i = parse_update_set(pufield_p);
+    if(*pufield_p.set_datas->auth_capable != *pufield_p.update_fields->auth_capable){
+        XSQL_LOG("update set value and field not valid!");
+        return 0;
+    }
+    *is_over_update_set = 1;
+    return 1;
+}
+
+static int
+parse_update_reach_where_func(PUField_p pufield_p , int i)
+{
+    pufield_p.curr = i;
+    i = parse_update_where(pufield_p); // ; i - 1
+    int check_update_where_field_status = check_update_where_field(pufield_p);
+    if(!check_update_where_field_status){return 0;}return 1;
+}
 
 static void
 match_field_index(PUField_p *pufield_p)
@@ -163,6 +175,12 @@ collect_dataline_array(PUField_p pufield_p,DATALINE_ARRAY *datalineArray , DATAL
      datalineArray->datalines[(*pufield_p.datalineArray_count)++] = temp->dataline;
 }
 
+static void
+collect_dataline_array_is_empty(PUField_p pufield_p)
+{
+    if((*pufield_p.datalineArray_count) == 0)XSQL_LOG("update array is empty!");
+}
+
 DATALINE_ARRAY *
 select_match_dataline_array(PUField_p pufield_p)
 {
@@ -173,7 +191,34 @@ select_match_dataline_array(PUField_p pufield_p)
             collect_dataline_array(pufield_p , datalineArray , temp);
         temp = temp->next;
     }
+    collect_dataline_array_is_empty(pufield_p);
     return datalineArray;
+}
+
+static int
+is_update_field_name(PUField_p pufield_p , int i)
+{
+    String *token = pufield_p.tokensb->tokens[i];
+    if(compare(token , " "))return 0;if(compare(token , ","))return 0;
+    if(compare(token , "")) return 0;if(compare(token , "("))return 0;
+    if(compare(token , ")"))return 0;return 1;
+}
+
+static void
+update_field_name_storage(PUField_p pufield_p , String *temp_field_name)
+{
+    int *auth_capable = pufield_p.update_fields->auth_capable;
+    combine_tail(pufield_p.update_fields->data[(*auth_capable)++] , temp_field_name->str);
+    delete_all(temp_field_name);
+}
+
+static void
+update_field_end(PUField_p pufield_p , String *temp_field_name)
+{
+    int *auth_capable = pufield_p.update_fields->auth_capable;
+    combine_tail(pufield_p.update_fields->data[(*auth_capable)++] , temp_field_name->str);
+    string_free(temp_field_name);
+    parse_update_auth_field_indexs(pufield_p);
 }
 
 int 
@@ -181,22 +226,18 @@ parse_update_field(PUField_p pufield_p)
 {
     String *temp_field_name = create_string("");
     for(int i = pufield_p.curr; i < pufield_p.tokensb->count ; i++){
-        if(!compare(pufield_p.tokensb->tokens[i] , " ")&&!compare(pufield_p.tokensb->tokens[i] , ",")
-        &&!compare(pufield_p.tokensb->tokens[i] , "(") && !compare(pufield_p.tokensb->tokens[i] , ")")){ //field_name
+        if(is_update_field_name(pufield_p , i)){ //field_name
             combine_tail(temp_field_name , pufield_p.tokensb->tokens[i]->str);
             continue;
-        }else if(compare(pufield_p.tokensb->tokens[i] , ",")){
-            combine_tail(pufield_p.update_fields->data[(*pufield_p.update_fields->auth_capable)++] 
-            , temp_field_name->str);
-            delete_all(temp_field_name);
+        }
+        if(compare(pufield_p.tokensb->tokens[i] , ",")){
+            update_field_name_storage(pufield_p , temp_field_name);
             continue;
-        }else if(compare(pufield_p.tokensb->tokens[i] , ")")){
-            combine_tail(pufield_p.update_fields->data[(*pufield_p.update_fields->auth_capable)++] 
-            , temp_field_name->str);
-            string_free(temp_field_name);
-            parse_update_auth_field_indexs(pufield_p);
+        }
+        if(compare(pufield_p.tokensb->tokens[i] , ")")){
+            update_field_end(pufield_p , temp_field_name);
             return i;   
-        }else continue;
+        }
     }
     return pufield_p.curr + 1;
 }
@@ -205,11 +246,8 @@ static int
 is_update_set_token(PUField_p pufield_p, int i)
 {
     String *token = pufield_p.tokensb->tokens[i];
-    if(compare(token , "(")||compare(token , ")"))return 0;
-    if (compare(token , "\'"))return 0;
-    if(compare(token , ","))return 0;
-    if(compare(token , ";"))return 0;
-    return 1;
+    if(compare(token , "(")||compare(token , ")"))return 0;if (compare(token , "\'"))return 0;
+    if(compare(token , ","))return 0;if(compare(token , ";"))return 0;return 1;
 }
 
 static void
@@ -280,15 +318,10 @@ static int
 is_where_field_token(TOKENSB *tokensb, int i, int is_over_single_quote)
 {
     String *token = tokensb->tokens[i];
-    if (is_over_single_quote)return 0;
-    if (compare(token, " "))return 0;
-    if (IS_PRIMARY_KEY(token->str))return 0;
-    if (compare(token, "\'"))return 0;
-    if (compare(token, "="))return 0;
-    if (compare(token, "and"))return 0;
-    if (compare(token, "or")) return 0;
-    if (compare(token, ";")) return 0;
-    return 1;
+    if (is_over_single_quote)return 0;if (compare(token, " "))return 0;
+    if (IS_PRIMARY_KEY(token->str))return 0;if (compare(token, "\'"))return 0;
+    if (compare(token, "="))return 0;if (compare(token, "and"))return 0;
+    if (compare(token, "or")) return 0;if (compare(token, ";")) return 0;return 1;
 }
 
 static void
@@ -516,4 +549,55 @@ free_updateWhereT(update_where_t *ptr)
     free(ptr->auth_data_count);
     free(ptr->auth_indexs_count);
     free(ptr);
+}
+
+int 
+UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
+{
+    String *table_name = create_string("");
+    int is_over_update_field_left = 0;
+    int is_over_update_field_right = 0;
+    int is_over_update_set = 0;
+    load_container_t *update_fields = create_loadContainerT();
+    load_container_t *set_datas = create_loadContainerT();
+    int *update_field_table_indexs;
+    TABLE_LIST_NODE *target_table;
+    update_where_t *updateWhereT = create_updateWhereT();
+    int *datalineArray_count = (int*) malloc(sizeof(int));
+    *datalineArray_count = 0;
+    PUField_p pufield_p;
+    pufield_p.tokensb = tokensb  , pufield_p.update_fields = update_fields,pufield_p
+    .update_field_table_indexs = update_field_table_indexs
+    ,pufield_p.set_datas = set_datas , pufield_p.updateWhereT = updateWhereT 
+    , pufield_p.datalineArray_count = datalineArray_count;
+    for(int i = 0 ; i < tokensb->count ; i++){
+        if(parse_update_is_reach_table_name(tokensb , is_over_update_field_left , i)){
+            parse_update_reach_table_name_func(&pufield_p , table_name , target_table , i , head);
+            continue;
+        }
+        if (!is_over_update_field_left && compare(tokensb->tokens[i] , "(")){
+            is_over_update_field_left = 1;
+            continue;
+        }
+        if(is_over_update_field_left&&!is_over_update_field_right){
+            int is_error = parse_update_is_over_field_left_func(&pufield_p , i , &is_over_update_field_right);
+            if(!is_error)return i;
+            continue;
+        }
+        if(is_over_update_field_left && is_over_update_field_right&& compare(tokensb->tokens[i] , "set")){
+            int is_error = parse_update_reach_set_func(pufield_p , i , &is_over_update_set);
+            if(!is_error)return i;
+            continue;
+        }
+        if(is_over_update_set&&compare(tokensb->tokens[i] , "where")){
+            int is_error = parse_update_reach_where_func(pufield_p , i);
+            if(!is_error)return i;
+            continue;
+        }
+        if(compare(tokensb->tokens[i] , ";")){
+            update_data_core(pufield_p);
+            XSQL_LOG("update is ok!");
+            return i - 1;
+        }
+    }
 }
