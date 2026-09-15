@@ -551,6 +551,15 @@ free_updateWhereT(update_where_t *ptr)
     free(ptr);
 }
 
+static void
+update_free_all(load_container_t *update_fields , load_container_t *set_datas 
+    , PUField_p pufield_p , update_where_t *updateWhereT)
+{
+    free_updateFieldT(update_fields);
+    free_updateFieldT(set_datas);
+    free_updateWhereT(updateWhereT);
+}
+
 int 
 UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
 {
@@ -560,7 +569,7 @@ UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
     int is_over_update_set = 0;
     load_container_t *update_fields = create_loadContainerT();
     load_container_t *set_datas = create_loadContainerT();
-    int *update_field_table_indexs;
+    int *update_field_table_indexs; // no free
     TABLE_LIST_NODE *target_table;
     update_where_t *updateWhereT = create_updateWhereT();
     int *datalineArray_count = (int*) malloc(sizeof(int));
@@ -597,6 +606,7 @@ UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
         if(compare(tokensb->tokens[i] , ";")){
             update_data_core(pufield_p);
             XSQL_LOG("update is ok!");
+            update_free_all(update_fields , set_datas , pufield_p , updateWhereT);
             return i - 1;
         }
     }

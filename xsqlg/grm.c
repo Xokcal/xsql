@@ -11,6 +11,7 @@
 #include "update.h"
 #include "../file/file.h"
 #include "../log/xlog.h"
+#include "show.h"
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
 
@@ -860,6 +861,7 @@ keys_to_KEYSTYPE(String *key)
     else if(compare(key , "insert"))return INSERT_K;
     else if(compare(key , "select"))return SELECT_K;
     else if(compare(key , "update"))return UPDATE_K;
+    else if(compare(key , "update"))return SHOW_K;
     else return NULL_K;
 }
 
@@ -886,6 +888,9 @@ void XSQL_RUN(TOKENSB *tokensb, TABLE_LIST_NODE *head , FILE *table_file
                 break;
             case UPDATE_K:
                 UPDATE_exe(head , tokensb , i);
+                break;
+            case SHOW_K:
+                i = SHOW_exe(head , tokensb , i);
                 break;
             default:
                 break;
