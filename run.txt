@@ -15,4 +15,8 @@ update a(name , id)set('manba' , '999999')where id = 'hajimi' and name = '011';
 
 update employees(full_name)set('WWWWW')where employee_id = 'e001';
 
+update employees(email_address,full_name) set ( '99999999@qq.com' , 'zengbo') where employee_id = '3'; 
+
+update employees(email_address,full_name) set ( '22222222@qq.com' , 'zengbo') where employee_id = '3' and full_name = 'yyyyyyyyyyyy';
+
 SELECT * FROM a;

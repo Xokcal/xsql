@@ -14,9 +14,31 @@
         printf("UPDATE_DEBUG[%s] %s\n" , (statue) , (str))
     #define LOG_INT(statue , d)\
         printf("UPDATE_DEBUG[%s] %d\n" , (statue) , (d))
+    #define XSQL_LOG(str)\
+        printf("xsql : %s\n" , (str))
+    #define XSQL_LOG_PARAM(str , param)\
+        printf("xsql : %s \'%s\'\n" , (str) , (param))
 #else
     #define LOG(statue , str)
 #endif
+
+static int
+check_update_field_valid(PUField_p pufield_p)
+{
+    load_container_t *update_fields = pufield_p.update_fields;
+    TABLE_LIST_NODE *table = pufield_p.target_table;
+    for(int i = 0; i < *update_fields->auth_capable; i++){
+        for(int j = 0; j < table->table->length ; j ++){
+            String *origin = table->table->FIELD[j] , *match_field = update_fields->data[i];
+            if(compare(origin , match_field->str))break;
+            else if(j == table->table->length - 1&&!compare(origin , match_field->str)){
+                XSQL_LOG_PARAM("update match field not valid : " , match_field->str);
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
 
 //UPDATE user(username , status) SET ('hajimi' , '0') WHERE id = '2001';
 int 
@@ -53,11 +75,18 @@ UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
             pufield_p.curr = i;
             i = parse_update_field(pufield_p);
             is_over_update_field_right = 1;
+            // check update fields...
+            int check_update_field_status = check_update_field_valid(pufield_p);
+            if(!check_update_field_status){return i;}
             continue;
         }else if(is_over_update_field_left && is_over_update_field_right 
             && compare(tokensb->tokens[i] , "set")){
             pufield_p.curr = i;
             i = parse_update_set(pufield_p);
+            if(*pufield_p.set_datas->auth_capable != *pufield_p.update_fields->auth_capable){
+                XSQL_LOG("update set value and field not valid!");
+                return i;
+            }
             is_over_update_set = 1;
             continue;
         }else if(is_over_update_set&&compare(tokensb->tokens[i] , "where")){
@@ -77,9 +106,8 @@ match_field_index(PUField_p *pufield_p)
 {
     TABLE_LIST_NODE *table = pufield_p->target_table;
     pufield_p->update_field_table_indexs =
-     (int*)malloc((*pufield_p->update_fields->auth_capable) * sizeof(int));
-    int *temp_field_index =pufield_p->update_field_table_indexs;
-    int index_count = 0;
+    (int*)malloc((*pufield_p->update_fields->auth_capable) * sizeof(int));
+    int *temp_field_index =pufield_p->update_field_table_indexs;int index_count = 0;
     for(int i = 0; i < *pufield_p->update_fields->auth_capable; i++){
         for(int j = 0; j < table->table->length ; j++){
             if(compare(table->table->FIELD[j] , pufield_p->update_fields->data[i]->str))
@@ -92,8 +120,7 @@ static void
 where_match_field_index(PUField_p pufield_p)
 {
     TABLE_LIST_NODE *table = pufield_p.target_table;
-    int *temp_field_index =pufield_p.updateWhereT->field_indexs;
-    int index_count = 0;
+    int *temp_field_index =pufield_p.updateWhereT->field_indexs;int index_count = 0;
     for(int i = 0; i < *pufield_p.update_fields->auth_capable; i++){
         for(int j = 0; j < table->table->length ; j++){
             if(compare(table->table->FIELD[j] , pufield_p.updateWhereT->field[i]->str))
@@ -105,13 +132,13 @@ where_match_field_index(PUField_p pufield_p)
 void 
 update_data_core(PUField_p pufield_p)
 {
-    match_field_index(&pufield_p);
-    where_match_field_index(pufield_p);
+    match_field_index(&pufield_p);where_match_field_index(pufield_p);
     DATALINE_ARRAY *datalineArray = select_match_dataline_array(pufield_p);
     for (int i = 0; i < *pufield_p.datalineArray_count; i++){
-        for (int j = 0; j < *pufield_p.updateWhereT->auth_field_count; j++){
+        for (int j = 0; j < *pufield_p.update_fields->auth_capable; j++){
             copy_string(pufield_p.set_datas->data[j]
-                ,datalineArray->datalines[i]->DATA[pufield_p.update_field_table_indexs[j]]);
+                ,datalineArray->datalines[i]->DATA[pufield_p.update_field_table_indexs[j]]
+            );
         }
     }
 }
@@ -152,32 +179,25 @@ select_match_dataline_array(PUField_p pufield_p)
 int 
 parse_update_field(PUField_p pufield_p)
 {
-    printf("[EN update (id , name , ...)]\n");
     String *temp_field_name = create_string("");
     for(int i = pufield_p.curr; i < pufield_p.tokensb->count ; i++){
-        printf("[i v] %s\n" , pufield_p.tokensb->tokens[i]->str);
         if(!compare(pufield_p.tokensb->tokens[i] , " ")&&!compare(pufield_p.tokensb->tokens[i] , ",")
         &&!compare(pufield_p.tokensb->tokens[i] , "(") && !compare(pufield_p.tokensb->tokens[i] , ")")){ //field_name
-            printf("[storage] %s\n" , pufield_p.tokensb->tokens[i]->str);
             combine_tail(temp_field_name , pufield_p.tokensb->tokens[i]->str);
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , ",")){
-            printf("[,] %s\n" , pufield_p.tokensb->tokens[i]->str);
             combine_tail(pufield_p.update_fields->data[(*pufield_p.update_fields->auth_capable)++] 
             , temp_field_name->str);
             delete_all(temp_field_name);
             continue;
         }else if(compare(pufield_p.tokensb->tokens[i] , ")")){
-            printf("[temp_update_v] %s\n" , temp_field_name->str);
             combine_tail(pufield_p.update_fields->data[(*pufield_p.update_fields->auth_capable)++] 
             , temp_field_name->str);
             string_free(temp_field_name);
             parse_update_auth_field_indexs(pufield_p);
-            printf("end\n");
             return i;   
         }else continue;
     }
-    printf("field is ok!\n");
     return pufield_p.curr + 1;
 }
 
@@ -346,8 +366,6 @@ parse_update_where(PUField_p pufield_p)
     return -1;
 }
 
-
-
 void 
 parse_update_auth_field_indexs(PUField_p pufield_p)
 {
@@ -360,8 +378,6 @@ parse_update_auth_field_indexs(PUField_p pufield_p)
         }
     }
 }
-
-
 
 load_container_t *
 create_loadContainerT()
