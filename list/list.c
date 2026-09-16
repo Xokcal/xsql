@@ -6,6 +6,17 @@
 #include <stdlib.h>
 #include "list.h"
 
+// #define XSQL_DEBUG
+
+#ifdef XSQL_DEBUG 
+    #define LOG(statue , str)\
+        printf("LIST_DEBUG[%s] %s\n" , (statue) , (str))
+    #define LOG_INT(statue , d)\
+        printf("LIST_DEBUG[%s] %d\n" , (statue) , (d))
+#else
+    #define LOG(statue , str)
+#endif
+
 TABLE_LIST_NODE *create_TABLE_LIST_NODE(String *name , String** field , int length){
     TABLE_LIST_NODE *table_list_node = (TABLE_LIST_NODE*)malloc(sizeof(TABLE_LIST_NODE));
     table_list_node->next = NULL;
@@ -28,9 +39,13 @@ void add_TABLE_LIST_NODE(TABLE_LIST_NODE *head , TABLE_LIST_NODE *new_node){
 }
 
 TABLE_LIST_NODE *get_TABLE_LIST_NODE(TABLE_LIST_NODE *head , char*name){
+    LOG("----------------------------" , "-----------------");
     TABLE_LIST_NODE *temp = head;
     while (temp != NULL) {
-        if (compare(temp->table->NAME, name) == 1) return temp;
+        if (compare(temp->table->NAME, name) == 1){ 
+            LOG("list get table node->" , temp->table->NAME->str);
+            return temp;
+        }
         temp = temp->next;
     }
     return NULL;
