@@ -43,18 +43,6 @@ separateLine_len_calc(TABLE_LIST_NODE *head)
     return max;
 }
 
-static String*
-separate_line_str(TABLE_LIST_NODE *head)
-{
-    TABLE_LIST_NODE *temp = head;
-    int max = separateLine_len_calc(temp);
-    /* the 'line' need free after print. */
-    String *line = create_string("");
-    for(int i = 0; i < max + PERSISTENT_LINE_LENGTH; i++)
-        combine_tail(line , "-");
-    return line;
-}
-
 static int
 field_Or_TableName_Max_Length(TABLE_LIST_NODE *target_table)
 {
@@ -72,6 +60,18 @@ field_Or_TableName_Max_Length(TABLE_LIST_NODE *target_table)
         max = target_table->table->NAME->length;
     }
     return max;
+}
+
+static String*
+separate_line_str(TABLE_LIST_NODE *head)
+{
+    TABLE_LIST_NODE *temp = head;
+    int max = separateLine_len_calc(temp);
+    /* the 'line' need free after print. */
+    String *line = create_string("");
+    for(int i = 0; i < max + PERSISTENT_LINE_LENGTH; i++)
+        combine_tail(line , "-");
+    return line;
 }
 
 /* need addition '-' total num is :
@@ -92,12 +92,25 @@ tableName_tail_calc(TABLE_LIST_NODE *head , TABLE_LIST_NODE *target_table)
     return tail;
 }
 
+static String *
+allTable_Print_Tail_Calc(String *tableName , int total_len)
+{
+    String *tail = create_string("");
+    int extra = total_len - tableName->length;
+    for(int i = 0; i < extra - 1 ; i++)combine_tail(tail , " ");
+    combine_tail(tail , "|");
+    return tail;
+}
+
 static void
-tableName_Print(TABLE_LIST_NODE *head)
+tableName_Print(TABLE_LIST_NODE *head , int total_len)
 {
     TABLE_LIST_NODE *temp = head->next;
     while(temp != NULL){
-        TABLE_NAME_AND_FIELD_PRINT(temp->table->NAME->str , "");
+        String *tableName = temp->table->NAME;
+        String *tableName_tail = allTable_Print_Tail_Calc(tableName , total_len);
+        TABLE_NAME_AND_FIELD_PRINT(tableName->str , tableName_tail->str);
+        string_free(tableName_tail);
         temp = temp->next;
     }
 }
@@ -107,7 +120,7 @@ allTable_Print(TABLE_LIST_NODE *head , TOKENSB *tokensb)
 {
     String *line =  separate_line_str(head);
     SEPARATE_LINE_PRINT(line->str);
-    tableName_Print(head);
+    tableName_Print(head , line->length);
     SEPARATE_LINE_PRINT(line->str);
     string_free(line);
 }
