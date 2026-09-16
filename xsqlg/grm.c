@@ -71,15 +71,38 @@ TOKENSB *tokens_parse(String *origin){
     String **tokens = (String**)malloc(2000000 * sizeof(String*));
     String *temp = create_string("");
     String *temp_test = create_string("");
+    String *temp_longest_match = create_string("");
     int count = 0;
     for (int i = 0; i < origin->length; ++i) {
         combine_tail_char(temp , origin->str[i]);
         if(IS_CONTAIN_KEYS(temp->str) == 1){
+            int longest_count = 1;
+            combine_tail(temp_longest_match , temp->str);
+            if(origin->str[i + 1] == ' ' ||  (i + 1) == origin->length){
+                goto notAddBehind;
+            }
+            combine_tail_char(temp_longest_match , origin->str[i + longest_count]);
+            if(IS_CONTAIN_KEYS(temp_longest_match->str)){
+                while(!(origin->str[i + (++longest_count)] == ' ') || (1 + longest_count) != origin->length){
+                    combine_tail_char(temp_longest_match , origin->str[i + longest_count]);
+                    if(!IS_CONTAIN_KEYS(temp_longest_match->str)){
+                        delete_indexof(temp_longest_match , temp_longest_match->length - 1);
+                        break;
+                    }
+                }
+                tokens[count] = create_string("");
+                lowercase(temp_longest_match);
+                combine_tail(tokens[count++] , temp_longest_match->str);
+                delete_all(temp);
+                delete_all(temp_longest_match);
+                continue;
+            }
+            notAddBehind:
             tokens[count] = create_string("");
             lowercase(temp);
             combine_tail(tokens[count++] , temp->str);
             delete_all(temp);
-            delete_all(temp_test);
+            delete_all(temp_longest_match);
             continue;
         } else {
             combine_tail_char(temp_test , origin->str[i + 1]);
@@ -96,6 +119,7 @@ TOKENSB *tokens_parse(String *origin){
     //printf("[count]%d\n" , count);
     string_free(temp);
     string_free(temp_test);
+    string_free(temp_longest_match);
     TOKENSB *tokensb = (TOKENSB*)malloc(sizeof(TOKENSB));
     tokensb->tokens = tokens;
     tokensb->count = count;
@@ -861,7 +885,7 @@ keys_to_KEYSTYPE(String *key)
     else if(compare(key , "insert"))return INSERT_K;
     else if(compare(key , "select"))return SELECT_K;
     else if(compare(key , "update"))return UPDATE_K;
-    else if(compare(key , "update"))return SHOW_K;
+    else if(compare(key , "show"))return SHOW_K;
     else return NULL_K;
 }
 
@@ -872,25 +896,43 @@ void XSQL_RUN(TOKENSB *tokensb, TABLE_LIST_NODE *head , FILE *table_file
         KEYS keys_enum = keys_to_KEYSTYPE(tokensb->tokens[i]);
         switch (keys_enum) {
             case CREATE_K:
-            //printf("EN create\n");
-                i = CREATE_exe(head , tokensb , i , table_file , data_file , dbT);
-                //printf("[i]%s  %d\n" , tokensb->tokens[i]->str , i);
-                //printf("[BREAK CREATE TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i + 1]->str);
+                i = CREATE_exe(
+                    head 
+                    ,tokensb 
+                    , i 
+                    , table_file 
+                    , data_file 
+                    , dbT
+                );
                 break;
             case INSERT_K:
-                //printf("[DEBUG] INSERT_exe  = %s\n", tokensb->tokens[i]->str);
-                i = INSERT_exe(head ,tokensb , i , dbT);
-                //printf("[BREAK INSERT TABLE I] %d  AND token = %s\n" , i , tokensb->tokens[i]->str);
-                //printf("[INSERT EXE SUCCESS!!!]\n\n\n");
+                i = INSERT_exe(
+                    head 
+                    ,tokensb 
+                    , i 
+                    , dbT
+                );
                 break;
             case SELECT_K:
-                SELECT_exe(head , tokensb , i);
+                SELECT_exe(
+                    head 
+                    , tokensb 
+                    , i
+                );
                 break;
             case UPDATE_K:
-                UPDATE_exe(head , tokensb , i);
+                UPDATE_exe(
+                    head 
+                    , tokensb 
+                    , i
+                );
                 break;
             case SHOW_K:
-                i = SHOW_exe(head , tokensb , i);
+                i = Xsql_ShowExe(
+                    head 
+                    , tokensb 
+                    , i
+                );
                 break;
             default:
                 break;

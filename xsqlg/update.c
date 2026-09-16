@@ -7,20 +7,21 @@
 #include "../time/xtime.h"
 #include "update.h"
 
-#define XSQL_DEBUG
+// #define XSQL_DEBUG
 
 #ifdef XSQL_DEBUG 
     #define LOG(statue , str)\
         printf("UPDATE_DEBUG[%s] %s\n" , (statue) , (str))
     #define LOG_INT(statue , d)\
         printf("UPDATE_DEBUG[%s] %d\n" , (statue) , (d))
-    #define XSQL_LOG(str)\
-        printf("xsql : %s\n" , (str))
-    #define XSQL_LOG_PARAM(str , param)\
-        printf("xsql : %s \'%s\'\n" , (str) , (param))
 #else
     #define LOG(statue , str)
 #endif
+
+#define XSQL_LOG(str)\
+    printf("xsql : %s\n" , (str))
+#define XSQL_LOG_PARAM(str , param)\
+    printf("xsql : %s \'%s\'\n" , (str) , (param))
 
 static int
 check_update_field(PUField_p pufield_p)
@@ -97,8 +98,7 @@ parse_update_reach_set_func(PUField_p pufield_p , int i , int *is_over_update_se
     pufield_p.curr = i;
     i = parse_update_set(pufield_p);
     if(*pufield_p.set_datas->auth_capable != *pufield_p.update_fields->auth_capable){
-        XSQL_LOG("update set value and field not valid!");
-        return 0;
+        XSQL_LOG("update set value and field not valid!");return 0;
     }
     *is_over_update_set = 1;
     return 1;
@@ -131,12 +131,13 @@ match_field_index(PUField_p *pufield_p)
 static void
 where_match_field_index(PUField_p pufield_p)
 {
+    LOG("entre match field!" , "");
     TABLE_LIST_NODE *table = pufield_p.target_table;
-    int *temp_field_index =pufield_p.updateWhereT->field_indexs;int index_count = 0;
-    for(int i = 0; i < *pufield_p.update_fields->auth_capable; i++){
+    int index_count = 0;
+    for(int i = 0; i < *pufield_p.updateWhereT->auth_field_count; i++){
         for(int j = 0; j < table->table->length ; j++){
             if(compare(table->table->FIELD[j] , pufield_p.updateWhereT->field[i]->str))
-                temp_field_index[index_count++] = j;
+                pufield_p.updateWhereT->field_indexs[index_count++] = j;
         }
     }
 }
@@ -144,6 +145,7 @@ where_match_field_index(PUField_p pufield_p)
 void 
 update_data_core(PUField_p pufield_p)
 {
+    LOG("entre update parse core!" , "");
     match_field_index(&pufield_p);where_match_field_index(pufield_p);
     DATALINE_ARRAY *datalineArray = select_match_dataline_array(pufield_p);
     for (int i = 0; i < *pufield_p.datalineArray_count; i++){
@@ -156,7 +158,7 @@ update_data_core(PUField_p pufield_p)
 }
 
 static int
-is_match_were_field(PUField_p pufield_p,DATALINE_ARRAY *datalineArray , DATALINE_NODE *temp)
+is_match_where_field(PUField_p pufield_p,DATALINE_ARRAY *datalineArray , DATALINE_NODE *temp)
 {
     int count = *pufield_p.updateWhereT->auth_field_count;
     for(int i = 0; i < count ; i++){
@@ -170,6 +172,7 @@ is_match_were_field(PUField_p pufield_p,DATALINE_ARRAY *datalineArray , DATALINE
 static void
 collect_dataline_array(PUField_p pufield_p,DATALINE_ARRAY *datalineArray , DATALINE_NODE *temp)
 {
+    LOG("entre find target row and select to array!" , "");
     if((*pufield_p.datalineArray_count) == datalineArray->count)
         extend_DATALINE_ARRAY(pufield_p.target_table , datalineArray);
      datalineArray->datalines[(*pufield_p.datalineArray_count)++] = temp->dataline;
@@ -184,14 +187,16 @@ collect_dataline_array_is_empty(PUField_p pufield_p)
 DATALINE_ARRAY *
 select_match_dataline_array(PUField_p pufield_p)
 {
+    LOG("entre select arrays!" , "");
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(pufield_p.target_table);
     DATALINE_NODE *temp = pufield_p.target_table->table->dataline_head;
     while (temp != NULL){
-        if(is_match_were_field(pufield_p , datalineArray , temp))
+        if(is_match_where_field(pufield_p , datalineArray , temp))
             collect_dataline_array(pufield_p , datalineArray , temp);
         temp = temp->next;
     }
     collect_dataline_array_is_empty(pufield_p);
+    LOG("out select arrays!" , "");
     return datalineArray;
 }
 
@@ -236,6 +241,7 @@ parse_update_field(PUField_p pufield_p)
         }
         if(compare(pufield_p.tokensb->tokens[i] , ")")){
             update_field_end(pufield_p , temp_field_name);
+            LOG("parse field is ok!" , "");
             return i;   
         }
     }
@@ -361,6 +367,13 @@ parse_update_where(PUField_p pufield_p)
         // encounter ';' is over!
         if (compare(token, ";")) {
             string_free(temp_token);
+            LOG("parse where is ok!" , "");
+            for(int i = 0; i < *pufield_p.updateWhereT->auth_field_count;i++){
+                LOG("where field behind parse" , pufield_p.updateWhereT->field[i]->str);
+            }
+            for(int i = 0; i < *pufield_p.updateWhereT->auth_field_count;i++){
+                LOG("where data behind parse" , pufield_p.updateWhereT->data[i]->str);
+            }
             return i - 1;
         }
 
@@ -563,6 +576,7 @@ update_free_all(load_container_t *update_fields , load_container_t *set_datas
 int 
 UPDATE_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
 {
+    LOG("entre updateExe!" , "");
     String *table_name = create_string("");
     int is_over_update_field_left = 0;
     int is_over_update_field_right = 0;

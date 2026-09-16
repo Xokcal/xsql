@@ -60,7 +60,7 @@ typedef struct DATALINE_ARRAY{
     int *dataline_count;
  }datalineArray_calc_param_t;
 
-static char* sql_keys[21] = {"select" , "create" , "table" , "{" , "}"
+static char* sql_keys[22] = {"tables", "select" , "create" , "table" , "{" , "}"
                             , "(" , ")" , "commit" , "\'" , "from"
                             , "," , "where" , ";" , " " , "*" , "insert"
                             ,"string" , ":" , "\n" , "and" , "show"};

@@ -4,4 +4,4 @@
 #include "../list/list.h"
 
 
-int SHOW_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
+int Xsql_ShowExe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr);
