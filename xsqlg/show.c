@@ -17,7 +17,7 @@
 
 #define PERSISTENT_LINE_LENGTH 20
 
-#define TABLE_AND_FIELD_TAIL_EXTRA 1;
+#define TABLE_AND_FIELD_TAIL_EXTRA 1
 
 #define SHOW_PRINT_SEPARATE_VERTICAL_BAR "|"
 
@@ -96,8 +96,8 @@ static String *
 allTable_Print_Tail_Calc(String *tableName , int total_len)
 {
     String *tail = create_string("");
-    int extra = total_len - tableName->length;
-    for(int i = 0; i < extra - 1 ; i++)combine_tail(tail , " ");
+    int extra = total_len - tableName->length - TABLE_AND_FIELD_TAIL_EXTRA;
+    for(int i = 0; i < extra ; i++)combine_tail(tail , " ");
     combine_tail(tail , "|");
     return tail;
 }
@@ -133,7 +133,7 @@ field_tail_calc(TABLE_LIST_NODE *head , TABLE_LIST_NODE *target_table , String *
     int max = field_Or_TableName_Max_Length(target_table);
     int total_len = max + PERSISTENT_LINE_LENGTH;
     int tail_len = total_len - field->length - TABLE_AND_FIELD_TAIL_EXTRA;
-    for(int i =0; i < tail_len; i++)combine_tail(tail , " ");
+    for(int i = 0; i < tail_len; i++)combine_tail(tail , " ");
     combine_tail(tail , SHOW_PRINT_SEPARATE_VERTICAL_BAR);
     return tail;
 }
@@ -212,6 +212,7 @@ parse_show_reach_table(TABLE_LIST_NODE *head , TOKENSB *tokensb , int *is_over_t
         if(!compare(token , " ")&&is_over_tableName&&compare(token , ";")){
             LOG("show reach tableName core func! ->" , token->str);
             parse_tableField_core(head, target_table , &is_over_tableName , token);
+            return j;
         }
     }
     if(i != tokensb->count - 1)return i + 1;return i;

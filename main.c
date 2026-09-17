@@ -14,25 +14,11 @@
 \ncongratulate you use nice!\n" \
 
 int main() {
-    //开机，初始化储存表
-    /*String *table_file_init = open_file("db/xsql.sql");
-    TOKENSB *table_token_init = tokens_parse(table_file_init);*/
-
     table_db_t *tableDbT = create_tableDbT();
-    TABLE_LIST_NODE *head = NULL;//create_TABLE_LIST_NODE(create_string("XSQL") , NULL , 0);
+    TABLE_LIST_NODE *head = NULL;
     
     FILE *table_file = get_file_w("db/table.db");
     FILE *data_file = get_file_w("db/data.db");
-    //XSQL_RUN(table_token_init , head , table_file , data_file ,tableDbT );
-
-    //全部获取，并且重新存入文件
-   /*String *all_table_data = create_string("");
-    for(int i = 0 ; i < *tableDbT->auth_count ; i++)
-        combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
-    print_open("db/xsql.sql" , all_table_data->str);
-    delete_all(all_table_data);*/
-
-    //save_snapPhoto("db/xsql.bin" , head);
 
     head = get_snapPhoto("db/xsql.bin");
 
@@ -60,18 +46,11 @@ int main() {
         if (strlen(input) == 0) {
             continue;
         }
-
-        // 这里把 input 交给你的 XSQL 解析执行
-        //printf("you input> %s\n", input);
         char *xsql_char = input;
         combine_tail(xsql_input , xsql_char);
         TOKENSB *tokensb_input = tokens_parse(xsql_input);
-
-        /*for(int i = 0 ; i < *tableDbT->auth_count;i++){
-            printf("%s\n" , tableDbT->table_db_str[i]->str);
-        }*/
        if(compare(xsql_input , "exe file;")){
-            String *table_file_init = open_file("db/exe.sql");
+            String *table_file_init = open_file("exe.xsql");
             TOKENSB *table_token_init = tokens_parse(table_file_init);
             XSQL_RUN(table_token_init  ,  head , table_file , data_file , tableDbT);
             save_snapPhoto("db/xsql.bin" , head);
@@ -79,10 +58,6 @@ int main() {
        }else{
             XSQL_RUN(tokensb_input  ,  head , table_file , data_file , tableDbT);
             printf("XSQL_RUN is OK!!\n");
-            /*for(int i = 0 ; i < *tableDbT->auth_count ; i++)
-                combine_tail(all_table_data , tableDbT->table_db_str[i]->str);
-            print_open("db/xsql.sql" , );
-            delete_all(all_table_data);*/
             save_snapPhoto("db/xsql.bin" , head);
             delete_all(xsql_input);
        }

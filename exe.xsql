@@ -1,0 +1,32 @@
+create table teacher(
+    id string comment 'teacher id',
+    name string comment 'teacher name',
+    gender string comment 'gender',
+    age string comment 'age',
+    subject string comment 'teaching subject',
+    title string comment 'professional title',
+    phone string comment 'phone number',
+    email string comment 'email address',
+    office string comment 'office location',
+    salary string comment 'monthly salary'
+) comment 'teacher info';
+
+insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
+('1', 'wanglaoshi', 'm', '45', 'math', 'professor', '13900000001', 'wang@school.com', 'A101', '15000');
+
+insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
+('2', 'lilaoshi', 'f', '38', 'english', 'associate', '13900000002', 'li@school.com', 'B202', '12000');
+
+insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
+('3', 'zhanglaoshi', 'm', '50', 'physics', 'professor', '13900000003', 'zhang@school.com', 'A102', '16000');
+
+insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
+('4', 'zhaolaoshi', 'f', '35', 'chemistry', 'lecturer', '13900000004', 'zhao@school.com', 'C303', '10000');
+
+insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
+('5', 'sunlaoshi', 'm', '42', 'biology', 'associate', '13900000005', 'sun@school.com', 'B203', '13000');
+
+insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
+('6', 'zhoulaoshi', 'f', '29', 'computer', 'lecturer', '13900000006', 'zhou@school.com', 'C304', '11000');
+
+select * from teacher;

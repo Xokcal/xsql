@@ -89,17 +89,6 @@ void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node){
     *head = new_node;
 }
 
-/*void add_DATALINE_NODE(DATALINE_NODE *head , DATALINE_NODE *new_node){
-    if(head == NULL){
-        head = new_node;
-        return;
-    }
-    DATALINE_NODE *temp = head;
-    while (temp->next != NULL)temp = temp->next;
-    temp->next = new_node;
-    return;
-}*/
-
 DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key){
     if(head == NULL){return NULL;}
     //printf("[ENTRE GET!!]\n");
@@ -114,4 +103,33 @@ DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key){
         temp = temp->next;
     }
     return NULL;
+}
+
+
+// [head] -- [] -- [] -- [] -- [] -- [] -- NULL
+int 
+delete_DATALINE_NODE(TABLE_LIST_NODE *target_table , DATALINE_NODE **head , DATALINE_NODE *deleter)
+{
+    /*if(*head == NULL){return NULL;}
+
+    DATALINE_NODE *up = *head;
+    DATALINE_NODE *temp = *head;
+    int count = 0;
+    while(temp != NULL){
+        for(int i = 0; i < target_table->table->length - 1; i++){
+            if(!compare(deleter->dataline->DATA[i] , temp->dataline->DATA[i]->str))break;
+            // target node
+            if(!count){
+                *head = temp->next;
+                // 释放...
+                break;
+            }
+            up->next = temp->next;
+            // 释放temp
+            break;
+        }
+        count++;
+        up = temp; 
+        temp = temp->next;
+    }*/
 }

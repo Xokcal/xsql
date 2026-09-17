@@ -1,0 +1,24 @@
+update user (address , name) set ('22222222@qq.com' , 'Panan') 
+where id = '125' and name = 'wangwei';
+
+create table universy(
+    id string comment 'id',
+    tuition string comment 'tuition',
+    name string comment 'name',
+    person_num string comment 'person_number',
+    universy_head string comment 'universy_head'
+)comment 'universy';
+
+insert universy(id, tuition, name, person_num, universy_head) : 
+('1', '5000', 'Qinghua', '30000', 'ZhangSan');
+
+insert universy(id, tuition, name, person_num, universy_head) : 
+('2', '6000', 'Beida', '28000', 'LiSi');
+
+insert universy(id, tuition, name, person_num, universy_head) : 
+('3', '4500', 'Fudan', '25000', 'WangWu');
+
+insert universy(id, tuition, name, person_num, universy_head) : 
+('4', '5500', 'Zhejiang', '22000', 'ZhaoLiu');
+
+select * from universy;
