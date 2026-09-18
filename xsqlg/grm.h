@@ -20,6 +20,7 @@ typedef enum KEYS{
     INSERT_K,
     UPDATE_K,
     SHOW_K,
+    DELETE_K,
     NULL_K
 }KEYS;
 
@@ -60,14 +61,14 @@ typedef struct DATALINE_ARRAY{
     int *dataline_count;
  }datalineArray_calc_param_t;
 
-static char* sql_keys[22] = {"tables", "select" , "create" , "table" , "{" , "}"
+static char* sql_keys[23] = {"tables", "select" , "create" , "table" , "{" , "}"
                             , "(" , ")" , "commit" , "\'" , "from"
                             , "," , "where" , ";" , " " , "*" , "insert"
-                            ,"string" , ":" , "\n" , "and" , "show"};
+                            ,"string" , ":" , "\n" , "and" , "show" , "delete"};
 
 static char* primary_keys[6] = {"insert" , "select" , "update" , "create" , "delete" , "show"};
 
-static char* sql_keys_primary[5] = {"create" , "insert" , "update" , "select" , "show"};
+static char* sql_keys_primary[6] = {"delete" , "create" , "insert" , "update" , "select" , "show"};
 
 
 int IS_CONTAIN_KEYS(char *str);

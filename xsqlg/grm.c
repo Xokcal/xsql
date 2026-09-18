@@ -12,6 +12,7 @@
 #include "../file/file.h"
 #include "../log/xlog.h"
 #include "show.h"
+#include "delete.h"
 
 #define CHAR_LENGTH(strs) (sizeof(strs) / sizeof(strs[0]))
 
@@ -886,6 +887,7 @@ keys_to_KEYSTYPE(String *key)
     else if(compare(key , "select"))return SELECT_K;
     else if(compare(key , "update"))return UPDATE_K;
     else if(compare(key , "show"))return SHOW_K;
+    else if(compare(key , "delete"))return DELETE_K;
     else return NULL_K;
 }
 
@@ -929,6 +931,13 @@ void XSQL_RUN(TOKENSB *tokensb, TABLE_LIST_NODE *head , FILE *table_file
                 break;
             case SHOW_K:
                 i = Xsql_ShowExe(
+                    head 
+                    , tokensb 
+                    , i
+                );
+                break;
+             case DELETE_K:
+                i = Xsql_DeleteExe(
                     head 
                     , tokensb 
                     , i

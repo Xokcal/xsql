@@ -21,5 +21,9 @@ update employees(email_address,full_name) set ( '22222222@qq.com' , 'zengbo') wh
 
 update user (name) set ('qqqqqq') where id = 'e001' and name = 'zhangwei';
 
+delete user where id = 'e003' and name = 'qqqqqq' or address = '81978dqd@qq' or id = '12';
+
+delete user where id = 'e001' or name = 'manba' or address = '22222222@qq.com';
+
 show table user;
 SELECT * FROM a;
