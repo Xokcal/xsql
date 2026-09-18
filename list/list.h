@@ -45,6 +45,8 @@ TABLE_LIST_NODE *get_TABLE_LIST_NODE(TABLE_LIST_NODE *head , char *name);
 DATALINE_NODE *create_DATALINE_NODE(String **data , int *indexs , int count , int field_count);
 void add_DATALINE_NODE(DATALINE_NODE **head , DATALINE_NODE *new_node);
 DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key);
-int 
-delete_DATALINE_NODE(TABLE_LIST_NODE *target_table , DATALINE_NODE **head , DATALINE_NODE *deleter);
+void
+free_DATALINE_NODE(DATALINE_NODE *node, int field_count);
+void 
+delete_DATALINE_NODE(TABLE_LIST_NODE *target_table , DATALINE_NODE **head , DATALINE *deleter);
 #endif //XOKSQLC语言版_LIST_H

@@ -55,8 +55,7 @@ check_update_where_field(PUField_p pufield_p)
                 return 0;
             }
         }
-    }
-    return 1;
+    }return 1;
 }
 
 static int
@@ -178,7 +177,7 @@ collect_dataline_array(PUField_p pufield_p,DATALINE_ARRAY *datalineArray , DATAL
      datalineArray->datalines[(*pufield_p.datalineArray_count)++] = temp->dataline;
 }
 
-static void
+static inline void
 collect_dataline_array_is_empty(PUField_p pufield_p)
 {
     if((*pufield_p.datalineArray_count) == 0)XSQL_LOG("update array is empty!");
@@ -200,7 +199,7 @@ select_match_dataline_array(PUField_p pufield_p)
     return datalineArray;
 }
 
-static int
+static inline int
 is_update_field_name(PUField_p pufield_p , int i)
 {
     String *token = pufield_p.tokensb->tokens[i];
@@ -248,7 +247,7 @@ parse_update_field(PUField_p pufield_p)
     return pufield_p.curr + 1;
 }
 
-static int
+static inline int
 is_update_set_token(PUField_p pufield_p, int i)
 {
     String *token = pufield_p.tokensb->tokens[i];

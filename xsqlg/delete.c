@@ -114,6 +114,14 @@ Select_Match_Condition_Row(XsqlWhereCondi *xsqlWhereCondi ,DATALINE_ARRAY *datal
 }
 
 static void
+Delete_Arrays_DatalineNode(TABLE_LIST_NODE *target_table ,DATALINE_ARRAY *datalineArray , int *array_count)
+{
+    for(int i = 0 ; i < *array_count ; i++)
+        delete_DATALINE_NODE(target_table , &target_table->table->dataline_head
+            , datalineArray->datalines[i]);
+}
+
+static void
 Where_Logic_Parse(TABLE_LIST_NODE *target_table , XsqlWhereCondi *xsqlWhereCondi)
 {
     int *array_count = (int*) malloc(xsqlWhereCondi->field_count * sizeof(int));
@@ -123,11 +131,7 @@ Where_Logic_Parse(TABLE_LIST_NODE *target_table , XsqlWhereCondi *xsqlWhereCondi
     DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(target_table);
     Select_Match_Condition_Row(xsqlWhereCondi , datalineArray 
         , target_table , array_count , where_field_match_indexs);
-    for(int i = 0 ; i < *array_count ; i++){
-        printf("%s  " , datalineArray->datalines[i]->DATA[0]->str);
-        printf("%s  " , datalineArray->datalines[i]->DATA[1]->str);
-        printf("%s  \n" , datalineArray->datalines[i]->DATA[2]->str);
-    }
+    Delete_Arrays_DatalineNode(target_table , datalineArray , array_count);
     free_DATALINE_ARRAY(datalineArray , 1);
     free(array_count);
 }

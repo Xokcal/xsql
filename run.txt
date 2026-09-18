@@ -23,7 +23,14 @@ update user (name) set ('qqqqqq') where id = 'e001' and name = 'zhangwei';
 
 delete user where id = 'e003' and name = 'qqqqqq' or address = '81978dqd@qq' or id = '12';
 
-delete user where id = 'e001' or name = 'manba' or address = '22222222@qq.com';
+delete user where id = 'e003' or name = 'qqqqqq' or address = '81978dqd@qq' or id = '12';
+
 
 show table user;
 SELECT * FROM a;
+
+for(int i = 0 ; i < *array_count ; i++){
+        printf("%s  " , datalineArray->datalines[i]->DATA[0]->str);
+        printf("%s  " , datalineArray->datalines[i]->DATA[1]->str);
+        printf("%s  \n" , datalineArray->datalines[i]->DATA[2]->str);
+    }

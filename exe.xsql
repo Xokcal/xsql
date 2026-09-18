@@ -1,32 +1,32 @@
-create table teacher(
-    id string comment 'teacher id',
-    name string comment 'teacher name',
-    gender string comment 'gender',
-    age string comment 'age',
-    subject string comment 'teaching subject',
-    title string comment 'professional title',
-    phone string comment 'phone number',
-    email string comment 'email address',
-    office string comment 'office location',
-    salary string comment 'monthly salary'
-) comment 'teacher info';
+create table product(
+    product_id string comment 'product id',
+    product_name string comment 'product name',
+    category string comment 'category',
+    brand string comment 'brand',
+    price string comment 'unit price',
+    stock string comment 'stock quantity',
+    supplier_id string comment 'supplier id',
+    warehouse_code string comment 'warehouse code',
+    production_date string comment 'production date',
+    expiry_date string comment 'expiry date'
+) comment 'product info';
 
-insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
-('1', 'wanglaoshi', 'm', '45', 'math', 'professor', '13900000001', 'wang@school.com', 'A101', '15000');
+insert product(product_id, product_name, category, brand, price, stock, supplier_id, warehouse_code, production_date, expiry_date) : 
+('P0001', 'Laptop', 'Electronics', 'Dell', '5999', '150', 'SUP001', 'WH-A01', '20260101', '20290101');
 
-insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
-('2', 'lilaoshi', 'f', '38', 'english', 'associate', '13900000002', 'li@school.com', 'B202', '12000');
+insert product(product_id, product_name, category, brand, price, stock, supplier_id, warehouse_code, production_date, expiry_date) : 
+('P0002', 'Smartphone', 'Electronics', 'Samsung', '3999', '300', 'SUP002', 'WH-A02', '20260201', '20280201');
 
-insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
-('3', 'zhanglaoshi', 'm', '50', 'physics', 'professor', '13900000003', 'zhang@school.com', 'A102', '16000');
+insert product(product_id, product_name, category, brand, price, stock, supplier_id, warehouse_code, production_date, expiry_date) : 
+('P0003', 'OfficeChair', 'Furniture', 'Steelcase', '1299', '80', 'SUP003', 'WH-B01', '20260301', '20310301');
 
-insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
-('4', 'zhaolaoshi', 'f', '35', 'chemistry', 'lecturer', '13900000004', 'zhao@school.com', 'C303', '10000');
+insert product(product_id, product_name, category, brand, price, stock, supplier_id, warehouse_code, production_date, expiry_date) : 
+('P0004', 'DeskLamp', 'Furniture', 'Philips', '299', '500', 'SUP004', 'WH-B02', '20260401', '20300401');
 
-insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
-('5', 'sunlaoshi', 'm', '42', 'biology', 'associate', '13900000005', 'sun@school.com', 'B203', '13000');
+insert product(product_id, product_name, category, brand, price, stock, supplier_id, warehouse_code, production_date, expiry_date) : 
+('P0005', 'CoffeeMachine', 'Appliance', 'Nespresso', '1599', '120', 'SUP005', 'WH-C01', '20260501', '20280501');
 
-insert teacher(id, name, gender, age, subject, title, phone, email, office, salary) : 
-('6', 'zhoulaoshi', 'f', '29', 'computer', 'lecturer', '13900000006', 'zhou@school.com', 'C304', '11000');
+insert product(product_id, product_name, category, brand, price, stock, supplier_id, warehouse_code, production_date, expiry_date) : 
+('P0006', 'Monitor', 'Electronics', 'LG', '1899', '200', 'SUP006', 'WH-A03', '20260601', '20290601');
 
-select * from teacher;
+

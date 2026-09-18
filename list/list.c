@@ -39,7 +39,6 @@ void add_TABLE_LIST_NODE(TABLE_LIST_NODE *head , TABLE_LIST_NODE *new_node){
 }
 
 TABLE_LIST_NODE *get_TABLE_LIST_NODE(TABLE_LIST_NODE *head , char*name){
-    LOG("----------------------------" , "-----------------");
     TABLE_LIST_NODE *temp = head;
     while (temp != NULL) {
         if (compare(temp->table->NAME, name) == 1){ 
@@ -105,31 +104,60 @@ DATALINE_NODE *get_DATALINE_NODE(DATALINE_NODE *head , char *primary_key){
     return NULL;
 }
 
-
-// [head] -- [] -- [] -- [] -- [] -- [] -- NULL
-int 
-delete_DATALINE_NODE(TABLE_LIST_NODE *target_table , DATALINE_NODE **head , DATALINE_NODE *deleter)
+void
+free_DATALINE_NODE(DATALINE_NODE *node, int field_count)
 {
-    /*if(*head == NULL){return NULL;}
+    if (node == NULL) return;
+
+    if (node->dataline != NULL) {
+        if (node->dataline->DATA != NULL) {
+            for (int i = 0; i < field_count; i++) {
+                if (node->dataline->DATA[i] != NULL) {
+                    string_free(node->dataline->DATA[i]);
+                }
+            }
+            free(node->dataline->DATA);
+        }
+        free(node->dataline);
+    }
+    free(node);
+}
+
+void
+delete_DATALINE_NODE(TABLE_LIST_NODE *target_table , DATALINE_NODE **head 
+    , DATALINE *deleter)
+{
+    if(*head == NULL)return;
 
     DATALINE_NODE *up = *head;
     DATALINE_NODE *temp = *head;
     int count = 0;
+    int is_match = 1;
     while(temp != NULL){
+        is_match = 1;
         for(int i = 0; i < target_table->table->length - 1; i++){
-            if(!compare(deleter->dataline->DATA[i] , temp->dataline->DATA[i]->str))break;
-            // target node
-            if(!count){
-                *head = temp->next;
-                // 释放...
+            if(!compare(deleter->DATA[i] , temp->dataline->DATA[i]->str)){
+                is_match = 0;
                 break;
             }
-            up->next = temp->next;
-            // 释放temp
-            break;
         }
+        if(is_match){
+            // target node
+            if(!count){ // head node
+                *head = temp->next;
+                // 释放temp...
+                free_DATALINE_NODE(temp , target_table->table->length - 1);
+                break;
+            }
+            DATALINE_NODE **rep = &up->next;
+            *rep = temp->next;
+            free_DATALINE_NODE(temp , target_table->table->length - 1);
+            return;
+        }
+
         count++;
         up = temp; 
         temp = temp->next;
-    }*/
+    }
+    return;
 }
