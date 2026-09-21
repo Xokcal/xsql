@@ -11,7 +11,7 @@
 \nxsql boot is success. \
 \ncurrent version is 1.0.1 single service. \
 \n\nXSQL is create by Xokcal, it's a individual developer. \
-\ncongratulate you use nice!\n" \
+\nhope you enjoy it!!\n" \
 
 int main() {
     table_db_t *tableDbT = create_tableDbT();
@@ -29,7 +29,7 @@ int main() {
 
     while (1) {
 
-        printf("xsql> ");
+        printf("db @Xokcal ~/m/xsql> ");
         fflush(stdout);
 
         if (fgets(input, sizeof(input), stdin) == NULL) {
@@ -57,7 +57,6 @@ int main() {
             delete_all(xsql_input);
        }else{
             XSQL_RUN(tokensb_input  ,  head , table_file , data_file , tableDbT);
-            printf("XSQL_RUN is OK!!\n");
             save_snapPhoto("db/xsql.bin" , head);
             delete_all(xsql_input);
        }

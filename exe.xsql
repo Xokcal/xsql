@@ -30,3 +30,4 @@ insert product(product_id, product_name, category, brand, price, stock, supplier
 ('P0006', 'Monitor', 'Electronics', 'LG', '1899', '200', 'SUP006', 'WH-A03', '20260601', '20290601');
 
 
+delete user where id = 'e003' or name = 'qqqqqq' or address = '81978dqd@qq' or id = '12';

@@ -5,7 +5,7 @@
 #include "grm.h"
 #include "utils.h"
 
-#define XSQL_DEBUG
+ // #define XSQL_DEBUG
 
 #ifdef XSQL_DEBUG
     #define LOG(statue , str)\
