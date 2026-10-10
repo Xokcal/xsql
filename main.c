@@ -97,7 +97,14 @@ int main() {
             XSQL_RUN(table_token_init  ,  head , table_file , data_file , tableDbT);
             save_snapPhoto("db/xsql.bin" , head);
             delete_all(xsql_input);
-       }else if(compare(xsql_input , "q")){
+       }else if(compare(xsql_input , "c exe file;")){
+            String *table_file_init = open_file("createexe.xsql");
+            TOKENSB *table_token_init = tokens_parse(table_file_init);
+            XSQL_RUN(table_token_init  ,  head , table_file , data_file , tableDbT);
+            save_snapPhoto("db/xsql.bin" , head);
+            delete_all(xsql_input);
+       }
+       else if(compare(xsql_input , "q")){
             printf("whether input 'q' quit the programma (yes[y] , no[n])\n");
             printf("db @Xokcal ~/m/xsql> ");
             scanf("%s" , &q_input);

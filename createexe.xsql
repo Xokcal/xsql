@@ -1,0 +1,21 @@
+CREATE TABLE product(
+    product_id       STRING     comment 'product_id',
+    product_name     STRING     comment 'product_name',
+    category         STRING     comment 'category',
+    brand            STRING     comment 'brand',
+    price            STRING     comment 'price',
+    stock            STRING     comment 'stock',
+    supplier_id      STRING     comment 'supplier_id',
+    warehouse_code   STRING     comment 'warehouse_code',
+    production_date  STRING     comment 'production_date',
+    expiry_date      STRING     comment 'expiry_date'
+) comment 'product table';
+
+
+create table universy(
+    id              string      comment 'id',
+    tuition         string      comment 'tuition',
+    name            string      comment 'name',
+    person_num      string      comment 'person_number',
+    universy_head   string      comment 'universy_head'
+)comment 'universy';

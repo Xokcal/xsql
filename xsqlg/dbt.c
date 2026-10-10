@@ -14,7 +14,6 @@ table_db_t *create_tableDbT(){
     tableDbT->count = 10;
     tableDbT->auth_count = (int *)malloc(sizeof(int));
     *tableDbT->auth_count = 0;
-    printf("[count]%d\n" , *tableDbT->auth_count);
     return tableDbT;
 }
 

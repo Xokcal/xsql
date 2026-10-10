@@ -395,7 +395,7 @@ int INSERT_exe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr , table_db_t *i
                                             return m - 1;
                                         } else if (m == tokensb->count - 1){
                                             clock_t end = clock();
-                                            printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
+                                            //printf("[MM] = %d ; [M STR] = %s\n" , m , tokensb->tokens[m]->str);
                                             /*printf("[%s] xsql server> %s\n"
                                                    , current_time_format()->str , xsql_row->str);*/
                                             /*printf("[%s] (insert) to \'%s\' 1 row execute in %.2f ms is ok ! \n"
