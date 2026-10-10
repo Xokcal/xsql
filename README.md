@@ -54,4 +54,8 @@ SELECT id , age , name , address , student_id  FROM student WHERE id = '15' AND 
 
 ```
 ## 运行
-gcc main.c file/file.c xstr/String.c xsqlg/grm.c list/list.c -o main.exe
+
+#### terminal 运行指令
+```txt
+gcc.exe xsqlg/create.c xsqlg/bplustree.c xsqlg/utils.c xsqlg/delete.c xsqlg/show.c xsqlg/dbt.c main.c log/xlog.c xsqlg/update.c time/xtime.c xsqlg/grm.c list/list.c file/file.c xstr/String.c -o main.exe
+```

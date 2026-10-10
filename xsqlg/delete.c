@@ -136,6 +136,20 @@ Where_Logic_Parse(TABLE_LIST_NODE *target_table , XsqlWhereCondi *xsqlWhereCondi
     free(array_count);
 }
 
+static void
+Delete_All_Row(TABLE_LIST_NODE *target_table)
+{
+    int array_count = 0;
+    DATALINE_ARRAY *datalineArray = create_DATALINE_ARRAY(target_table);
+    DATALINE_NODE *temp = target_table->table->dataline_head;
+    while(temp != NULL){
+        if(array_count == datalineArray->count)extend_DATALINE_ARRAY(target_table , datalineArray);
+            datalineArray->datalines[array_count++] = temp->dataline;
+        temp = temp->next;
+    }
+    Delete_Arrays_DatalineNode(target_table , datalineArray , &array_count);
+}
+
 //  id = 'e001' and name = 'zhangsan' or name = 'xasx' or pps = 'sxas21' and io_id = '1xq';
 static int
 Where_Parse(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr 
@@ -200,6 +214,10 @@ Xsql_DeleteExe(TABLE_LIST_NODE *head,TOKENSB *tokensb , int curr)
     TABLE_LIST_NODE *target_table;
     for(int i = 0; i < tokensb->count ; i++){
         String *token = tokensb->tokens[i];
+        if(!is_over_where&&compare(token , ";")){
+            Delete_All_Row(target_table);
+            return i;
+        }
         if(is_over_tableName&&!is_over_where&&compare(token , ";")){ // delete all
             //i = Delete_All_Dataline();
             continue;

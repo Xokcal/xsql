@@ -10,6 +10,8 @@
 
 typedef struct DATALINE{
     String **DATA;
+    int key;
+    int is_deleted;
 }DATALINE;
 
 typedef struct DATALINE_NODE{

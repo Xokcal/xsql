@@ -28,7 +28,10 @@
         printf("| %s%s\n" ,(str) , (tail))
 
 #define XSQL_LOG(str)\
-        printf("xsql : %s\n" , (str))
+        printf("xsql ~: %s\n" , (str))
+
+#define XSQL_LOG_P(str , p)\
+        printf("xsql ~: %s %s\n" , (str) , (p))
 
 static int
 separateLine_len_calc(TABLE_LIST_NODE *head)
@@ -202,6 +205,10 @@ parse_show_reach_table(TABLE_LIST_NODE *head , TOKENSB *tokensb , int *is_over_t
         // over 'table' primary key
         if(*is_over_table&&!compare(token , " ")&&!compare(token , ";")){
             target_table = get_TABLE_LIST_NODE(head , token->str);
+            if(target_table == NULL){
+                XSQL_LOG_P("not kown table" , token->str);
+                return j;
+            }
             is_over_tableName = 1;
             continue;
         }

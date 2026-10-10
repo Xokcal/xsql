@@ -19,9 +19,9 @@
 #endif
 
 #define XSQL_LOG(str)\
-    printf("xsql : %s\n" , (str))
+    printf("xsql ~: %s\n" , (str))
 #define XSQL_LOG_PARAM(str , param)\
-    printf("xsql : %s \'%s\'\n" , (str) , (param))
+    printf("xsql ~: %s \'%s\'\n" , (str) , (param))
 
 static int
 check_update_field(PUField_p pufield_p)
@@ -255,7 +255,7 @@ is_update_set_token(PUField_p pufield_p, int i)
     if(compare(token , ","))return 0;if(compare(token , ";"))return 0;return 1;
 }
 
-static void
+static inline void
 is_over_set_left_func(int *is_over_set_left){
     *is_over_set_left = 1;
 }

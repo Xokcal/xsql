@@ -11,17 +11,30 @@
 #define ENTER_LIMIT_COUNT 50
 #define CRYPT_KEY_NUM 120
 
-String *open_file(char* URL){
-    FILE *file = fopen(URL , "r");
-    if(file == NULL){
+String *open_file(char* URL) {
+    FILE *file = fopen(URL, "r");
+    if (file == NULL) {
         return NULL;
     }
-    String *tokens = create_string("");
-    char buf[2];
-    while(fgets(buf , sizeof(buf) , file))
-        combine_tail_char(tokens , buf[0]);
+
+    fseek(file, 0, SEEK_END);
+    long file_len = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char *buf = malloc(file_len + 1);
+    if (buf == NULL) {
+        fclose(file);
+        return NULL;
+    }
+
+    size_t n = fread(buf, 1, file_len, file);
+    buf[n] = '\0';
+
     fclose(file);
-    return tokens;
+
+    String *token = create_string(buf);
+    free(buf);
+    return token;
 }
 
 void print_open(char *URL , char *content){
@@ -157,7 +170,7 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
     // ---- table count
     int table_count = 0;
     fread(&table_count , sizeof(int) , 1 , fp);
-    printf("[table count] %d\n" , table_count);
+    //printf("[table count] %d\n" , table_count);
     if(table_count == 0){return head;}
     //printf("[table count-----] %d\n" , table_count);
     for(int i = 0 ; i < table_count ; i++){
@@ -204,6 +217,7 @@ TABLE_LIST_NODE *get_snapPhoto(char *URL){
         TABLE_LIST_NODE *new_table_node = create_TABLE_LIST_NODE(name , FIELDS, table_field_length);
         add_TABLE_LIST_NODE(head , new_table_node);
         temp_table = new_table_node;
+        //printf("create new_table_node\n");
         // ---- datalines 开始获取datalines
         for(int j = 0; j < dataline_count ; j++){
             //printf("every dataline ----------------------------\n");

@@ -66,7 +66,7 @@ DATALINE_NODE *create_DATALINE_NODE(String **data , int* indexs , int count , in
     for (int i = 0; i < count; ++i)
         copy_string(data[i] , dataline_node->dataline->DATA[indexs[i]]);
     //printf("[FIELD_COUNT]%d\n" , field_count);
-
+    
     for (int i = 0; i < field_count; ++i) {
         if(dataline_node->dataline->DATA[i] == NULL){
             //printf("[DATA]NULL\n");
