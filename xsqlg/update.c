@@ -19,9 +19,9 @@
 #endif
 
 #define XSQL_LOG(str)\
-    printf("xsql ~: %s\n" , (str))
+    printf("xsql ~:\033[31m %s\033[0m\n" , (str))
 #define XSQL_LOG_PARAM(str , param)\
-    printf("xsql ~: %s \'%s\'\n" , (str) , (param))
+    printf("xsql ~:\033[31m %s \'%s\'\033[0m\n" , (str) , (param))
 
 static int
 check_update_field(PUField_p pufield_p)

@@ -615,7 +615,7 @@ SELECT_exe_DATA_QUERY(TABLE_LIST_NODE *TARGET_TABLE,SELECT_CONDITION *selectCond
                 for(int j = 0 ; j < fiediffer; j++){
                     combine_tail(fiedifferspace , " ");
                 }
-                printf("%s%s|\n|%s|\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , fiedifferspace->str , lines->str);
+                printf("%s%s|\n+%s+\n" , TARGET_TABLE->table->FIELD[reflect_field_index[i]]->str , fiedifferspace->str , lines->str);
                 string_free(fiedifferspace);
             continue;
         }

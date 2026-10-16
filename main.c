@@ -8,52 +8,28 @@
 #include "xsqlg/dbt.h"
 #include "xsqlg/bplustree.h"
 
-#define XSQL_WEL_STATUE "Welcome use XSQL terminal. \
+#define XSQL_LOGO_ASCLL \
+"\n __  __   _____   ____    __ \
+ \n \\ \\/ /  / ___/  / __ \\  / / \
+ \n  \\  /   \\__ \\  / / / / / / \
+ \n  /  \\  ___/ / / /_/ / / /  \
+ \n /_/\\_\\/____/  \\___\\_\\/_/ \n\n"
+
+#define XSQL_WEL_STATUE \
+"Welcome use XSQL terminal. \
 \nxsql boot is success. \
-\ncurrent version is 1.0.1 single service. \
 \n\nXSQL is create by Xokcal, it's a individual developer. \
-\nhope you enjoy it!!\n" \
+\nhope you enjoy it!! \
+\nneed help can input 'h', show help instruction\n"
 
-
-void print_tree(BPlusNode* node, int depth) {
-    if (node == NULL) return;
-
-    for (int i = 0; i < depth; i++) printf("  ");
-    printf("node(is_leaf=%d, key_count=%d, keys=[", node->is_leaf, node->key_count);
-    for (int i = 0; i < node->key_count; i++) {
-        printf("%d ", node->keys[i]);
-    }
-    printf("])\n");
-
-    if (!node->is_leaf) {
-        for (int i = 0; i <= node->key_count; i++) {
-            print_tree(node->children[i], depth + 1);
-        }
-    }
-}
+#define XSQL_HELP_TXT \
+"\n*************** xsql help txt.***************\
+\nrun createexe.txt xsql          'c exe file;'. \
+\nrun exe.txt xsql                'exe file;'. \
+\nquit the xsql terminal          'q'. \
+\n**********************************************\n"
 
 int main() {
-    
-    /*BPlusTree* tree = create_BPlusTree();
-
-    DATALINE d[20];
-    for (int i = 0; i < 20; i++) {
-        d[i].DATA = NULL;
-    }
-
-    for (int i = 1; i <= 20; i++) {
-        printf("=== before insert %d ===\n", i * 10);
-        fflush(stdout);
-        insert_BPlusNode(tree, i * 10, &d[i - 1]);
-        printf("=== after insert %d ===\n", i * 10);
-        fflush(stdout);
-        print_tree(tree->bPlusRoot, 0);
-        printf("\n");
-    }
-
-    printf("end!!!\n");*/
-
-
     table_db_t *tableDbT = create_tableDbT();
     TABLE_LIST_NODE *head = NULL; //create_TABLE_LIST_NODE(NULL , NULL , 0);
     
@@ -64,14 +40,18 @@ int main() {
     TOKENSB *tokens = tokens_parse(origin);*/
     //XSQL_RUN(tokens , head , table_file , data_file , NULL);
     head = get_snapPhoto("db/xsql.bin");
-    printf("%s" , XSQL_WEL_STATUE);
+    printf("XSQL v1.0.1 (build %s %s)\n", __DATE__, __TIME__);
+    printf("Platform: %s %s\n", "Windows", "x86_64");
+    printf("Compiler: GCC %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    printf("%s%s" , XSQL_LOGO_ASCLL , XSQL_WEL_STATUE);
 
     char input[512];
     String *xsql_input = create_string("");
-
+    xsqlstart:
     while (1) {
+        
         char q_input[500];
-        printf("db @Xokcal ~/m/xsql> ");
+        printf("\033[38;5;28mdb @%s ~/m/xsql>\033[0m " , __FILE__);
         fflush(stdout);
 
         if (fgets(input, sizeof(input), stdin) == NULL) {
@@ -104,15 +84,20 @@ int main() {
             save_snapPhoto("db/xsql.bin" , head);
             delete_all(xsql_input);
        }
+       else if(compare(xsql_input , "h")){
+            printf("%s" , XSQL_HELP_TXT);
+            delete_all(xsql_input);
+            continue;
+       }
        else if(compare(xsql_input , "q")){
             printf("whether input 'q' quit the programma (yes[y] , no[n])\n");
-            printf("db @Xokcal ~/m/xsql> ");
+            printf("\033[38;5;28mdb @%s ~/m/xsql>\033[0m " , __FILE__);
             scanf("%s" , &q_input);
             delete_all(xsql_input);
             if(strcmp(q_input , "y") == 0){
                 printf("has quit xsql!!");
                 break;
-            }else continue;
+            }
        }
        else{
             XSQL_RUN(tokensb_input  ,  head , table_file , data_file , tableDbT);
